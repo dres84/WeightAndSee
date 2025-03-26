@@ -8,35 +8,122 @@ BasePage {
     pageTitle: "Selecciona el ejercicio"
     showBackButton: false
 
-    property var exerciseData: ({
-        "tren_superior": [],
-        "core": [],
-        "tren_inferior": []
+    // Simulamos la carga de un JSON (en el futuro se leerá de archivo o internet)
+    property var jsonData: ({
+        "tren_superior": [
+            {"name": "Press banca", "weight": 20},
+            {"name": "Dominadas", "weight": 0}
+        ],
+        "core": [
+            {"name": "Abdominales", "weight": 0},
+            {"name": "Plancha", "weight": 0}
+        ],
+        "tren_inferior": [
+            {"name": "Sentadillas", "weight": 30},
+            {"name": "Peso muerto", "weight": 40}
+        ]
     })
 
-    // Almacenar estado de expansión de cada sección
-    property var expandedSections: ({})
+    // ListModel que se construye a partir del JSON
+    ListModel {
+        id: exerciseListModel
+    }
 
+    // Mantenemos el estado de expansión de cada sección
+    property var expandedSections: ({
+        "tren_superior": true,
+        "core": true,
+        "tren_inferior": true
+    })
+
+    // Convertimos el JSON a un modelo lineal
     Component.onCompleted: {
-        // Inicializar datos de prueba
-        exerciseData = {
-            "tren_superior": [
-                {"name": "Press banca", "weight": 20},
-                {"name": "Dominadas", "weight": 0}
-            ],
-            "core": [
-                {"name": "Abdominales", "weight": 0},
-                {"name": "Plancha", "weight": 0}
-            ],
-            "tren_inferior": [
-                {"name": "Sentadillas", "weight": 30},
-                {"name": "Peso muerto", "weight": 40}
-            ]
-        };
+        exerciseListModel.clear();
+        for (var key in jsonData) {
+            var exercises = jsonData[key];
+            for (var i = 0; i < exercises.length; i++) {
+                exerciseListModel.append({
+                    "category": key,    // "tren_superior", "core" o "tren_inferior"
+                    "name": exercises[i].name,
+                    "weight": exercises[i].weight
+                });
+            }
+        }
+        console.log("Modelo cargado con " + exerciseListModel.count + " ejercicios.");
+    }
 
-        // Inicializar todas las secciones como expandidas por defecto
-        for (var key in exerciseData) {
-            expandedSections[key] = true;
+    // Componente para los encabezados de sección con icono de toggle
+    Component {
+        id: sectionHeading
+        Rectangle {
+            width: listView.width
+            height: 60
+            color: {
+                if (section === "tren_superior") return "#1E2A38";
+                else if (section === "core") return "#121212";
+                else return "#0F3D3E";
+            }
+
+            RowLayout {
+                anchors.fill: parent
+                spacing: 10
+
+                Image {
+                    source: {
+                        if (section === "tren_superior") return "qrc:/icons/tren_superior.png";
+                        else if (section === "core") return "qrc:/icons/core.png";
+                        else return "qrc:/icons/tren_inferior.png";
+                    }
+                    Layout.preferredWidth: parent.height - 10
+                    Layout.preferredHeight: parent.height - 10
+                    Layout.leftMargin: 5
+                }
+
+                Text {
+                    text: {
+                        if (section === "tren_superior") return qsTr("Tren Superior");
+                        else if (section === "core") return qsTr("Core");
+                        else return qsTr("Tren Inferior");
+                    }
+                    font.pixelSize: 22
+                    color: "white"
+                    Layout.fillWidth: true
+                }
+
+                // Icono para expandir/colapsar
+                Rectangle {
+                    id: toggleIcon
+                    width: 30
+                    height: 30
+                    Layout.rightMargin: 15
+                    color: "transparent"
+                    rotation: menuPage.expandedSections[section] ? -180 : 0
+
+                    Behavior on rotation {
+                        NumberAnimation {
+                            duration: 300
+                        }
+                    }
+
+                    Text {
+                        anchors.centerIn: parent
+                        text: "▲"
+                        font.pixelSize: 16
+                        color: "white"
+                    }
+                }
+            }
+
+            // Toggle para cambiar el estado de la sección
+            MouseArea {
+                anchors.fill: parent
+                onClicked: {
+                    console.log("intentamos expandir o contraer la seccion: " + section)
+                    menuPage.expandedSections[section] = !menuPage.expandedSections[section];
+                    // Forzar actualización del modelo
+                    exerciseListModel.layoutChanged();
+                }
+            }
         }
     }
 
@@ -51,100 +138,27 @@ BasePage {
             ListView {
                 id: listView
                 width: parent.width
-                model: Object.keys(exerciseData)
+                model: exerciseListModel
                 interactive: true
                 spacing: 2
 
-                delegate: ColumnLayout {
-                    width: listView.width
-                    spacing: 0
+                // Se agrupa por la propiedad "category"
+                section.property: "category"
+                section.criteria: ViewSection.FullString
+                section.delegate: sectionHeading
 
-                    // Encabezado de sección (clickable)
-                    Rectangle {
-                        id: sectionHeader
-                        Layout.fillWidth: true
-                        height: 60
-                        color: {
-                            if (modelData === "tren_superior") return "#1E2A38";
-                            else if (modelData === "core") return "#121212";
-                            else return "#0F3D3E";
-                        }
+                delegate: ExerciseDelegate {
+                    // Se le pasan las propiedades necesarias al delegate
+                    exercise: { "name": name, "weight": weight }
+                    exerciseIndex: index
+                    exerciseCategory: category
 
-                        RowLayout {
-                            anchors.fill: parent
-                            spacing: 10
+                    // El delegate se mostrará solo si la sección está expandida
+                    visible: menuPage.expandedSections[category]
+                    height: menuPage.expandedSections[category] ? 50 : 0
 
-                            Image {
-                                source: {
-                                    if (modelData === "tren_superior") return "qrc:/icons/tren_superior.png";
-                                    else if (modelData === "core") return "qrc:/icons/core.png";
-                                    else return "qrc:/icons/tren_inferior.png";
-                                }
-                                Layout.preferredWidth: parent.height - 10
-                                Layout.preferredHeight: parent.height - 10
-                                Layout.leftMargin: 5
-                            }
-
-                            Text {
-                                text: {
-                                    if (modelData === "tren_superior") return qsTr("Tren Superior");
-                                    else if (modelData === "core") return qsTr("Core");
-                                    else return qsTr("Tren Inferior");
-                                }
-                                font.pixelSize: 22
-                                color: "white"
-                                Layout.fillWidth: true
-                            }
-
-                            Rectangle {
-                                Layout.preferredWidth: 20
-                                Layout.preferredHeight: 20
-                                Layout.rightMargin: 15
-                                color: "transparent"  // Fondo transparente para que parezca un icono
-                                rotation: expandedSections[modelData] ? -180 : 0
-
-                                Text {
-                                    anchors.centerIn: parent
-                                    text: "▲"  // Flecha hacia arriba
-                                    font.pixelSize: 16
-                                    color: "white"
-                                }
-
-                                Behavior on rotation {
-                                    NumberAnimation { duration: 100 }
-                                }
-                            }
-                        }
-
-                        MouseArea {
-                            anchors.fill: parent
-                            onClicked: {
-                                expandedSections[modelData] = !expandedSections[modelData];
-                                expandedSectionsChanged();
-                            }
-                        }
-                    }
-
-                    // Elementos de la sección (solo visibles si está expandida)
-                    ColumnLayout {
-                        id: sectionContent
-                        Layout.fillWidth: true
-                        visible: expandedSections[modelData]
-                        spacing: 0
-
-                        Repeater {
-                            model: expandedSections[modelData] ? exerciseData[modelData] : []
-                            delegate: ExerciseDelegate {
-                                exercise: modelData
-                                exerciseIndex: index
-                                exerciseCategory: modelData.toString()
-
-                                onDeleteRequested: {
-                                    exerciseData[exerciseCategory].splice(exerciseIndex, 1);
-                                    exerciseDataChanged();
-                                }
-                            }
-                        }
+                    onDeleteRequested: {
+                        exerciseListModel.remove(index);
                     }
                 }
             }
@@ -158,7 +172,7 @@ BasePage {
         }
     }
 
-    // Diálogo para añadir nuevo ejercicio
+    // Diálogo para añadir un nuevo ejercicio
     Dialog {
         id: addDialog
         title: "Añadir nuevo ejercicio"
@@ -166,17 +180,17 @@ BasePage {
         modal: true
 
         ColumnLayout {
-            width: parent ? parent.width : 100
+            width: parent ? parent.width : 300
             spacing: 10
 
             ComboBox {
-                id: exerciseCategory
+                id: exerciseCategoryCombo
                 model: ["Tren Superior", "Core", "Tren Inferior"]
                 Layout.fillWidth: true
             }
 
             TextField {
-                id: exerciseName
+                id: exerciseNameField
                 placeholderText: "Nombre del ejercicio"
                 Layout.fillWidth: true
             }
@@ -195,15 +209,21 @@ BasePage {
                     text: "Guardar"
                     Layout.fillWidth: true
                     onClicked: {
-                        if (exerciseName.text.trim() !== "") {
+                        if (exerciseNameField.text.trim() !== "") {
                             var category = "";
-                            if (exerciseCategory.currentIndex === 0) category = "tren_superior";
-                            else if (exerciseCategory.currentIndex === 1) category = "core";
-                            else category = "tren_inferior";
+                            if (exerciseCategoryCombo.currentIndex === 0)
+                                category = "tren_superior";
+                            else if (exerciseCategoryCombo.currentIndex === 1)
+                                category = "core";
+                            else
+                                category = "tren_inferior";
 
-                            exerciseData[category].push({"name": exerciseName.text, "weight": 0});
-                            exerciseDataChanged(); // Notificar el cambio
-                            exerciseName.text = "";
+                            exerciseListModel.append({
+                                "category": category,
+                                "name": exerciseNameField.text,
+                                "weight": 0
+                            });
+                            exerciseNameField.text = "";
                             addDialog.close();
                         }
                     }
