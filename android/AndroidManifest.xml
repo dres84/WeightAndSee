@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.dresoft.gymweights" android:versionCode="1.0" android:versionName="1.0">
+
+    <application android:name="org.qtproject.qt5.android.bindings.QtApplication" android:label="GymWeights">
+
+        <activity android:name="org.qtproject.qt5.android.bindings.QtActivity" android:label="GymWeights" android:configChanges="orientation|uiMode|screenLayout|screenSize|smallestScreenSize|layoutDirection|locale|fontScale|keyboard|keyboardHidden|navigation" android:screenOrientation="portrait" android:launchMode="singleTop">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+
+        <!-- Aquí puedes agregar las configuraciones específicas de Admob -->
+        <meta-data android:name="com.google.android.gms.ads.APPLICATION_ID" android:value="ca-app-pub-xxxxxxxxxxxxxxxx~yyyyyyyyyy"/>
+
+    </application>
+
+    <!-- Permisos necesarios para Admob -->
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+
+</manifest>
