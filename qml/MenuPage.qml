@@ -8,6 +8,8 @@ BasePage {
     pageTitle: "Selecciona el ejercicio"
     showBackButton: false
 
+    property int animationTime: 300
+
     // Simulamos la carga de un JSON (en el futuro se leerá de archivo o internet)
     property var jsonData: ({
         "tren_superior": [
@@ -27,14 +29,19 @@ BasePage {
     // ListModel que se construye a partir del JSON
     ListModel {
         id: exerciseListModel
+        onCountChanged: { console.log("Categorías actuales en el modelo:");
+            for (var i = 0; i < exerciseListModel.count; i++) {
+                console.log(exerciseListModel.get(i).category);
+            }
+        }
     }
 
     // Mantenemos el estado de expansión de cada sección
-    property var expandedSections: ({
-        "tren_superior": true,
-        "core": true,
-        "tren_inferior": true
-    })
+    property var expandedSections: QtObject {
+        property bool tren_superior: true
+        property bool core: true
+        property bool tren_inferior: true
+    }
 
     // Convertimos el JSON a un modelo lineal
     Component.onCompleted: {
@@ -55,6 +62,7 @@ BasePage {
     // Componente para los encabezados de sección con icono de toggle
     Component {
         id: sectionHeading
+
         Rectangle {
             width: listView.width
             height: 60
@@ -101,7 +109,7 @@ BasePage {
 
                     Behavior on rotation {
                         NumberAnimation {
-                            duration: 300
+                            duration: animationTime
                         }
                     }
 
@@ -120,8 +128,6 @@ BasePage {
                 onClicked: {
                     console.log("intentamos expandir o contraer la seccion: " + section)
                     menuPage.expandedSections[section] = !menuPage.expandedSections[section];
-                    // Forzar actualización del modelo
-                    exerciseListModel.layoutChanged();
                 }
             }
         }
@@ -154,8 +160,15 @@ BasePage {
                     exerciseCategory: category
 
                     // El delegate se mostrará solo si la sección está expandida
-                    visible: menuPage.expandedSections[category]
-                    height: menuPage.expandedSections[category] ? 50 : 0
+                    visible: height !== 0
+                    height: expandedSections[category] ? 50 : 0
+
+
+                    Behavior on height {
+                        NumberAnimation {
+                            duration: animationTime
+                        }
+                    }
 
                     onDeleteRequested: {
                         exerciseListModel.remove(index);
@@ -218,11 +231,21 @@ BasePage {
                             else
                                 category = "tren_inferior";
 
-                            exerciseListModel.append({
+                            // Encontrar el índice donde insertar para mantener las categorías agrupadas
+                            var insertIndex = exerciseListModel.count;
+                            for (var i = 0; i < exerciseListModel.count; i++) {
+                                if (exerciseListModel.get(i).category === category) {
+                                    insertIndex = i + 1; // Insertar después del último de la categoría
+                                }
+                            }
+
+                            exerciseListModel.insert(insertIndex, {
                                 "category": category,
                                 "name": exerciseNameField.text,
                                 "weight": 0
                             });
+
+                            listView.forceLayout();
                             exerciseNameField.text = "";
                             addDialog.close();
                         }
