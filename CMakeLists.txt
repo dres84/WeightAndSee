@@ -18,7 +18,6 @@ qt_add_qml_module(appgymWeights
     QML_FILES
         Main.qml
         qml/MenuPage.qml
-        qml/SubMenuPage.qml
         qml/BasePage.qml
         qml/NavigationHeader.qml
         qml/ExerciseDelegate.qml
@@ -26,6 +25,9 @@ qt_add_qml_module(appgymWeights
         android/AndroidManifest.xml
         android/build.gradle
         qml.qrc
+    SOURCES
+        datacenter.h
+        datacenter.cpp
 
 #    RESOURCES icons/core.png icons/tren_inferior.png icons/tren_superior.png
 )

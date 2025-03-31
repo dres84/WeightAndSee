@@ -1,0 +1,31 @@
+#ifndef DATACENTER_H
+#define DATACENTER_H
+
+#include <QObject>
+#include <QJsonObject>
+#include <QJsonDocument>
+#include <QJsonArray>
+#include <QFile>
+#include <QDate>
+#include <QQmlEngine>
+
+class DataCenter : public QObject {
+    Q_OBJECT
+    Q_PROPERTY(QJsonObject data READ data NOTIFY dataChanged)
+
+public:
+    explicit DataCenter(QObject *parent = nullptr);
+    QJsonObject data() const;
+    Q_INVOKABLE QJsonObject load();
+    Q_INVOKABLE void save();
+    Q_INVOKABLE void deleteFile();
+signals:
+    void dataChanged();
+
+private:
+    void loadDefaultData();
+    QString getFilePath() const;
+    QJsonObject m_data;
+};
+
+#endif // DATACENTER_H

@@ -11,20 +11,12 @@ BasePage {
     property int animationTime: 300
 
     // Simulamos la carga de un JSON (en el futuro se leerá de archivo o internet)
-    property var jsonData: ({
-        "tren_superior": [
-            {"name": "Press banca", "weight": 20},
-            {"name": "Dominadas", "weight": 0}
-        ],
-        "core": [
-            {"name": "Abdominales", "weight": 0},
-            {"name": "Plancha", "weight": 0}
-        ],
-        "tren_inferior": [
-            {"name": "Sentadillas", "weight": 30},
-            {"name": "Peso muerto", "weight": 40}
-        ]
-    })
+    property var jsonData: dataCenter.load()
+
+    onJsonDataChanged: {
+            console.log("JSON received: " + JSON.stringify(jsonData))
+            loadModel();
+    }
 
     // ListModel que se construye a partir del JSON
     ListModel {
@@ -44,19 +36,23 @@ BasePage {
     }
 
     // Convertimos el JSON a un modelo lineal
-    Component.onCompleted: {
+    function loadModel() {
         exerciseListModel.clear();
-        for (var key in jsonData) {
-            var exercises = jsonData[key];
-            for (var i = 0; i < exercises.length; i++) {
-                exerciseListModel.append({
-                    "category": key,    // "tren_superior", "core" o "tren_inferior"
-                    "name": exercises[i].name,
-                    "weight": exercises[i].weight
-                });
-            }
+        console.log("Intentamos llenar el modelo con: ");
+
+        var exercises = jsonData.exercises;
+        for (var key in exercises) {
+            console.log("Key: " + key);
+            var exercise = exercises[key];
+            exerciseListModel.append({
+                "category": exercise.part, // "tren_superior", "core" o "tren_inferior"
+                "name": key,
+                "weight": exercise.selectedWeight
+            });
         }
+
         console.log("Modelo cargado con " + exerciseListModel.count + " ejercicios.");
+        console.log("MODELO: " + JSON.stringify(exerciseListModel))
     }
 
     // Componente para los encabezados de sección con icono de toggle
@@ -160,7 +156,7 @@ BasePage {
                     exerciseCategory: category
 
                     // El delegate se mostrará solo si la sección está expandida
-                    visible: height !== 0
+                    visible: height > 10
                     height: expandedSections[category] ? 50 : 0
 
 
@@ -180,9 +176,17 @@ BasePage {
         Button {
             Layout.fillWidth: true
             Layout.margins: 10
+            text: "Eliminar fichero"
+            onClicked: dataCenter.deleteFile()
+        }
+
+        Button {
+            Layout.fillWidth: true
+            Layout.margins: 10
             text: "Añadir nuevo ejercicio"
             onClicked: addDialog.open()
         }
+
     }
 
     // Diálogo para añadir un nuevo ejercicio
