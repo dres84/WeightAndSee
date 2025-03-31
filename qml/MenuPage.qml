@@ -11,7 +11,7 @@ BasePage {
     property int animationTime: 300
 
     // Simulamos la carga de un JSON (en el futuro se leerá de archivo o internet)
-    property var jsonData: dataCenter.load()
+    property var jsonData: dataCenter.data
 
     onJsonDataChanged: {
             console.log("JSON received: " + JSON.stringify(jsonData))
@@ -47,7 +47,8 @@ BasePage {
             exerciseListModel.append({
                 "category": exercise.part, // "tren_superior", "core" o "tren_inferior"
                 "name": key,
-                "weight": exercise.selectedWeight
+                "weight": exercise.selectedWeight,
+                "unit": exercise.unit
             });
         }
 
@@ -151,7 +152,7 @@ BasePage {
 
                 delegate: ExerciseDelegate {
                     // Se le pasan las propiedades necesarias al delegate
-                    exercise: { "name": name, "weight": weight }
+                    exercise: { "name": name, "weight": weight, "unit": unit }
                     exerciseIndex: index
                     exerciseCategory: category
 

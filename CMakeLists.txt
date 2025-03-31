@@ -28,6 +28,7 @@ qt_add_qml_module(appgymWeights
     SOURCES
         datacenter.h
         datacenter.cpp
+        QML_FILES qml/SelectionPage.qml
 
 #    RESOURCES icons/core.png icons/tren_inferior.png icons/tren_superior.png
 )

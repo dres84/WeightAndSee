@@ -36,7 +36,7 @@ Item {
             }
 
             Text {
-                text: exercise && exercise.weight > 0 ? exercise.weight + " kg" : "-"
+                text: exercise && exercise.weight > 0 ? exercise.weight + " " + exercise.unit : "-"
                 font.pixelSize: 16
                 color: "gray"
                 Layout.rightMargin: 20
@@ -45,7 +45,14 @@ Item {
 
         MouseArea {
             anchors.fill: parent
-            onClicked: console.log("Seleccionado:", exercise.name)
+            onClicked: {
+                console.log("Seleccionado:", exercise.name)
+                stackView.push("SelectionPage.qml", {
+                    exerciseName: exercise.name,
+                    weight: exercise.weight,
+                    unit: exercise.unit
+                })
+            }
 
             drag.target: contentItem
             drag.axis: Drag.XAxis

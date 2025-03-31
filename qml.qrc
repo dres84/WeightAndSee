@@ -9,7 +9,7 @@
         <file>qml/BasePage.qml</file>
         <file>qml/MenuPage.qml</file>
         <file>qml/NavigationHeader.qml</file>
-        <file>qml/SubMenuPage.qml</file>
         <file>qml/ExerciseDelegate.qml</file>
+        <file>qml/SelectionPage.qml</file>
     </qresource>
 </RCC>
