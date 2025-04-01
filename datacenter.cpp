@@ -57,7 +57,8 @@ void DataCenter::deleteFile() {
     QFile file(getFilePath());
     if (file.exists()) {
         if (file.remove()) {
-            qDebug("Archivo eliminado correctamente");
+            qDebug("Archivo eliminado correctamente, cargamos el valor por defecto");
+            load();
         } else {
             qWarning("No se pudo eliminar el archivo");
         }
@@ -85,4 +86,9 @@ void DataCenter::updateExerciseWeight(const QString &exerciseName, int newWeight
         save();
         emit dataChanged();
     }
+}
+
+void DataCenter::updateModel()
+{
+    emit dataChanged();
 }

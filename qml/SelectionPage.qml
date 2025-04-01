@@ -4,7 +4,7 @@ import QtQuick.Layouts
 
 BasePage {
     id: selectionPage
-    title: exerciseName
+    pageTitle: exerciseName
 
     property int weight: 0
     property string exerciseName: ""
