@@ -19,6 +19,7 @@ public:
     Q_INVOKABLE QJsonObject load();
     Q_INVOKABLE void save();
     Q_INVOKABLE void deleteFile();
+    Q_INVOKABLE void addExercise(const QString &name, const QString &part, const QString &unit);
     Q_INVOKABLE void updateExerciseWeight(const QString &exerciseName, int newWeight, QString unit);
     Q_INVOKABLE void updateModel();
 signals:

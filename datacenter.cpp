@@ -67,6 +67,22 @@ void DataCenter::deleteFile() {
     }
 }
 
+void DataCenter::addExercise(const QString &name, const QString &part, const QString &unit) {
+    QJsonObject exercises = m_data["exercises"].toObject();
+
+    QJsonObject newExercise;
+    newExercise["part"] = part;
+    newExercise["unit"] = unit;
+    newExercise["selectedWeight"] = 0;
+    newExercise["history"] = QJsonArray();
+
+    exercises[name] = newExercise;
+    m_data["exercises"] = exercises;
+
+    save();
+    emit dataChanged();
+}
+
 void DataCenter::updateExerciseWeight(const QString &exerciseName, int newWeight, QString unit) {
     if (m_data["exercises"].toObject().contains(exerciseName)) {
         QJsonObject exercises = m_data["exercises"].toObject();

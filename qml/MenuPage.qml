@@ -38,18 +38,23 @@ BasePage {
     // Convertimos el JSON a un modelo lineal
     function loadModel() {
         exerciseListModel.clear();
-        console.log("Intentamos llenar el modelo con: ");
 
         var exercises = jsonData.exercises;
-        for (var key in exercises) {
-            console.log("Key: " + key);
-            var exercise = exercises[key];
-            exerciseListModel.append({
-                "category": exercise.part, // "tren_superior", "core" o "tren_inferior"
-                "name": key,
-                "weight": exercise.selectedWeight,
-                "unit": exercise.unit
-            });
+        var categories = ["tren_superior", "core", "tren_inferior"];
+
+        for (var c = 0; c < categories.length; c++) {
+            var cat = categories[c];
+            for (var key in exercises) {
+                var exercise = exercises[key];
+                if (exercise.part === cat) {
+                    exerciseListModel.append({
+                        "category": exercise.part,
+                        "name": key,
+                        "weight": exercise.selectedWeight,
+                        "unit": exercise.unit
+                    });
+                }
+            }
         }
 
         console.log("Modelo cargado con " + exerciseListModel.count + " ejercicios.");
@@ -190,6 +195,13 @@ BasePage {
 
     }
 
+    onVisibleChanged: {
+        console.log("MenuPage.qml es ahora " + (visible ? "visible" : "invisible"))
+        if (visible) {
+            validateModelIntegrity()
+        }
+    }
+
     // Diálogo para añadir un nuevo ejercicio
     Dialog {
         id: addDialog
@@ -227,35 +239,41 @@ BasePage {
                     text: "Guardar"
                     Layout.fillWidth: true
                     onClicked: {
-                        if (exerciseNameField.text.trim() !== "") {
-                            var category = "";
-                            if (exerciseCategoryCombo.currentIndex === 0)
-                                category = "tren_superior";
-                            else if (exerciseCategoryCombo.currentIndex === 1)
-                                category = "core";
-                            else
-                                category = "tren_inferior";
-
-                            // Encontrar el índice donde insertar para mantener las categorías agrupadas
-                            var insertIndex = exerciseListModel.count;
-                            for (var i = 0; i < exerciseListModel.count; i++) {
-                                if (exerciseListModel.get(i).category === category) {
-                                    insertIndex = i + 1; // Insertar después del último de la categoría
-                                }
-                            }
-
-                            exerciseListModel.insert(insertIndex, {
-                                "category": category,
-                                "name": exerciseNameField.text,
-                                "weight": 0
-                            });
-
-                            listView.forceLayout();
-                            exerciseNameField.text = "";
-                            addDialog.close();
+                        var name = exerciseNameField.text.trim();
+                        if (name === "") {
+                            console.log("❌ El nombre está vacío. No se puede guardar.");
+                            return;
                         }
+
+                        var category = "";
+                        if (exerciseCategoryCombo.currentIndex === 0)
+                            category = "tren_superior";
+                        else if (exerciseCategoryCombo.currentIndex === 1)
+                            category = "core";
+                        else
+                            category = "tren_inferior";
+
+                        console.log("🔧 Enviando nuevo ejercicio a DataCenter:");
+                        console.log("   📌 Nombre: " + name);
+                        console.log("   📂 Categoría: " + category);
+
+                        dataCenter.addExercise(name, category, "Kgs.");  // <-- Llama a la función en C++
+
+                        exerciseNameField.text = "";
+                        addDialog.close();
+
+                        console.log("✅ Diálogo cerrado. Esperando que el modelo se actualice por dataChanged.");
                     }
                 }
+            }
+        }
+    }
+
+    function validateModelIntegrity() {
+        for (var i = 0; i < exerciseListModel.count; i++) {
+            var item = exerciseListModel.get(i);
+            if (!item.category || !item.name || item.weight === undefined || !item.unit) {
+                console.warn("Elemento inválido en el modelo:", JSON.stringify(item));
             }
         }
     }
