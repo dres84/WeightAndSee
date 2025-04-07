@@ -40,6 +40,7 @@ qt_add_resources(appgymWeights "icons"
         icons/tren_inferior.png
         icons/tren_superior.png
         icons/trash.png
+        icons/search.png
 )
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.

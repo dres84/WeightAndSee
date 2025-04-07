@@ -4,6 +4,7 @@
         <file>icons/tren_inferior.png</file>
         <file>icons/tren_superior.png</file>
         <file>icons/trash.png</file>
+	<file>icons/search.png</file>
     </qresource>
     <qresource prefix="/qml">
         <file>qml/BasePage.qml</file>

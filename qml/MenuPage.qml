@@ -35,6 +35,8 @@ BasePage {
         property bool tren_inferior: true
     }
 
+    property string searchQuery: ""
+
     // Convertimos el JSON a un modelo lineal
     function loadModel() {
         exerciseListModel.clear();
@@ -139,6 +141,39 @@ BasePage {
         anchors.fill: parent
         spacing: 0
 
+
+        Rectangle {
+            width: parent.width
+            height: 60
+            color: "#1E2A38"  // o el color que quieras para el header
+
+            RowLayout {
+                anchors.fill: parent
+                spacing: 10
+                anchors.margins: 5
+
+                Image {
+                    source: "qrc:/icons/search.png"
+                    Layout.preferredWidth: 40
+                    Layout.preferredHeight: 40
+                    fillMode: Image.PreserveAspectFit
+                }
+
+                TextField {
+                    id: searchField
+                    Layout.preferredHeight: 50  // Altura fija de 50 píxeles
+                    Layout.alignment: Qt.AlignVCenter
+                    Layout.fillWidth: true
+                    placeholderText: "Buscar ejercicio..."
+                    onTextChanged: {
+                        menuPage.searchQuery = text.trim().toLowerCase();
+                        console.log("Buscando: " + menuPage.searchQuery);
+                        listView.forceLayout();  // Forzar el refresco del ListView
+                    }
+                }
+            }
+        }
+
         ScrollView {
             Layout.fillWidth: true
             Layout.fillHeight: true
@@ -163,7 +198,7 @@ BasePage {
 
                     // El delegate se mostrará solo si la sección está expandida
                     visible: height > 10
-                    height: expandedSections[category] ? 50 : 0
+                    height: (expandedSections[category] && name.toLowerCase().indexOf(menuPage.searchQuery) !== -1) ? 50 : 0
 
 
                     Behavior on height {
@@ -198,6 +233,8 @@ BasePage {
     onVisibleChanged: {
         console.log("MenuPage.qml es ahora " + (visible ? "visible" : "invisible"))
         if (visible) {
+            Qt.callLater(dataCenter.load)
+            Qt.callLater(listView.forceLayout)
             validateModelIntegrity()
         }
     }
@@ -241,7 +278,7 @@ BasePage {
                     onClicked: {
                         var name = exerciseNameField.text.trim();
                         if (name === "") {
-                            console.log("❌ El nombre está vacío. No se puede guardar.");
+                            console.log("El nombre está vacío. No se puede guardar.");
                             return;
                         }
 
@@ -253,16 +290,16 @@ BasePage {
                         else
                             category = "tren_inferior";
 
-                        console.log("🔧 Enviando nuevo ejercicio a DataCenter:");
-                        console.log("   📌 Nombre: " + name);
-                        console.log("   📂 Categoría: " + category);
+                        console.log(" Enviando nuevo ejercicio a DataCenter:");
+                        console.log(" - Nombre: " + name);
+                        console.log(" - Categoría: " + category);
 
                         dataCenter.addExercise(name, category, "Kgs.");  // <-- Llama a la función en C++
 
                         exerciseNameField.text = "";
                         addDialog.close();
 
-                        console.log("✅ Diálogo cerrado. Esperando que el modelo se actualice por dataChanged.");
+                        console.log("Diálogo cerrado. Esperando que el modelo se actualice por dataChanged.");
                     }
                 }
             }
