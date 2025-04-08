@@ -81,7 +81,7 @@ BasePage {
                 if (!isNaN(newWeight)) {
                     weightUpdated(exerciseName, newWeight);
                     dataCenter.updateExerciseWeight(exerciseName, newWeight, unitSelector.currentText);
-                    stackView.pop();  // Volver a MenuPage.qml
+                    stackView.clearAndPush(Qt.resolvedUrl("MenuPage.qml")); // Volver a MenuPage.qml
                 }
             }
         }

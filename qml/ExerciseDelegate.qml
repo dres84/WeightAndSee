@@ -47,7 +47,7 @@ Item {
             anchors.fill: parent
             onClicked: {
                 console.log("Seleccionado:", exercise.name)
-                stackView.push("SelectionPage.qml", {
+                stackView.clearAndPush(Qt.resolvedUrl("SelectionPage.qml"), {
                     exerciseName: exercise.name,
                     weight: exercise.weight,
                     unit: exercise.unit

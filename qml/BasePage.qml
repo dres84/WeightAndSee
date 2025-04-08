@@ -13,6 +13,7 @@ Page {
     // --- Señales ---
     signal backClicked()
     signal forwardClicked()
+    signal backToMenu()
 
     // --- Header Integrado ---
     NavigationHeader {
@@ -37,5 +38,6 @@ Page {
         }
     }
 
-    onBackClicked: stackView.pop()
+    onBackClicked: stackView.clearAndPush(Qt.resolvedUrl("MenuPage.qml"));
+
 }

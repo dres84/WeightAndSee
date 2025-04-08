@@ -230,15 +230,6 @@ BasePage {
 
     }
 
-    onVisibleChanged: {
-        console.log("MenuPage.qml es ahora " + (visible ? "visible" : "invisible"))
-        if (visible) {
-            Qt.callLater(dataCenter.load)
-            Qt.callLater(listView.forceLayout)
-            validateModelIntegrity()
-        }
-    }
-
     // Diálogo para añadir un nuevo ejercicio
     Dialog {
         id: addDialog
