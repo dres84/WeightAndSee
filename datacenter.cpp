@@ -79,8 +79,34 @@ void DataCenter::addExercise(const QString &name, const QString &part, const QSt
     exercises[name] = newExercise;
     m_data["exercises"] = exercises;
 
+    sortExercisesByCategoryAndName(); //we order exercises alphabetically by category
+
     save();
     emit dataChanged();
+}
+
+void DataCenter::sortExercisesByCategoryAndName() {
+    QJsonObject exercises = m_data["exercises"].toObject();
+
+    QMap<QString, QMap<QString, QJsonObject>> categorized;
+
+    for (const QString &key : exercises.keys()) {
+        QJsonObject exercise = exercises[key].toObject();
+        QString category = exercise["part"].toString();
+        categorized[category][key] = exercise;
+    }
+
+    QJsonObject sortedExercises;
+    for (const QString &cat : QStringList{"tren_superior", "core", "tren_inferior"}) {
+        if (categorized.contains(cat)) {
+            const auto &sortedByName = categorized[cat];
+            for (const QString &key : sortedByName.keys()) {
+                sortedExercises[key] = sortedByName[key];
+            }
+        }
+    }
+
+    m_data["exercises"] = sortedExercises;
 }
 
 void DataCenter::deleteExercise(const QString &name) {

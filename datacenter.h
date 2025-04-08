@@ -33,6 +33,7 @@ private:
     void loadDefaultData();
     QString getFilePath() const;
     QJsonObject m_data;
+    void sortExercisesByCategoryAndName();
 };
 
 #endif // DATACENTER_H
