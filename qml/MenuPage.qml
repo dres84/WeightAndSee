@@ -175,9 +175,27 @@ BasePage {
                     Layout.fillWidth: true
                     placeholderText: "Buscar ejercicio..."
                     onTextChanged: {
+                        if (text === "")
+                            return
+
                         menuPage.searchQuery = text.trim().toLowerCase();
                         console.log("Buscando: " + menuPage.searchQuery);
-                        listView.forceLayout();  // Forzar el refresco del ListView
+
+                        // Revisamos si hay coincidencias por categoría y expandimos las necesarias
+                        var newSections = JSON.parse(JSON.stringify(menuPage.expandedSections));
+
+                        for (var i = 0; i < exerciseListModel.count; i++) {
+                            var item = exerciseListModel.get(i);
+                            var matchesSearch = item.name.toLowerCase().indexOf(menuPage.searchQuery) !== -1;
+
+                            if (matchesSearch) {
+                                // Expandimos la sección donde está la coincidencia
+                                newSections[item.category] = true;
+                            }
+                        }
+
+                        menuPage.expandedSections = newSections;
+                        listView.forceLayout();
                     }
                 }
             }
@@ -192,7 +210,7 @@ BasePage {
                 width: parent.width
                 model: exerciseListModel
                 interactive: true
-                spacing: 2
+                //spacing: 2
 
                 // Se agrupa por la propiedad "category"
                 section.property: "category"
