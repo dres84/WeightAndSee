@@ -83,6 +83,17 @@ void DataCenter::addExercise(const QString &name, const QString &part, const QSt
     emit dataChanged();
 }
 
+void DataCenter::deleteExercise(const QString &name) {
+    QJsonObject exercises = m_data["exercises"].toObject();
+
+    if (exercises.contains(name)) {
+        exercises.remove(name);
+        m_data["exercises"] = exercises;
+        save();
+        emit dataChanged();
+    }
+}
+
 void DataCenter::updateExerciseWeight(const QString &exerciseName, int newWeight, QString unit) {
     if (m_data["exercises"].toObject().contains(exerciseName)) {
         QJsonObject exercises = m_data["exercises"].toObject();
@@ -107,4 +118,22 @@ void DataCenter::updateExerciseWeight(const QString &exerciseName, int newWeight
 void DataCenter::updateModel()
 {
     emit dataChanged();
+}
+
+void DataCenter::saveSectionStates(const QJsonObject &sections) {
+    m_data["sectionStates"] = sections;
+    save();
+    emit sectionStatesChanged();
+}
+
+QJsonObject DataCenter::loadSectionStates() {
+    if (m_data.contains("sectionStates")) {
+        return m_data["sectionStates"].toObject();
+    }
+    // Valores por defecto (todas las secciones expandidas)
+    return QJsonObject{
+        {"tren_superior", true},
+        {"core", true},
+        {"tren_inferior", true}
+    };
 }

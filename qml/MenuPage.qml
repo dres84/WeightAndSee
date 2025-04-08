@@ -29,11 +29,7 @@ BasePage {
     }
 
     // Mantenemos el estado de expansión de cada sección
-    property var expandedSections: QtObject {
-        property bool tren_superior: true
-        property bool core: true
-        property bool tren_inferior: true
-    }
+    property var expandedSections: dataCenter.loadSectionStates()
 
     property string searchQuery: ""
 
@@ -131,10 +127,23 @@ BasePage {
                 anchors.fill: parent
                 onClicked: {
                     console.log("intentamos expandir o contraer la seccion: " + section)
-                    menuPage.expandedSections[section] = !menuPage.expandedSections[section];
+                    menuPage.toggleSection(section);
                 }
             }
         }
+    }
+
+    function toggleSection(section) {
+        // Crea un nuevo objeto para forzar la actualización
+        var newSections = JSON.parse(JSON.stringify(expandedSections));
+        newSections[section] = !newSections[section];
+        expandedSections = newSections;
+
+        // Guarda los estados (si decides usar la persistencia)
+        dataCenter.saveSectionStates(expandedSections);
+
+        // Fuerza la actualización del ListView
+        Qt.callLater(listView.forceLayout);
     }
 
     ColumnLayout {
@@ -208,7 +217,7 @@ BasePage {
                     }
 
                     onDeleteRequested: {
-                        exerciseListModel.remove(index);
+                        dataCenter.deleteExercise(name)
                     }
                 }
             }
