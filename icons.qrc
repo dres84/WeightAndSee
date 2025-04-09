@@ -1,7 +1,0 @@
-<RCC>
-    <qresource prefix="/">
-        <file>icons/core.png</file>
-        <file>icons/tren_inferior.png</file>
-        <file>icons/tren_superior.png</file>
-    </qresource>
-</RCC>
