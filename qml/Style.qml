@@ -18,6 +18,7 @@ QtObject {
     readonly property int caption: 12
 
     // Espacios
+    readonly property int bigSpace: 15
     readonly property int mediumSpace: 10
     readonly property int smallSpace: 5
 
@@ -31,4 +32,7 @@ QtObject {
     readonly property FontLoader interFont: FontLoader {
         source: "qrc:/fonts/Inter-Medium.ttf"
     }
+
+    //Tiempos
+    readonly property int animationTime: 200
 }

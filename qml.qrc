@@ -5,6 +5,12 @@
         <file>icons/tren_superior.png</file>
         <file>icons/trash.png</file>
         <file>icons/search.png</file>
+        <file>icons/arms.svg</file>
+        <file>icons/back.svg</file>
+        <file>icons/chest.svg</file>
+        <file>icons/core.svg</file>
+        <file>icons/legs.svg</file>
+        <file>icons/shoulders.svg</file>
     </qresource>
     <qresource prefix="/qml">
         <file>qml/BasePage.qml</file>

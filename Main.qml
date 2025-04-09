@@ -32,11 +32,6 @@ ApplicationWindow {
         exerciseModel.loadFromJson(dataCenter.data)
     }
 
-    Rectangle {
-        anchors.fill: parent
-        color: Style.background
-    }
-
     // 3. Pasa los objetos a las páginas necesarias
     MenuPage {
         anchors.fill: parent

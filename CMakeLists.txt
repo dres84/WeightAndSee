@@ -48,6 +48,12 @@ qt_add_resources(appgymWeights "icons"
         icons/tren_superior.png
         icons/trash.png
         icons/search.png
+        icons/arms.svg
+        icons/back.svg
+        icons/chest.svg
+        icons/core.svg
+        icons/shoulders.svg
+        icons/legs.svg
 )
 
 qt_add_resources(appgymWeights "fonts"
@@ -77,3 +83,6 @@ install(TARGETS appgymWeights
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
+
+# Limita la búsqueda de QtCreator a solo los archivos fuente
+set(CMAKE_SKIP_BUILD_RPATH TRUE)

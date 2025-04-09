@@ -15,6 +15,12 @@ Item {
     required property int repetitions
     required property var history
 
+    Behavior on height {
+        NumberAnimation {
+            duration: Style.animationTime
+        }
+    }
+
     Rectangle {
         id: delegateBackground
         anchors.fill: parent
@@ -23,9 +29,9 @@ Item {
 
         RowLayout {
             anchors.fill: parent
-            anchors.leftMargin: 16
-            anchors.rightMargin: 16
-            spacing: 16
+            anchors.leftMargin: Style.smallSpace
+            anchors.rightMargin: Style.smallSpace
+            spacing: Style.smallSpace
 
             // Icono del grupo muscular
             Rectangle {
@@ -61,10 +67,11 @@ Item {
                 Text {
                     text: root.name
                     font.family: Style.interFont.name
-                    font.pixelSize: typography.body
+                    font.pixelSize: Style.body
                     font.bold: true
                     color: Style.text
                     elide: Text.ElideRight
+                    Layout.alignment: Qt.AlignLeft
                 }
 
                 Text {
@@ -72,6 +79,7 @@ Item {
                     font.family: Style.interFont.name
                     font.pixelSize: Style.caption
                     color: Style.textSecondary
+                    Layout.alignment: Qt.AlignLeft
                 }
             }
 
@@ -83,7 +91,7 @@ Item {
                 Text {
                     text: root.currentValue + " " + root.unit
                     font.family: Style.interFont.name
-                    font.pixelSize: typography.body
+                    font.pixelSize: Style.body
                     color: Style.text
                     horizontalAlignment: Text.AlignRight
                 }
@@ -96,15 +104,6 @@ Item {
                     horizontalAlignment: Text.AlignRight
                 }
             }
-        }
-
-        // Separador
-        Rectangle {
-            width: parent.width
-            height: 1
-            anchors.bottom: parent.bottom
-            color: Style.divider
-            visible: !ListView.isCurrentItem
         }
     }
 
