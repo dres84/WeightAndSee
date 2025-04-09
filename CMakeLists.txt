@@ -4,12 +4,16 @@ project(gymWeights VERSION 0.1 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(Qt6 REQUIRED COMPONENTS Quick)
+find_package(Qt6 REQUIRED COMPONENTS Core Gui Qml Quick)
 
 qt_standard_project_setup(REQUIRES 6.5)
 
 qt_add_executable(appgymWeights
     main.cpp
+)
+
+set_source_files_properties(qml/Style.qml
+    PROPERTIES QT_QML_SINGLETON_TYPE TRUE
 )
 
 qt_add_qml_module(appgymWeights
@@ -21,14 +25,17 @@ qt_add_qml_module(appgymWeights
         qml/BasePage.qml
         qml/NavigationHeader.qml
         qml/ExerciseDelegate.qml
+        qml/SelectionPage.qml
+        qml/SearchBox.qml
+        qml/MuscleGroupFilter.qml
+        qml/Style.qml
     RESOURCES
         android/AndroidManifest.xml
         android/build.gradle
         qml.qrc
     SOURCES
-        datacenter.h
-        datacenter.cpp
-        QML_FILES qml/SelectionPage.qml
+        datacenter.h datacenter.cpp
+        exercisemodel.h exercisemodel.cpp
 
 #    RESOURCES icons/core.png icons/tren_inferior.png icons/tren_superior.png
 )
@@ -41,6 +48,12 @@ qt_add_resources(appgymWeights "icons"
         icons/tren_superior.png
         icons/trash.png
         icons/search.png
+)
+
+qt_add_resources(appgymWeights "fonts"
+#    PREFIX "/fonts"
+    FILES
+        fonts/Inter-Medium.ttf
 )
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.

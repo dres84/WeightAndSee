@@ -1,23 +1,17 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
-#include <QQmlContext>
 #include "datacenter.h"
+#include "exercisemodel.h"
 
 int main(int argc, char *argv[])
 {
     QGuiApplication app(argc, argv);
 
+    // Registra los tipos para poder crearlos desde QML
+    qmlRegisterType<ExerciseModel>("gymWeights", 1, 0, "ExerciseModel");
+    qmlRegisterType<DataCenter>("gymWeights", 1, 0, "DataCenter");
+
     QQmlApplicationEngine engine;
-
-    DataCenter dataCenterInstance;
-    engine.rootContext()->setContextProperty("dataCenter", &dataCenterInstance);
-
-    QObject::connect(
-        &engine,
-        &QQmlApplicationEngine::objectCreationFailed,
-        &app,
-        []() { QCoreApplication::exit(-1); },
-        Qt::QueuedConnection);
     engine.loadFromModule("gymWeights", "Main");
 
     return app.exec();

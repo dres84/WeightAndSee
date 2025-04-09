@@ -1,95 +1,119 @@
-import QtQuick
-import QtQuick.Controls
-import QtQuick.Layouts
+import QtQuick 2.15
+import QtQuick.Controls 2.15
+import QtQuick.Layouts 2.15
+import gymWeights 1.0
 
 Item {
-    id: delegateRoot
-    width: ListView.view ? ListView.view.width : parent.width
-    height: 50
+    id: root
+    width: ListView.view.width
+    height: 80
 
-    // Cambiamos estas propiedades para evitar conflictos
-    property var exercise: modelData  // Datos del ejercicio
-    property int exerciseIndex: index // Índice en el modelo
-    property string exerciseCategory // Categoría a la que pertenece
-
-    signal deleteRequested()
+    required property string name
+    required property string muscleGroup
+    required property double currentValue
+    required property string unit
+    required property int repetitions
+    required property var history
 
     Rectangle {
-        id: contentItem
-        width: parent.width
-        height: parent.height
-        color: exerciseIndex % 2 === 0 ? "#f0f0f0" : "#e0e0e0"
-
-        Behavior on x {
-            NumberAnimation { duration: 200 }
-        }
+        id: delegateBackground
+        anchors.fill: parent
+        radius: 12
+        color: Style.surface
 
         RowLayout {
             anchors.fill: parent
-            spacing: 10
+            anchors.leftMargin: 16
+            anchors.rightMargin: 16
+            spacing: 16
 
-            Text {
-                text: exercise ? exercise.name : ""
-                font.pixelSize: 18
-                Layout.leftMargin: 20
+            // Icono del grupo muscular
+            Rectangle {
+                id: iconContainer
+                width: 40
+                height: 40
+                radius: 20
+                color: Qt.lighter(Style.surface, 1.2)
+
+                Image {
+                    source: {
+                        switch(root.muscleGroup) {
+                        case "Pecho": return "qrc:/icons/chest.svg"
+                        case "Espalda": return "qrc:/icons/back.svg"
+                        case "Hombros": return "qrc:/icons/shoulders.svg"
+                        case "Brazos": return "qrc:/icons/arms.svg"
+                        case "Core": return "qrc:/icons/core.svg"
+                        case "Piernas": return "qrc:/icons/legs.svg"
+                        default: return ""
+                        }
+                    }
+                    anchors.centerIn: parent
+                    width: 24
+                    height: 24
+                }
+            }
+
+            // Información del ejercicio
+            ColumnLayout {
+                spacing: 4
                 Layout.fillWidth: true
+
+                Text {
+                    text: root.name
+                    font.family: Style.interFont.name
+                    font.pixelSize: typography.body
+                    font.bold: true
+                    color: Style.text
+                    elide: Text.ElideRight
+                }
+
+                Text {
+                    text: root.muscleGroup
+                    font.family: Style.interFont.name
+                    font.pixelSize: Style.caption
+                    color: Style.textSecondary
+                }
             }
 
-            Text {
-                text: exercise && exercise.weight > 0 ? exercise.weight + " " + exercise.unit : "-"
-                font.pixelSize: 16
-                color: "gray"
-                Layout.rightMargin: 20
-            }
-        }
+            // Valores
+            ColumnLayout {
+                spacing: 4
+                Layout.alignment: Qt.AlignRight
 
-        MouseArea {
-            anchors.fill: parent
-            onClicked: {
-                console.log("Seleccionado:", exercise.name)
-                stackView.clearAndPush(Qt.resolvedUrl("SelectionPage.qml"), {
-                    exerciseName: exercise.name,
-                    weight: exercise.weight,
-                    unit: exercise.unit
-                })
-            }
+                Text {
+                    text: root.currentValue + " " + root.unit
+                    font.family: Style.interFont.name
+                    font.pixelSize: typography.body
+                    color: Style.text
+                    horizontalAlignment: Text.AlignRight
+                }
 
-            drag.target: contentItem
-            drag.axis: Drag.XAxis
-            drag.minimumX: -deleteButton.width
-            drag.maximumX: 0
-
-            onReleased: {
-                if (contentItem.x < -deleteButton.width/2) {
-                    contentItem.x = -deleteButton.width
-                } else {
-                    contentItem.x = 0
+                Text {
+                    text: "x" + root.repetitions
+                    font.family: Style.interFont.name
+                    font.pixelSize: Style.caption
+                    color: Style.textSecondary
+                    horizontalAlignment: Text.AlignRight
                 }
             }
         }
+
+        // Separador
+        Rectangle {
+            width: parent.width
+            height: 1
+            anchors.bottom: parent.bottom
+            color: Style.divider
+            visible: !ListView.isCurrentItem
+        }
     }
 
-    Rectangle {
-        id: deleteButton
-        anchors.left: contentItem.right
-        anchors.top: parent.top
-        width: 60
-        height: parent.height
-        color: "red"
-
-        Image {
-            anchors.centerIn: parent
-            source: "qrc:/icons/trash.png"
-            width: 30
-            height: 30
-        }
-
-        MouseArea {
-            anchors.fill: parent
-            onClicked: {
-                delegateRoot.deleteRequested();
-                contentItem.x = 0;
-            }
+    // Efecto de click
+    MouseArea {
+        anchors.fill: parent
+        onClicked: {
+            // Navegar a pantalla de detalle
+            console.log("Selected:", root.name)
         }
     }
 }

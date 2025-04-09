@@ -3,37 +3,34 @@
 
 #include <QObject>
 #include <QJsonObject>
-#include <QJsonDocument>
-#include <QJsonArray>
-#include <QFile>
-#include <QDate>
-#include <QQmlEngine>
 
-class DataCenter : public QObject {
+class DataCenter : public QObject
+{
     Q_OBJECT
     Q_PROPERTY(QJsonObject data READ data NOTIFY dataChanged)
 
 public:
     explicit DataCenter(QObject *parent = nullptr);
+
     QJsonObject data() const;
-    Q_INVOKABLE QJsonObject load();
-    Q_INVOKABLE void save();
-    Q_INVOKABLE void deleteFile();
-    Q_INVOKABLE void addExercise(const QString &name, const QString &part, const QString &unit);
-    Q_INVOKABLE void deleteExercise(const QString &name);
-    Q_INVOKABLE void updateExerciseWeight(const QString &exerciseName, int newWeight, QString unit);
-    Q_INVOKABLE void saveSectionStates(const QJsonObject &sections);
-    Q_INVOKABLE QJsonObject loadSectionStates();
-    Q_INVOKABLE void updateModel();
+
+public slots:
+    void load();
+    void save();
+    void addExercise(const QString& name, const QString& muscleGroup,
+                     double value, const QString& unit, int reps);
+    void updateExercise(int index, double value, int reps);
+    void removeExercise(int index);
+    void deleteFile();
+
 signals:
     void dataChanged();
-    void sectionStatesChanged();
 
 private:
-    void loadDefaultData();
     QString getFilePath() const;
     QJsonObject m_data;
-    void sortExercisesByCategoryAndName();
+    void ensureHistoriesExist();
+    void loadDefaultData();
 };
-
 #endif // DATACENTER_H
+

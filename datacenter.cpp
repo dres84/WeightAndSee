@@ -1,6 +1,10 @@
 #include "datacenter.h"
+#include <QFile>
 #include <QStandardPaths>
-#include <QDate>
+#include <QJsonDocument>
+#include <QJsonArray>
+#include <QDateTime>
+#include <QDebug>
 
 DataCenter::DataCenter(QObject *parent) : QObject(parent) {
     load();
@@ -10,156 +14,207 @@ QJsonObject DataCenter::data() const {
     return m_data;
 }
 
-void DataCenter::save() {
+void DataCenter::load() {
     QFile file(getFilePath());
-    if (!file.open(QIODevice::WriteOnly)) {
-        qWarning("No se pudo abrir el archivo para escritura");
-        return;
-    }
-    QJsonDocument doc(m_data);
-    file.write(doc.toJson());
-    file.close();
-}
 
-QJsonObject DataCenter::load() {
-    QFile file(getFilePath());
+    // Intentar cargar archivo existente
     if (file.exists() && file.open(QIODevice::ReadOnly)) {
-        QByteArray data = file.readAll();
+        QJsonDocument doc = QJsonDocument::fromJson(file.readAll());
         file.close();
-        QJsonDocument doc = QJsonDocument::fromJson(data);
+
         if (!doc.isNull() && doc.isObject()) {
             m_data = doc.object();
-            emit dataChanged();
-            return m_data;
+
+            // Verificar y corregir datos si es necesario
+            if (!m_data.contains("exercises") || m_data["exercises"].toArray().isEmpty()) {
+                loadDefaultData();
+            } else {
+                ensureHistoriesExist();
+            }
+        } else {
+            loadDefaultData();
+        }
+    } else {
+        loadDefaultData();
+    }
+
+    save(); // Guardar por si hubo correcciones
+    qDebug() << "Datos cargados:\n" << QJsonDocument(m_data).toJson(QJsonDocument::Indented);
+    emit dataChanged();
+}
+
+void DataCenter::ensureHistoriesExist() {
+    QJsonArray exercises = m_data["exercises"].toArray();
+    bool modified = false;
+
+    for (auto&& exValue : exercises) {
+        QJsonObject exercise = exValue.toObject();
+        QJsonArray history = exercise["history"].toArray();
+
+        if (history.isEmpty()) {
+            QJsonObject record;
+            record["timestamp"] = exercise["lastUpdated"].toString();
+            record["value"] = exercise["currentValue"].toDouble();
+            record["unit"] = exercise["unit"].toString();
+            record["repetitions"] = exercise["repetitions"].toInt();
+
+            history.append(record);
+            exercise["history"] = history;
+            exValue = exercise;
+            modified = true;
         }
     }
-    loadDefaultData();
+
+    if (modified) {
+        m_data["exercises"] = exercises;
+    }
+}
+
+void DataCenter::save() {
+    QFile file(getFilePath());
+    if (file.open(QIODevice::WriteOnly)) {
+        file.write(QJsonDocument(m_data).toJson());
+        file.close();
+    }
+}
+
+void DataCenter::addExercise(const QString& name, const QString& muscleGroup,
+                             double value, const QString& unit, int reps) {
+    QJsonArray exercises = m_data["exercises"].toArray();
+    QDateTime now = QDateTime::currentDateTime();
+
+    QJsonObject newExercise {
+        {"name", name},
+        {"muscleGroup", muscleGroup},
+        {"currentValue", value},
+        {"unit", unit},
+        {"repetitions", reps},
+        {"lastUpdated", now.toString(Qt::ISODate)},
+        {"history", QJsonArray{QJsonObject{
+                        {"timestamp", now.toString(Qt::ISODate)},
+                        {"value", value},
+                        {"unit", unit},
+                        {"repetitions", reps}
+                    }}}
+    };
+
+    exercises.append(newExercise);
+    m_data["exercises"] = exercises;
     save();
     emit dataChanged();
-    return m_data;
 }
 
-void DataCenter::loadDefaultData() {
-    m_data = {
-        {"exercises", QJsonObject {
-                          {"abdominales", QJsonObject{{"part", "core"}, {"unit", "Repeticiones"}, {"selectedWeight", 0}, {"history", QJsonArray()}}},
-                          {"sentadillas", QJsonObject{{"part", "tren_inferior"}, {"unit", "Repeticiones"}, {"selectedWeight", 0}, {"history", QJsonArray()}}},
-                          {"press_banca", QJsonObject{{"part", "tren_superior"}, {"unit", "Kg."}, {"selectedWeight", 0}, {"history", QJsonArray()}}}
-                      }}
-    };
+void DataCenter::updateExercise(int index, double value, int reps) {
+    QJsonArray exercises = m_data["exercises"].toArray();
+    if (index < 0 || index >= exercises.size()) return;
+
+    QJsonObject exercise = exercises[index].toObject();
+    QDateTime now = QDateTime::currentDateTime();
+
+    // Añadir al historial
+    QJsonArray history = exercise["history"].toArray();
+    history.prepend(QJsonObject{
+        {"timestamp", exercise["lastUpdated"].toString()},
+        {"value", exercise["currentValue"].toDouble()},
+        {"unit", exercise["unit"].toString()},
+        {"repetitions", exercise["repetitions"].toInt()}
+    });
+
+    // Actualizar ejercicio
+    exercise["currentValue"] = value;
+    exercise["repetitions"] = reps;
+    exercise["lastUpdated"] = now.toString(Qt::ISODate);
+    exercise["history"] = history;
+
+    exercises.replace(index, exercise);
+    m_data["exercises"] = exercises;
+    save();
+    emit dataChanged();
 }
 
-QString DataCenter::getFilePath() const {
-    return QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + "/data.json";
+void DataCenter::removeExercise(int index) {
+    QJsonArray exercises = m_data["exercises"].toArray();
+    if (index < 0 || index >= exercises.size()) return;
+
+    exercises.removeAt(index);
+    m_data["exercises"] = exercises;
+    save();
+    emit dataChanged();
 }
 
 void DataCenter::deleteFile() {
     QFile file(getFilePath());
-    if (file.exists()) {
-        if (file.remove()) {
-            qDebug("Archivo eliminado correctamente, cargamos el valor por defecto");
-            load();
-        } else {
-            qWarning("No se pudo eliminar el archivo");
-        }
-    } else {
-        qWarning("El archivo no existe");
-    }
-}
-
-void DataCenter::addExercise(const QString &name, const QString &part, const QString &unit) {
-    QJsonObject exercises = m_data["exercises"].toObject();
-
-    QJsonObject newExercise;
-    newExercise["part"] = part;
-    newExercise["unit"] = unit;
-    newExercise["selectedWeight"] = 0;
-    newExercise["history"] = QJsonArray();
-
-    exercises[name] = newExercise;
-    m_data["exercises"] = exercises;
-
-    sortExercisesByCategoryAndName(); //we order exercises alphabetically by category
-
-    save();
-    emit dataChanged();
-}
-
-void DataCenter::sortExercisesByCategoryAndName() {
-    QJsonObject exercises = m_data["exercises"].toObject();
-
-    QMap<QString, QMap<QString, QJsonObject>> categorized;
-
-    for (const QString &key : exercises.keys()) {
-        QJsonObject exercise = exercises[key].toObject();
-        QString category = exercise["part"].toString();
-        categorized[category][key] = exercise;
-    }
-
-    QJsonObject sortedExercises;
-    for (const QString &cat : QStringList{"tren_superior", "core", "tren_inferior"}) {
-        if (categorized.contains(cat)) {
-            const auto &sortedByName = categorized[cat];
-            for (const QString &key : sortedByName.keys()) {
-                sortedExercises[key] = sortedByName[key];
-            }
-        }
-    }
-
-    m_data["exercises"] = sortedExercises;
-}
-
-void DataCenter::deleteExercise(const QString &name) {
-    QJsonObject exercises = m_data["exercises"].toObject();
-
-    if (exercises.contains(name)) {
-        exercises.remove(name);
-        m_data["exercises"] = exercises;
+    if (file.exists() && file.remove()) {
+        loadDefaultData();
         save();
-        emit dataChanged();
     }
 }
 
-void DataCenter::updateExerciseWeight(const QString &exerciseName, int newWeight, QString unit) {
-    if (m_data["exercises"].toObject().contains(exerciseName)) {
-        QJsonObject exercises = m_data["exercises"].toObject();
-        QJsonObject exercise = exercises[exerciseName].toObject();
-        exercise["selectedWeight"] = newWeight;
-
-        QJsonArray history = exercise["history"].toArray();
-        QJsonObject entry;
-        entry["date"] = QDate::currentDate().toString(Qt::ISODate);
-        entry["value"] = newWeight;
-        history.append(entry);
-        exercise["unit"] = unit;
-        exercise["history"] = history;
-        exercises[exerciseName] = exercise;
-        m_data["exercises"] = exercises;
-
-        save();
-        emit dataChanged();
-    }
+QString DataCenter::getFilePath() const {
+    return QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + "/exercises.json";
 }
 
-void DataCenter::updateModel()
-{
-    emit dataChanged();
-}
+void DataCenter::loadDefaultData() {
+    QDateTime now = QDateTime::currentDateTime();
+    QDateTime yesterday = now.addDays(-1);
+    QDateTime lastWeek = now.addDays(-7);
 
-void DataCenter::saveSectionStates(const QJsonObject &sections) {
-    m_data["sectionStates"] = sections;
-    save();
-    emit sectionStatesChanged();
-}
-
-QJsonObject DataCenter::loadSectionStates() {
-    if (m_data.contains("sectionStates")) {
-        return m_data["sectionStates"].toObject();
-    }
-    // Valores por defecto (todas las secciones expandidas)
-    return QJsonObject{
-        {"tren_superior", true},
-        {"core", true},
-        {"tren_inferior", true}
+    m_data = QJsonObject{
+        {"exercises", QJsonArray{
+                          QJsonObject{
+                              {"name", "Bench Press"},
+                              {"muscleGroup", "Chest"},
+                              {"currentValue", 75.0},
+                              {"unit", "kg"},
+                              {"repetitions", 8},
+                              {"lastUpdated", now.toString(Qt::ISODate)},
+                              {"history", QJsonArray{
+                                              QJsonObject{
+                                                  {"timestamp", yesterday.toString(Qt::ISODate)},
+                                                  {"value", 70.0},
+                                                  {"unit", "kg"},
+                                                  {"repetitions", 8}
+                                              },
+                                              QJsonObject{
+                                                  {"timestamp", lastWeek.toString(Qt::ISODate)},
+                                                  {"value", 65.0},
+                                                  {"unit", "kg"},
+                                                  {"repetitions", 10}
+                                              }
+                                          }}
+                          },
+                          QJsonObject{
+                              {"name", "Squat"},
+                              {"muscleGroup", "Legs"},
+                              {"currentValue", 110.0},
+                              {"unit", "kg"},
+                              {"repetitions", 5},
+                              {"lastUpdated", now.toString(Qt::ISODate)},
+                              {"history", QJsonArray{
+                                              QJsonObject{
+                                                  {"timestamp", yesterday.toString(Qt::ISODate)},
+                                                  {"value", 100.0},
+                                                  {"unit", "kg"},
+                                                  {"repetitions", 6}
+                                              }
+                                          }}
+                          },
+                          QJsonObject{
+                              {"name", "Pull-up"},
+                              {"muscleGroup", "Back"},
+                              {"currentValue", 8.0},
+                              {"unit", "reps"},
+                              {"repetitions", 3},
+                              {"lastUpdated", now.toString(Qt::ISODate)},
+                              {"history", QJsonArray{
+                                              QJsonObject{
+                                                  {"timestamp", now.toString(Qt::ISODate)},
+                                                  {"value", 8.0},
+                                                  {"unit", "reps"},
+                                                  {"repetitions", 3}
+                                              }
+                                          }}
+                          }
+                      }}
     };
 }

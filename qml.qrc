@@ -4,7 +4,7 @@
         <file>icons/tren_inferior.png</file>
         <file>icons/tren_superior.png</file>
         <file>icons/trash.png</file>
-	<file>icons/search.png</file>
+        <file>icons/search.png</file>
     </qresource>
     <qresource prefix="/qml">
         <file>qml/BasePage.qml</file>
@@ -12,5 +12,11 @@
         <file>qml/NavigationHeader.qml</file>
         <file>qml/ExerciseDelegate.qml</file>
         <file>qml/SelectionPage.qml</file>
+        <file>qml/SearchBox.qml</file>
+        <file>qml/Style.qml</file>
+        <file>qml/MuscleGroupFilter.qml</file>
+    </qresource>
+    <qresource prefix="/fonts">
+        <file>fonts/Inter-Medium.ttf</file>
     </qresource>
 </RCC>
