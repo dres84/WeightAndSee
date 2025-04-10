@@ -16,9 +16,7 @@ Item {
     required property var history
 
     Behavior on height {
-        NumberAnimation {
-            duration: Style.animationTime
-        }
+        NumberAnimation { duration: Style.animationTime }
     }
 
     Rectangle {
@@ -29,17 +27,18 @@ Item {
 
         RowLayout {
             anchors.fill: parent
-            anchors.leftMargin: Style.smallSpace
-            anchors.rightMargin: Style.smallSpace
-            spacing: Style.smallSpace
+            anchors.leftMargin: Style.mediumSpace
+            anchors.rightMargin: Style.largeSpace
+            spacing: Style.mediumSpace
 
-            // Icono del grupo muscular
             Rectangle {
                 id: iconContainer
-                width: 40
-                height: 40
-                radius: 20
+                width: 56
+                height: 56
+                radius: width / 2
                 color: Qt.lighter(Style.surface, 1.2)
+                Layout.alignment: Qt.AlignVCenter
+                clip: true // Esto recorta el contenido dentro del círculo
 
                 Image {
                     source: {
@@ -53,53 +52,68 @@ Item {
                         default: return ""
                         }
                     }
-                    anchors.centerIn: parent
-                    width: 24
-                    height: 24
+                    anchors.fill: parent
+                    fillMode: Image.PreserveAspectFit
+                    smooth: true
+                    layer.enabled: true
+                    layer.smooth: true
                 }
             }
 
-            // Información del ejercicio
-            ColumnLayout {
+            // Columna de texto (alineada a la izquierda)
+            Column {
                 spacing: 4
                 Layout.fillWidth: true
+                Layout.alignment: Qt.AlignVCenter
+                Layout.leftMargin: 8  // Margen adicional después del icono
 
                 Text {
                     text: root.name
-                    font.family: Style.interFont.name
-                    font.pixelSize: Style.body
-                    font.bold: true
+                    width: parent.width
+                    font {
+                        family: Style.interFont.name
+                        pixelSize: Style.body
+                        bold: true
+                    }
                     color: Style.text
                     elide: Text.ElideRight
-                    Layout.alignment: Qt.AlignLeft
+                    horizontalAlignment: Text.AlignLeft
                 }
 
                 Text {
                     text: root.muscleGroup
-                    font.family: Style.interFont.name
-                    font.pixelSize: Style.caption
-                    color: Style.textSecondary
-                    Layout.alignment: Qt.AlignLeft
+                    width: parent.width
+                    font {
+                        family: Style.interFont.name
+                        pixelSize: Style.caption
+                    }
+                    color: muscleColor(root.muscleGroup)
+                    horizontalAlignment: Text.AlignLeft
                 }
             }
 
-            // Valores
-            ColumnLayout {
+            // Columna de valores (alineada a la derecha)
+            Column {
                 spacing: 4
-                Layout.alignment: Qt.AlignRight
+                Layout.alignment: Qt.AlignVCenter | Qt.AlignRight
+                Layout.rightMargin: 8  // Margen del borde derecho
 
                 Text {
-                    text: root.currentValue + " " + root.unit
-                    font.family: Style.interFont.name
-                    font.pixelSize: Style.body
+                    text: root.currentValue > 0 ? root.currentValue + " " + root.unit : "-"
+                    font {
+                        family: Style.interFont.name
+                        pixelSize: Style.body
+                    }
                     color: Style.text
                     horizontalAlignment: Text.AlignRight
                 }
 
                 Text {
-                    text: "x" + root.repetitions
-                    font.family: Style.interFont.name
-                    font.pixelSize: Style.caption
+                    text: root.repetitions > 0 ? "x" + root.repetitions : "-"
+                    font {
+                        family: Style.interFont.name
+                        pixelSize: Style.caption
+                    }
                     color: Style.textSecondary
                     horizontalAlignment: Text.AlignRight
                 }
@@ -107,12 +121,21 @@ Item {
         }
     }
 
-    // Efecto de click
     MouseArea {
         anchors.fill: parent
-        onClicked: {
-            // Navegar a pantalla de detalle
-            console.log("Selected:", root.name)
+        onClicked: console.log("Selected:", root.name)
+    }
+
+    function muscleColor(group) {
+        // Colores optimizados para modo oscuro
+        switch(group) {
+        case "Pecho":    return "#FF8FA3" // Rosa coral
+        case "Espalda":  return "#7FC8FF" // Azul cielo
+        case "Hombros":  return "#B19CD9" // Lila suave
+        case "Brazos":   return "#FFB347" // Naranja miel
+        case "Core":     return "#77DD77" // Verde menta
+        case "Piernas":  return "#BA68C8" // Violeta medio
+        default: return Style.textSecondary
         }
     }
 }
