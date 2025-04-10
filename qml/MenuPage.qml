@@ -61,6 +61,26 @@ Page {
         }
     }
 
+    // Botón flotante para agregar ejercicio
+    RoundButton {
+        id: addButton
+        anchors {
+            bottom: parent.bottom
+            right: parent.right
+            margins: 20
+        }
+        width: 60
+        height: 60
+        radius: 30
+        text: "+"
+        font.pixelSize: 24
+        onClicked: addDialog.open()
+    }
+
+    NewExerciseDialog {
+        id: addDialog
+    }
+
     Component.onCompleted: {
         console.log("Model count:", exerciseModel.count)
         console.log("DataCenter data:", JSON.stringify(dataCenter.data))

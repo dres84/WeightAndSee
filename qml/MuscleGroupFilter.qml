@@ -5,6 +5,13 @@ import gymWeights 1.0
 Item {
     id: root
     height: 80
+    opacity: enabled ? 1 : 0.4
+
+    property color textColor: Style.text
+    property bool anySelected: false
+    property bool singleSelection: false
+    property string selectedGroup: "" // solo con singleSelection = true
+    property var selectedGroups: []   // solo con singleSelection = false
 
     ListModel {
         id: groupModel
@@ -16,9 +23,6 @@ Item {
         ListElement { name: "Piernas"; icon: "qrc:/icons/legs.svg"; selected: false }
     }
 
-    opacity: enabled ? 1 : 0.4
-
-    //para probar
     Rectangle {
         anchors.fill: parent
         color: "transparent"
@@ -38,13 +42,12 @@ Item {
                 width: parent.width / groupModel.count
                 height: root.height
 
-                // Contenedor para la imagen (parte superior)
                 Rectangle {
                     id: imageContainer
                     width: parent.width
-                    height: parent.height - textItem.height - 5 // Restamos espacio para el texto
+                    height: parent.height - textItem.height - 5
                     radius: 10
-                    color: "transparent" // O Style.surface si quieres fondo
+                    color: "transparent"
                     clip: true
 
                     Image {
@@ -58,12 +61,26 @@ Item {
                     MouseArea {
                         anchors.fill: parent
                         onClicked: {
-                            groupModel.setProperty(index, "selected", !model.selected)
+                            if (singleSelection) {
+                                if (model.selected) {
+                                    deselectAll()
+                                    selectedGroup = ""
+                                } else {
+                                    deselectAll()
+                                    groupModel.setProperty(index, "selected", true)
+                                    if (!anySelected)
+                                        anySelected = true
+                                    selectedGroup = model.name
+                                }
+                            } else {
+                                groupModel.setProperty(index, "selected", !model.selected)
+                                updateAnySelected()
+                                updateSelectedNames()
+                            }
                         }
                     }
                 }
 
-                // Texto (parte inferior)
                 Text {
                     id: textItem
                     text: model.name
@@ -73,7 +90,7 @@ Item {
                     horizontalAlignment: Text.AlignHCenter
                     font.family: Style.interFont.name
                     font.pixelSize: Style.caption
-                    color: Style.text
+                    color: textColor
                     opacity: model.selected ? 1.0 : 0.4
                 }
             }
@@ -84,12 +101,44 @@ Item {
         for (var i = 0; i < groupModel.count; i++) {
             groupModel.setProperty(i, "selected", false)
         }
+        if (anySelected)
+            anySelected = false
+        selectedGroup = ""
+        if (!singleSelection)
+            selectedGroups = []
     }
 
     function selectAll() {
         for (var i = 0; i < groupModel.count; i++) {
             groupModel.setProperty(i, "selected", true)
         }
+        if (!anySelected)
+            anySelected = true
+        selectedGroup = ""
+        if (!singleSelection)
+            updateSelectedNames()
+    }
+
+    function updateAnySelected() {
+        var any = false
+        for (var i = 0; i < groupModel.count; i++) {
+            if (groupModel.get(i).selected) {
+                any = true
+                break
+            }
+        }
+        if (anySelected !== any)
+            anySelected = any
+    }
+
+    function updateSelectedNames() {
+        var names = []
+        for (var i = 0; i < groupModel.count; i++) {
+            var item = groupModel.get(i)
+            if (item.selected)
+                names.push(item.name)
+        }
+        selectedGroups = names
     }
 
     Component.onCompleted: selectAll()

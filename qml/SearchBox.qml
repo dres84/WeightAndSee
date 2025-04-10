@@ -13,6 +13,7 @@ Rectangle {
 
     TextField {
         id: searchField
+        width: parent.width
         Layout.fillWidth: true
         font.family: Style.interFont.name
         font.pixelSize: Style.body
