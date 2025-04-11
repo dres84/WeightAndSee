@@ -20,10 +20,15 @@ Item {
     }
 
     Rectangle {
-        id: delegateBackground
-        anchors.fill: parent
-        radius: 12
+        id: contentItem
+        width: parent.width
+        height: parent.height
+        radius: 5
         color: Style.surface
+
+        Behavior on x {
+            NumberAnimation { duration: 200 }
+        }
 
         RowLayout {
             anchors.fill: parent
@@ -119,23 +124,65 @@ Item {
                 }
             }
         }
+
+        MouseArea {
+
+            anchors.fill: parent
+            onClicked: {
+                console.log("Seleccionado:", name)
+                //TO - DO
+            }
+
+            drag.target: contentItem
+            drag.axis: Drag.XAxis
+            drag.minimumX: -deleteButton.width
+            drag.maximumX: 0
+
+            onReleased: {
+                if (contentItem.x < -deleteButton.width/2) {
+                    contentItem.x = -deleteButton.width
+                } else {
+                    contentItem.x = 0
+                }
+            }
+        }
     }
 
-    MouseArea {
-        anchors.fill: parent
-        onClicked: console.log("Selected:", root.name)
+    Rectangle {
+            id: deleteButton
+            anchors.left: contentItem.right
+            anchors.top: parent.top
+            width: 60
+            height: parent.height
+            color: "red"
+
+            Image {
+                anchors.centerIn: parent
+                source: "qrc:/icons/trash.png"
+                width: 30
+                height: 30
+            }
+
+            MouseArea {
+                anchors.fill: parent
+                onClicked: {
+                    console.log("Intentamos eliminar el elemento " + name)
+                    dataCenter.removeExercise(name)
+                    contentItem.x = 0;
+                }
+            }
     }
 
     function muscleColor(group) {
         // Colores optimizados para modo oscuro
         switch(group) {
-        case "Pecho":    return "#FF8FA3" // Rosa coral
-        case "Espalda":  return "#7FC8FF" // Azul cielo
-        case "Hombros":  return "#B19CD9" // Lila suave
-        case "Brazos":   return "#FFB347" // Naranja miel
-        case "Core":     return "#77DD77" // Verde menta
-        case "Piernas":  return "#BA68C8" // Violeta medio
-        default: return Style.textSecondary
+            case "Pecho":    return "#FF8FA3" // Rosa coral
+            case "Espalda":  return "#7FC8FF" // Azul cielo
+            case "Hombros":  return "#B19CD9" // Lila suave
+            case "Brazos":   return "#FFB347" // Naranja miel
+            case "Core":     return "#77DD77" // Verde menta
+            case "Piernas":  return "#BA68C8" // Violeta medio
+            default: return Style.textSecondary
         }
     }
 }

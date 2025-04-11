@@ -10,6 +10,7 @@ Page {
     required property ExerciseModel exerciseModel
     required property DataCenter dataCenter
     property string searchQuery: searchBox.text
+    property bool showDeleteFileButton: true
 
 
     Rectangle {
@@ -50,8 +51,9 @@ Page {
             clip: true
             model: exerciseModel
             delegate: ExerciseDelegate {
-                height: name.toLowerCase().indexOf(root.searchQuery) !== -1 ? 60 : 0
+                height: name.toLowerCase().indexOf(root.searchQuery.toLowerCase()) !== -1 ? 60 : 0
                 visible: height > 1
+                Component.onCompleted: console.log("Tenemos " + name)
             }
             spacing: 1
 
@@ -75,6 +77,22 @@ Page {
         text: "+"
         font.pixelSize: 24
         onClicked: addDialog.open()
+    }
+
+    RoundButton {
+        id: resetFileButton
+        visible: showDeleteFileButton
+        anchors {
+            bottom: parent.bottom
+            left: parent.left
+            margins: 20
+        }
+        width: 60
+        height: 60
+        radius: 30
+        text: "-"
+        font.pixelSize: 24
+        onClicked: dataCenter.deleteFile()
     }
 
     NewExerciseDialog {

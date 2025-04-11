@@ -31,7 +31,7 @@ public:
         QList<HistoryRecord> history;
 
         QJsonObject toJson() const;
-        static Exercise fromJson(const QJsonObject& json);
+        static Exercise fromJson(const QString& key, const QJsonObject& json);
     };
 
     enum Roles {

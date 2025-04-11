@@ -14,14 +14,14 @@ public:
 
     QJsonObject data() const;
 
-public slots:
-    void load();
-    void save();
-    void addExercise(const QString& name, const QString& muscleGroup,
-                     double value, const QString& unit, int reps);
-    void updateExercise(int index, double value, int reps);
-    void removeExercise(int index);
-    void deleteFile();
+    // Métodos cambiados de public slots a Q_INVOKABLE
+    Q_INVOKABLE void load();
+    Q_INVOKABLE void save();
+    Q_INVOKABLE void addExercise(const QString& name, const QString& muscleGroup,
+                                 double value, const QString& unit, int reps);
+    Q_INVOKABLE void updateExercise(const QString& name, double value, int reps);
+    Q_INVOKABLE void removeExercise(const QString& name);
+    Q_INVOKABLE void deleteFile();
 
 signals:
     void dataChanged();
@@ -32,5 +32,5 @@ private:
     void ensureHistoriesExist();
     void loadDefaultData();
 };
-#endif // DATACENTER_H
 
+#endif // DATACENTER_H

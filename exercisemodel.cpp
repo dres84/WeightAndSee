@@ -21,9 +21,9 @@ QJsonObject ExerciseModel::Exercise::toJson() const {
     return obj;
 }
 
-ExerciseModel::Exercise ExerciseModel::Exercise::fromJson(const QJsonObject& json) {
+ExerciseModel::Exercise ExerciseModel::Exercise::fromJson(const QString& key, const QJsonObject& json) {
     Exercise exercise;
-    exercise.name = json["name"].toString();
+    exercise.name = key; // ← Aquí usamos la clave como nombre
     exercise.muscleGroup = json["muscleGroup"].toString();
     exercise.currentValue = json["currentValue"].toDouble();
     exercise.unit = json["unit"].toString();
@@ -111,9 +111,10 @@ void ExerciseModel::loadFromJson(const QJsonObject& json) {
     qDebug() << "Cargando datos en ExerciseModel...";
     qDebug() << "Datos recibidos:" << QJsonDocument(json).toJson(QJsonDocument::Indented);
 
-    QJsonArray exercisesArray = json["exercises"].toArray();
-    for (const QJsonValue& value : exercisesArray) {
-        m_exercises.append(Exercise::fromJson(value.toObject()));
+    QJsonObject exercisesObj = json["exercises"].toObject();
+    for (const QString& key : exercisesObj.keys()) {
+        const QJsonObject& exerciseData = exercisesObj[key].toObject();
+        m_exercises.append(Exercise::fromJson(key, exerciseData));
     }
 
     endResetModel();
@@ -123,13 +124,12 @@ void ExerciseModel::loadFromJson(const QJsonObject& json) {
 
 QJsonObject ExerciseModel::toJson() const {
     QJsonObject root;
-    QJsonArray exercisesArray;
-
+    QJsonObject exercisesObject;
     for (const auto& exercise : m_exercises) {
-        exercisesArray.append(exercise.toJson());
+        exercisesObject[exercise.name] = exercise.toJson();
     }
+    root["exercises"] = exercisesObject;
 
-    root["exercises"] = exercisesArray;
     return root;
 }
 
