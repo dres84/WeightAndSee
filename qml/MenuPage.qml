@@ -10,7 +10,9 @@ Page {
     required property ExerciseModel exerciseModel
     required property DataCenter dataCenter
     property string searchQuery: searchBox.text
+    property bool showDeleteButton: true
     property bool showDeleteFileButton: true
+    property bool allOpened: false
 
 
     Rectangle {
@@ -50,15 +52,63 @@ Page {
             Layout.fillHeight: true
             clip: true
             model: exerciseModel
+            currentIndex: -1
+            interactive: contentY >= 0 && contentY <= contentHeight - height
+
             delegate: ExerciseDelegate {
                 height: name.toLowerCase().indexOf(root.searchQuery.toLowerCase()) !== -1 ? 60 : 0
                 visible: height > 1
-                Component.onCompleted: console.log("Tenemos " + name)
+                Component.onCompleted: {
+                    console.log("Tenemos " + name + " e índice: " + index)
+                    if (root.allOpened) {
+                        open()
+                    }
+                }
+                onCloseOthers: listView.closeAll()
             }
             spacing: 1
 
             ScrollBar.vertical: ScrollBar {
                 policy: ScrollBar.AsNeeded
+            }
+
+            function closeOthers(exceptIndex) {
+                allOpened = false
+                for (let i = 0; i < contentItem.children.length; ++i) {
+                    let item = contentItem.children[i];
+
+                    if (item && item.index !== undefined && item.index !== exceptIndex) {
+                        if (typeof item.close === "function") {
+                            item.close();
+                        }
+                    }
+                }
+            }
+
+            function openAll() {
+                for (let i = 0; i < contentItem.children.length; ++i) {
+                    let item = contentItem.children[i];
+
+                    if (item && item.index !== undefined) {
+                        if (typeof item.open === "function") {
+                            item.open();
+                        }
+                    }
+                }
+                allOpened = true
+            }
+
+            function closeAll() {
+                allOpened = false
+                for (let i = 0; i < contentItem.children.length; ++i) {
+                    let item = contentItem.children[i];
+
+                    if (item && item.index !== undefined) {
+                        if (typeof item.close === "function") {
+                            item.close();
+                        }
+                    }
+                }
             }
         }
     }
@@ -80,8 +130,24 @@ Page {
     }
 
     RoundButton {
-        id: resetFileButton
+        id: deleteFileButton
         visible: showDeleteFileButton
+        anchors {
+            bottom: parent.bottom
+            horizontalCenter: parent.horizontalCenter
+            margins: 20
+        }
+        width: 60
+        height: 60
+        radius: 30
+        text: "\u232B"
+        font.pixelSize: 24
+        onClicked: dataCenter.deleteFile()
+    }
+
+    RoundButton {
+        id: deleteButton
+        visible: showDeleteButton
         anchors {
             bottom: parent.bottom
             left: parent.left
@@ -90,9 +156,9 @@ Page {
         width: 60
         height: 60
         radius: 30
-        text: "-"
+        text: allOpened ? "X" : "-"
         font.pixelSize: 24
-        onClicked: dataCenter.deleteFile()
+        onClicked: allOpened ? listView.closeAll() : listView.openAll()
     }
 
     NewExerciseDialog {

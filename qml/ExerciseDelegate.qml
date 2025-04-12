@@ -14,9 +14,27 @@ Item {
     required property string unit
     required property int repetitions
     required property var history
+    required property int index
+
+    property bool dragged: false
+    property bool isOpened: contentItem.x < 0
+
+    signal closeOthers
 
     Behavior on height {
         NumberAnimation { duration: Style.animationTime }
+    }
+
+    // Función para resetear la posición con animación
+    function close() {
+        if (isOpened) {
+            contentItem.x = 0;
+        }
+    }
+
+    function open()
+    {
+        contentItem.x = -deleteButton.width
     }
 
     Rectangle {
@@ -27,12 +45,15 @@ Item {
         color: Style.surface
 
         Behavior on x {
-            NumberAnimation { duration: 200 }
+            NumberAnimation {
+                duration: 200
+                easing.type: Easing.InOutQuad
+            }
         }
 
         RowLayout {
             anchors.fill: parent
-            anchors.leftMargin: Style.mediumSpace
+            anchors.leftMargin: 0//Style.mediumSpace
             anchors.rightMargin: Style.largeSpace
             spacing: Style.mediumSpace
 
@@ -41,8 +62,8 @@ Item {
                 width: 56
                 height: 56
                 radius: width / 2
-                color: Qt.lighter(Style.surface, 1.2)
-                Layout.alignment: Qt.AlignVCenter
+                color: "transparent"
+                Layout.alignment: Qt.AlignVCenter | Qt.AlignLeft
                 clip: true // Esto recorta el contenido dentro del círculo
 
                 Image {
@@ -57,7 +78,9 @@ Item {
                         default: return ""
                         }
                     }
-                    anchors.fill: parent
+                    anchors.centerIn: parent
+                    height: parent.height * 0.7
+                    width: height
                     fillMode: Image.PreserveAspectFit
                     smooth: true
                     layer.enabled: true
@@ -126,11 +149,11 @@ Item {
         }
 
         MouseArea {
-
             anchors.fill: parent
+
             onClicked: {
-                console.log("Seleccionado:", name)
-                //TO - DO
+                console.log("Seleccionado:", name);
+                closeOthers()
             }
 
             drag.target: contentItem
@@ -138,11 +161,18 @@ Item {
             drag.minimumX: -deleteButton.width
             drag.maximumX: 0
 
+            onPressed: {
+                dragged = false;
+                closeOthers()
+            }
+
             onReleased: {
-                if (contentItem.x < -deleteButton.width/2) {
-                    contentItem.x = -deleteButton.width
-                } else {
-                    contentItem.x = 0
+                if (dragged) {
+                    if (contentItem.x < -deleteButton.width/2) {
+                        contentItem.x = -deleteButton.width; // Mantener abierto
+                    } else {
+                        close(); // Cerrar si no se arrastró suficiente
+                    }
                 }
             }
         }
