@@ -13,6 +13,7 @@ Page {
     property bool showDeleteButton: true
     property bool showDeleteFileButton: true
     property bool allOpened: false
+    property var groupsSelected: groupFilter.selectedGroups
 
 
     Rectangle {
@@ -56,7 +57,8 @@ Page {
             interactive: contentY >= 0 && contentY <= contentHeight - height
 
             delegate: ExerciseDelegate {
-                height: name.toLowerCase().indexOf(root.searchQuery.toLowerCase()) !== -1 ? 60 : 0
+                height: (root.searchQuery === "" && groupsSelected.indexOf(muscleGroup) !== -1)
+                        || ( root.searchQuery !== "" && name.toLowerCase().indexOf(root.searchQuery.toLowerCase()) !== -1) ? 60 : 0
                 visible: height > 1
                 Component.onCompleted: {
                     console.log("Tenemos " + name + " e índice: " + index)
