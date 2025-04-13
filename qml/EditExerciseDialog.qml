@@ -45,6 +45,12 @@ Dialog {
                 sourceSize.height: 60
                 fillMode: Image.PreserveAspectFit
                 Layout.alignment: Qt.AlignVCenter
+
+                Rectangle {
+                    anchors.fill: parent
+                    color: Style.muscleColor(muscleGroup)
+                    opacity: Style.iconOpacity
+                }
             }
 
             // Columna con nombre y grupo muscular

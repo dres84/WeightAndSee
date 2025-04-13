@@ -76,6 +76,12 @@ Item {
                     smooth: true
                     layer.enabled: true
                     layer.smooth: true
+
+                    Rectangle {
+                        anchors.fill: parent
+                        color: Style.muscleColor(muscleGroup)
+                        opacity: Style.iconOpacity
+                    }
                 }
             }
 

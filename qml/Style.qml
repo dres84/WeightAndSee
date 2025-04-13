@@ -47,6 +47,9 @@ QtObject {
     readonly property int largeRadius: 12
     readonly property int extraLargeRadius: 24
 
+    // Opacidad de iconos
+    readonly property real iconOpacity: 0.4
+
     // Tipografía
     readonly property FontLoader interFont: FontLoader {
         source: "qrc:/fonts/Inter-Medium.ttf"
@@ -58,13 +61,13 @@ QtObject {
     // Colores para grupos musculares (ligeramente más vibrantes)
     function muscleColor(group) {
         switch(group) {
-            case "Pecho":    return "#FF7F97"  // Rosa más vivo
-            case "Espalda":  return "#64B5F6"  // Azul más brillante
-            case "Hombros":  return "#B39DDB"  // Lila más intenso
-            case "Brazos":   return "#FFA726"  // Naranja más cálido
-            case "Core":     return "#66BB6A"  // Verde más vivo
-            case "Piernas":  return "#AB47BC"  // Púrpura más intenso
-            default: return Style.textSecondary
+            case "Pecho":   return "#FF7F97";  // Rosa más vivo
+            case "Espalda": return "#64B5F6";  // Azul más brillante
+            case "Hombros": return "#A1887F";  // Marrón medio (Material Brown 300)
+            case "Brazos":  return "#FFA726";  // Naranja más cálido
+            case "Core":    return "#66BB6A";  // Verde más vivo
+            case "Piernas": return "#AB47BC";  // Púrpura más intenso
+            default: return Style.textSecondary; // Asegúrate que Style.textSecondary está definido
         }
     }
 

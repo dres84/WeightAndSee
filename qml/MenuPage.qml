@@ -88,7 +88,7 @@ Page {
             spacing: 1
 
             ScrollBar.vertical: ScrollBar {
-                policy: ScrollBar.AsNeeded
+                policy: ScrollBar.AlwaysOff
             }
 
             function closeOthers(exceptIndex) {

@@ -54,8 +54,14 @@ Item {
                         source: Style.muscleGroupIcon(name)
                         anchors.fill: parent
                         anchors.margins: 2
-                        opacity: model.selected ? 1.0 : 0.4
-                        fillMode: Image.PreserveAspectFit
+                        opacity: model.selected ? 1.0 : 0.2
+                        fillMode: Image.PreserveAspectCrop
+
+                        Rectangle {
+                            anchors.fill: parent
+                            color: Style.muscleColor(name)
+                            opacity: Style.iconOpacity
+                        }
                     }
 
                     MouseArea {
@@ -92,7 +98,7 @@ Item {
                     font.bold: true
                     font.pixelSize: Style.caption
                     color: Style.muscleColor(model.name)
-                    opacity: model.selected ? 1.0 : 0.4
+                    opacity: model.selected ? 1.0 : 0.5
                 }
             }
         }

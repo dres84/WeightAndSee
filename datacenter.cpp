@@ -168,6 +168,7 @@ void DataCenter::loadDefaultData() {
 
     QJsonObject exercises;
 
+    // PECHO (Ejercicios con peso)
     exercises["Bench Press"] = QJsonObject{
         {"muscleGroup", "Pecho"},
         {"currentValue", 75.0},
@@ -190,6 +191,29 @@ void DataCenter::loadDefaultData() {
                     }}
     };
 
+    exercises["Incline Bench Press"] = QJsonObject{
+        {"muscleGroup", "Pecho"},
+        {"currentValue", 65.0},
+        {"unit", "kg"},
+        {"repetitions", 10},
+        {"lastUpdated", now.toString(Qt::ISODate)},
+        {"history", QJsonArray{
+                        QJsonObject{
+                            {"timestamp", yesterday.toString(Qt::ISODate)},
+                            {"value", 60.0},
+                            {"unit", "kg"},
+                            {"repetitions", 10}
+                        },
+                        QJsonObject{
+                            {"timestamp", lastWeek.toString(Qt::ISODate)},
+                            {"value", 55.0},
+                            {"unit", "kg"},
+                            {"repetitions", 10}
+                        }
+                    }}
+    };
+
+    // PIERNAS (Ejercicios con peso)
     exercises["Squat"] = QJsonObject{
         {"muscleGroup", "Piernas"},
         {"currentValue", 110.0},
@@ -206,40 +230,29 @@ void DataCenter::loadDefaultData() {
                     }}
     };
 
-    exercises["Pull-up"] = QJsonObject{
-        {"muscleGroup", "Espalda"},
-        {"currentValue", 0},
-        {"unit", "-"},
-        {"repetitions", 3},
+    exercises["Lunges"] = QJsonObject{
+        {"muscleGroup", "Piernas"},
+        {"currentValue", 50.0},
+        {"unit", "kg"},
+        {"repetitions", 12},
         {"lastUpdated", now.toString(Qt::ISODate)},
         {"history", QJsonArray{
                         QJsonObject{
-                            {"timestamp", now.toString(Qt::ISODate)},
-                            {"value", 0},
-                            {"unit", "-"},
-                            {"repetitions", 3}
-                        },
-                        QJsonObject{
                             {"timestamp", yesterday.toString(Qt::ISODate)},
-                            {"value", 0},
-                            {"unit", "-"},
-                            {"repetitions", 4}
+                            {"value", 48.0},
+                            {"unit", "kg"},
+                            {"repetitions", 12}
                         },
                         QJsonObject{
                             {"timestamp", lastWeek.toString(Qt::ISODate)},
-                            {"value", 0},
-                            {"unit", "-"},
-                            {"repetitions", 5}
-                        },
-                        QJsonObject{
-                            {"timestamp", lastMonth.toString(Qt::ISODate)},
-                            {"value", 0},
-                            {"unit", "-"},
-                            {"repetitions", 6}
+                            {"value", 45.0},
+                            {"unit", "kg"},
+                            {"repetitions", 12}
                         }
                     }}
     };
 
+    // ESPALDA (Ejercicios con peso o repeticiones)
     exercises["Deadlift"] = QJsonObject{
         {"muscleGroup", "Espalda"},
         {"currentValue", 140.0},
@@ -274,6 +287,64 @@ void DataCenter::loadDefaultData() {
                     }}
     };
 
+    // Pull-up es ejercicio basado en repeticiones (sin peso)
+    exercises["Pull-up"] = QJsonObject{
+        {"muscleGroup", "Espalda"},
+        {"currentValue", 0},
+        {"unit", "-"},
+        {"repetitions", 3},
+        {"lastUpdated", now.toString(Qt::ISODate)},
+        {"history", QJsonArray{
+                        QJsonObject{
+                            {"timestamp", now.toString(Qt::ISODate)},
+                            {"value", 0},
+                            {"unit", "-"},
+                            {"repetitions", 3}
+                        },
+                        QJsonObject{
+                            {"timestamp", yesterday.toString(Qt::ISODate)},
+                            {"value", 0},
+                            {"unit", "-"},
+                            {"repetitions", 4}
+                        },
+                        QJsonObject{
+                            {"timestamp", lastWeek.toString(Qt::ISODate)},
+                            {"value", 0},
+                            {"unit", "-"},
+                            {"repetitions", 5}
+                        },
+                        QJsonObject{
+                            {"timestamp", lastMonth.toString(Qt::ISODate)},
+                            {"value", 0},
+                            {"unit", "-"},
+                            {"repetitions", 6}
+                        }
+                    }}
+    };
+
+    exercises["Bent-over Row"] = QJsonObject{
+        {"muscleGroup", "Espalda"},
+        {"currentValue", 70.0},
+        {"unit", "kg"},
+        {"repetitions", 8},
+        {"lastUpdated", now.toString(Qt::ISODate)},
+        {"history", QJsonArray{
+                        QJsonObject{
+                            {"timestamp", yesterday.toString(Qt::ISODate)},
+                            {"value", 65.0},
+                            {"unit", "kg"},
+                            {"repetitions", 8}
+                        },
+                        QJsonObject{
+                            {"timestamp", lastWeek.toString(Qt::ISODate)},
+                            {"value", 60.0},
+                            {"unit", "kg"},
+                            {"repetitions", 10}
+                        }
+                    }}
+    };
+
+    // HOMBROS (Ejercicios con peso)
     exercises["Overhead Press"] = QJsonObject{
         {"muscleGroup", "Hombros"},
         {"currentValue", 50.0},
@@ -308,6 +379,29 @@ void DataCenter::loadDefaultData() {
                     }}
     };
 
+    exercises["Lateral Raise"] = QJsonObject{
+        {"muscleGroup", "Hombros"},
+        {"currentValue", 15.0},
+        {"unit", "kg"},
+        {"repetitions", 12},
+        {"lastUpdated", now.toString(Qt::ISODate)},
+        {"history", QJsonArray{
+                        QJsonObject{
+                            {"timestamp", yesterday.toString(Qt::ISODate)},
+                            {"value", 14.0},
+                            {"unit", "kg"},
+                            {"repetitions", 12}
+                        },
+                        QJsonObject{
+                            {"timestamp", lastWeek.toString(Qt::ISODate)},
+                            {"value", 13.0},
+                            {"unit", "kg"},
+                            {"repetitions", 12}
+                        }
+                    }}
+    };
+
+    // BRAZOS (Ejercicios con peso)
     exercises["Bicep Curl"] = QJsonObject{
         {"muscleGroup", "Brazos"},
         {"currentValue", 12.0},
@@ -342,8 +436,120 @@ void DataCenter::loadDefaultData() {
                     }}
     };
 
+    exercises["Tricep Extension"] = QJsonObject{
+        {"muscleGroup", "Brazos"},
+        {"currentValue", 20.0},
+        {"unit", "kg"},
+        {"repetitions", 10},
+        {"lastUpdated", now.toString(Qt::ISODate)},
+        {"history", QJsonArray{
+                        QJsonObject{
+                            {"timestamp", yesterday.toString(Qt::ISODate)},
+                            {"value", 18.0},
+                            {"unit", "kg"},
+                            {"repetitions", 12}
+                        },
+                        QJsonObject{
+                            {"timestamp", lastWeek.toString(Qt::ISODate)},
+                            {"value", 16.0},
+                            {"unit", "kg"},
+                            {"repetitions", 10}
+                        }
+                    }}
+    };
+
+    // CORE (Ejercicios basados en repeticiones: peso 0, unidad "-")
+    exercises["Plank"] = QJsonObject{
+        {"muscleGroup", "Core"},
+        {"currentValue", 0},
+        {"unit", "-"},
+        {"repetitions", 1},
+        {"lastUpdated", now.toString(Qt::ISODate)},
+        {"history", QJsonArray{
+                        QJsonObject{
+                            {"timestamp", yesterday.toString(Qt::ISODate)},
+                            {"value", 0},
+                            {"unit", "-"},
+                            {"repetitions", 1}
+                        },
+                        QJsonObject{
+                            {"timestamp", lastWeek.toString(Qt::ISODate)},
+                            {"value", 0},
+                            {"unit", "-"},
+                            {"repetitions", 1}
+                        }
+                    }}
+    };
+
+    exercises["Russian Twist"] = QJsonObject{
+        {"muscleGroup", "Core"},
+        {"currentValue", 0},
+        {"unit", "-"},
+        {"repetitions", 15},
+        {"lastUpdated", now.toString(Qt::ISODate)},
+        {"history", QJsonArray{
+                        QJsonObject{
+                            {"timestamp", yesterday.toString(Qt::ISODate)},
+                            {"value", 0},
+                            {"unit", "-"},
+                            {"repetitions", 15}
+                        },
+                        QJsonObject{
+                            {"timestamp", lastWeek.toString(Qt::ISODate)},
+                            {"value", 0},
+                            {"unit", "-"},
+                            {"repetitions", 15}
+                        }
+                    }}
+    };
+
+    exercises["Crunch"] = QJsonObject{
+        {"muscleGroup", "Core"},
+        {"currentValue", 0},
+        {"unit", "-"},
+        {"repetitions", 20},
+        {"lastUpdated", now.toString(Qt::ISODate)},
+        {"history", QJsonArray{
+                        QJsonObject{
+                            {"timestamp", yesterday.toString(Qt::ISODate)},
+                            {"value", 0},
+                            {"unit", "-"},
+                            {"repetitions", 20}
+                        },
+                        QJsonObject{
+                            {"timestamp", lastWeek.toString(Qt::ISODate)},
+                            {"value", 0},
+                            {"unit", "-"},
+                            {"repetitions", 20}
+                        }
+                    }}
+    };
+
+    exercises["Leg Raise"] = QJsonObject{
+        {"muscleGroup", "Core"},
+        {"currentValue", 0},
+        {"unit", "-"},
+        {"repetitions", 15},
+        {"lastUpdated", now.toString(Qt::ISODate)},
+        {"history", QJsonArray{
+                        QJsonObject{
+                            {"timestamp", yesterday.toString(Qt::ISODate)},
+                            {"value", 0},
+                            {"unit", "-"},
+                            {"repetitions", 15}
+                        },
+                        QJsonObject{
+                            {"timestamp", lastWeek.toString(Qt::ISODate)},
+                            {"value", 0},
+                            {"unit", "-"},
+                            {"repetitions", 15}
+                        }
+                    }}
+    };
+
     m_data = QJsonObject{{"exercises", exercises}};
 }
+
 
 QString DataCenter::getMuscleGroup(const QString& exerciseName) const
 {
