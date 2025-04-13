@@ -90,7 +90,6 @@ Item {
                 spacing: 4
                 Layout.fillWidth: true
                 Layout.alignment: Qt.AlignVCenter
-                Layout.leftMargin: 8  // Margen adicional después del icono
 
                 Text {
                     text: root.name
@@ -124,6 +123,7 @@ Item {
                 Layout.rightMargin: 8  // Margen del borde derecho
 
                 Text {
+                    anchors.right: parent.right
                     text: root.currentValue > 0 ? root.currentValue + " " + root.unit : "-"
                     font {
                         family: Style.interFont.name
@@ -134,6 +134,7 @@ Item {
                 }
 
                 Text {
+                    anchors.right: parent.right
                     text: root.repetitions > 0 ? "x" + root.repetitions : "-"
                     font {
                         family: Style.interFont.name
