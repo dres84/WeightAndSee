@@ -22,6 +22,7 @@
         <file>qml/Style.qml</file>
         <file>qml/MuscleGroupFilter.qml</file>
         <file>qml/NewExerciseDialog.qml</file>
+	<file>qml/EditExerciseDialog.qml</file>
     </qresource>
     <qresource prefix="/fonts">
         <file>fonts/Inter-Medium.ttf</file>

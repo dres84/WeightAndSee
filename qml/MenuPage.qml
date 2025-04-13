@@ -67,6 +67,10 @@ Page {
                     }
                 }
                 onCloseOthers: listView.closeAll()
+                onEditExercise: {
+                    editDialog.exerciseName = name;
+                    editDialog.open()
+                }
             }
             spacing: 1
 
@@ -165,6 +169,14 @@ Page {
 
     NewExerciseDialog {
         id: addDialog
+    }
+
+    EditExerciseDialog {
+        id: editDialog
+
+        onExerciseUpdated: {
+            console.log("Ejercicio actualizado:", exerciseName);
+        }
     }
 
     Component.onCompleted: {

@@ -35,4 +35,30 @@ QtObject {
 
     //Tiempos
     readonly property int animationTime: 200
+
+    function muscleColor(group) {
+
+        switch(group) {
+            case "Pecho":    return "#FF8FA3"
+            case "Espalda":  return "#7FC8FF"
+            case "Hombros":  return "#B19CD9"
+            case "Brazos":   return "#FFB347"
+            case "Core":     return "#77DD77"
+            case "Piernas":  return "#BA68C8"
+            default: return Style.textSecondary
+        }
+    }
+
+    function muscleGroupIcon(muscleGroup) {
+
+        switch(muscleGroup) {
+            case "Pecho": return "qrc:/icons/chest.svg"
+            case "Espalda": return "qrc:/icons/back.svg"
+            case "Hombros": return "qrc:/icons/shoulders.svg"
+            case "Brazos": return "qrc:/icons/arms.svg"
+            case "Core": return "qrc:/icons/core.svg"
+            case "Piernas": return "qrc:/icons/legs.svg"
+            default: return ""
+        }
+    }
 }

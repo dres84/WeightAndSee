@@ -15,12 +15,12 @@ Item {
 
     ListModel {
         id: groupModel
-        ListElement { name: "Hombros"; icon: "qrc:/icons/shoulders.svg"; selected: false }
-        ListElement { name: "Brazos"; icon: "qrc:/icons/arms.svg"; selected: false }
-        ListElement { name: "Pecho"; icon: "qrc:/icons/chest.svg"; selected: false }
-        ListElement { name: "Espalda"; icon: "qrc:/icons/back.svg"; selected: false }
-        ListElement { name: "Core"; icon: "qrc:/icons/core.svg"; selected: false }
-        ListElement { name: "Piernas"; icon: "qrc:/icons/legs.svg"; selected: false }
+        ListElement { name: "Hombros"; selected: false }
+        ListElement { name: "Brazos"; selected: false }
+        ListElement { name: "Pecho"; selected: false }
+        ListElement { name: "Espalda"; selected: false }
+        ListElement { name: "Core"; selected: false }
+        ListElement { name: "Piernas"; selected: false }
     }
 
     Rectangle {
@@ -51,7 +51,7 @@ Item {
                     clip: true
 
                     Image {
-                        source: model.icon
+                        source: Style.muscleGroupIcon(name)
                         anchors.fill: parent
                         anchors.margins: 2
                         opacity: model.selected ? 1.0 : 0.4

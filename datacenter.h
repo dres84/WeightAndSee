@@ -23,6 +23,11 @@ public:
     Q_INVOKABLE void removeExercise(const QString& name);
     Q_INVOKABLE void deleteFile();
 
+    Q_INVOKABLE QString getMuscleGroup(const QString& exerciseName) const;
+    Q_INVOKABLE double getCurrentValue(const QString& exerciseName) const;
+    Q_INVOKABLE QString getUnit(const QString& exerciseName) const;
+    Q_INVOKABLE int getRepetitions(const QString& exerciseName) const;
+
 signals:
     void dataChanged();
 

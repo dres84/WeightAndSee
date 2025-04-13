@@ -6,10 +6,10 @@ import gymWeights 1.0
 Dialog {
     id: root
     modal: true
-    title: "Añadir Nuevo Ejercicio"
+    title: "Añadir nuevo ejercicio"
     standardButtons: Dialog.Cancel
     anchors.centerIn: Overlay.overlay
-    width: Math.min(parent.width * 0.9, 400)
+    width: Math.min(parent.width * 0.8, 400)
 
     ColumnLayout {
         width: parent.width

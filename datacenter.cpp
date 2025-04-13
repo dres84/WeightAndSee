@@ -208,33 +208,33 @@ void DataCenter::loadDefaultData() {
 
     exercises["Pull-up"] = QJsonObject{
         {"muscleGroup", "Espalda"},
-        {"currentValue", 8.0},
-        {"unit", "reps"},
+        {"currentValue", 0},
+        {"unit", "-"},
         {"repetitions", 3},
         {"lastUpdated", now.toString(Qt::ISODate)},
         {"history", QJsonArray{
                         QJsonObject{
                             {"timestamp", now.toString(Qt::ISODate)},
-                            {"value", 8.0},
-                            {"unit", "reps"},
+                            {"value", 0},
+                            {"unit", "-"},
                             {"repetitions", 3}
                         },
                         QJsonObject{
                             {"timestamp", yesterday.toString(Qt::ISODate)},
-                            {"value", 7.0},
-                            {"unit", "reps"},
+                            {"value", 0},
+                            {"unit", "-"},
                             {"repetitions", 4}
                         },
                         QJsonObject{
                             {"timestamp", lastWeek.toString(Qt::ISODate)},
-                            {"value", 6.0},
-                            {"unit", "reps"},
+                            {"value", 0},
+                            {"unit", "-"},
                             {"repetitions", 5}
                         },
                         QJsonObject{
                             {"timestamp", lastMonth.toString(Qt::ISODate)},
-                            {"value", 5.0},
-                            {"unit", "reps"},
+                            {"value", 0},
+                            {"unit", "-"},
                             {"repetitions", 6}
                         }
                     }}
@@ -343,4 +343,36 @@ void DataCenter::loadDefaultData() {
     };
 
     m_data = QJsonObject{{"exercises", exercises}};
+}
+
+QString DataCenter::getMuscleGroup(const QString& exerciseName) const
+{
+    QJsonObject exercises = m_data["exercises"].toObject();
+    if (!exercises.contains(exerciseName)) return "";
+
+    return exercises[exerciseName].toObject()["muscleGroup"].toString();
+}
+
+double DataCenter::getCurrentValue(const QString& exerciseName) const
+{
+    QJsonObject exercises = m_data["exercises"].toObject();
+    if (!exercises.contains(exerciseName)) return 0.0;
+
+    return exercises[exerciseName].toObject()["currentValue"].toDouble();
+}
+
+QString DataCenter::getUnit(const QString& exerciseName) const
+{
+    QJsonObject exercises = m_data["exercises"].toObject();
+    if (!exercises.contains(exerciseName)) return "";
+
+    return exercises[exerciseName].toObject()["unit"].toString();
+}
+
+int DataCenter::getRepetitions(const QString& exerciseName) const
+{
+    QJsonObject exercises = m_data["exercises"].toObject();
+    if (!exercises.contains(exerciseName)) return 0;
+
+    return exercises[exerciseName].toObject()["repetitions"].toInt();
 }

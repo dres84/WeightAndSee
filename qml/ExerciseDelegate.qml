@@ -20,6 +20,7 @@ Item {
     property bool isOpened: contentItem.x < 0
 
     signal closeOthers
+    signal editExercise
 
     Behavior on height {
         NumberAnimation { duration: Style.animationTime }
@@ -67,17 +68,7 @@ Item {
                 clip: true // Esto recorta el contenido dentro del círculo
 
                 Image {
-                    source: {
-                        switch(root.muscleGroup) {
-                        case "Pecho": return "qrc:/icons/chest.svg"
-                        case "Espalda": return "qrc:/icons/back.svg"
-                        case "Hombros": return "qrc:/icons/shoulders.svg"
-                        case "Brazos": return "qrc:/icons/arms.svg"
-                        case "Core": return "qrc:/icons/core.svg"
-                        case "Piernas": return "qrc:/icons/legs.svg"
-                        default: return ""
-                        }
-                    }
+                    source: Style.muscleGroupIcon(muscleGroup)
                     anchors.centerIn: parent
                     height: parent.height * 0.7
                     width: height
@@ -115,7 +106,7 @@ Item {
                         family: Style.interFont.name
                         pixelSize: Style.caption
                     }
-                    color: muscleColor(root.muscleGroup)
+                    color: Style.muscleColor(root.muscleGroup)
                     horizontalAlignment: Text.AlignLeft
                 }
             }
@@ -152,8 +143,8 @@ Item {
             anchors.fill: parent
 
             onClicked: {
-                console.log("Seleccionado:", name);
-                closeOthers()
+                console.log("onClicked ", name);
+                editExercise()
             }
 
             drag.target: contentItem
@@ -162,6 +153,7 @@ Item {
             drag.maximumX: 0
 
             onPressed: {
+                console.log("onPressed ", name);
                 dragged = false;
                 closeOthers()
             }
@@ -201,18 +193,5 @@ Item {
                     contentItem.x = 0;
                 }
             }
-    }
-
-    function muscleColor(group) {
-        // Colores optimizados para modo oscuro
-        switch(group) {
-            case "Pecho":    return "#FF8FA3" // Rosa coral
-            case "Espalda":  return "#7FC8FF" // Azul cielo
-            case "Hombros":  return "#B19CD9" // Lila suave
-            case "Brazos":   return "#FFB347" // Naranja miel
-            case "Core":     return "#77DD77" // Verde menta
-            case "Piernas":  return "#BA68C8" // Violeta medio
-            default: return Style.textSecondary
-        }
     }
 }
