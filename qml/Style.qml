@@ -2,14 +2,32 @@ pragma Singleton
 import QtQuick 2.15
 
 QtObject {
-    // Paleta de colores
+    // Paleta de colores base
     readonly property color background: "#121212"
     readonly property color surface: "#1E1E1E"
-    readonly property color primary: "#FF5A5F"
-    readonly property color secondary: "#008489"
+    readonly property color primary: "#FF5A5F"  // Rojo coral más vivo
+    readonly property color secondary: "#00A8A8"  // Turquesa más intenso
     readonly property color text: "#FFFFFF"
     readonly property color textSecondary: "#BDBDBD"
     readonly property color divider: "#373737"
+
+    // Colores para botones
+    readonly property color buttonPositive: "#4CAF50"
+    readonly property color buttonPositivePressed: "#388E3C"
+    readonly property color buttonPositiveDisabled: "#A5D6A7"
+
+    readonly property color buttonNegative: "#FF5252"
+    readonly property color buttonNegativePressed: "#D32F2F"
+    readonly property color buttonNegativeDisabled: "#FFCDD2"
+
+    readonly property color buttonNeutral: "#607D8B"
+    readonly property color buttonNeutralPressed: "#455A64"
+    readonly property color buttonNeutralDisabled: "#CFD8DC"
+
+    // Texto para botones
+    readonly property color buttonText: "#FFFFFF"
+    readonly property color buttonTextDisabled: "#757575"
+    readonly property color buttonTextNegative: "#FFFFFF"  // Texto blanco sobre rojo
 
     // Tamaños de texto
     readonly property int heading1: 24
@@ -33,24 +51,23 @@ QtObject {
         source: "qrc:/fonts/Inter-Medium.ttf"
     }
 
-    //Tiempos
+    // Tiempos
     readonly property int animationTime: 200
 
+    // Colores para grupos musculares (ligeramente más vibrantes)
     function muscleColor(group) {
-
         switch(group) {
-            case "Pecho":    return "#FF8FA3"
-            case "Espalda":  return "#7FC8FF"
-            case "Hombros":  return "#B19CD9"
-            case "Brazos":   return "#FFB347"
-            case "Core":     return "#77DD77"
-            case "Piernas":  return "#BA68C8"
+            case "Pecho":    return "#FF7F97"  // Rosa más vivo
+            case "Espalda":  return "#64B5F6"  // Azul más brillante
+            case "Hombros":  return "#B39DDB"  // Lila más intenso
+            case "Brazos":   return "#FFA726"  // Naranja más cálido
+            case "Core":     return "#66BB6A"  // Verde más vivo
+            case "Piernas":  return "#AB47BC"  // Púrpura más intenso
             default: return Style.textSecondary
         }
     }
 
     function muscleGroupIcon(muscleGroup) {
-
         switch(muscleGroup) {
             case "Pecho": return "qrc:/icons/chest.svg"
             case "Espalda": return "qrc:/icons/back.svg"

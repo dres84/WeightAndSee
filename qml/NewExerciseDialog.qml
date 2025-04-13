@@ -7,13 +7,22 @@ Dialog {
     id: root
     modal: true
     title: "Añadir nuevo ejercicio"
-    standardButtons: Dialog.Cancel
+    //standardButtons: Dialog.Save | Dialog.Cancel
     anchors.centerIn: Overlay.overlay
-    width: Math.min(parent.width * 0.8, 400)
+    width: Math.min(parent.width * 0.9, 400)
+
 
     ColumnLayout {
         width: parent.width
         spacing: 15
+
+        Rectangle {
+            Layout.fillWidth: true
+            height: 2
+            radius: 5
+            color: Style.surface
+            opacity: 0.7
+        }
 
         TextField {
             id: nameField
@@ -31,43 +40,38 @@ Dialog {
         }
 
         // Campo de valor con lógica condicional
-        TextField {
-            id: valueField
+        // Fila de valor y unidades
+        RowLayout {
             Layout.fillWidth: true
-            placeholderText: "Valor (opcional)"
-            validator: DoubleValidator { bottom: 0 }
-            inputMethodHints: Qt.ImhFormattedNumbersOnly
-            onTextChanged: {
-                if (text !== "") {
-                    noUnitRadio.checked = false
-                    kgRadio.checked = true
-                } else {
-                    noUnitRadio.checked = true
-                    kgRadio.checked = false
-                    lbRadio.checked = false
+            spacing: 10
+
+            TextField {
+                id: valueField
+                Layout.fillWidth: true
+                Layout.preferredWidth: parent.width * 0.5
+                placeholderText: "Peso (opcional)"
+                validator: DoubleValidator {
+                    bottom: 0.1
+                    top: 1000
+                    decimals: 2
+                }
+                inputMethodHints: Qt.ImhFormattedNumbersOnly
+                onTextChanged: {
+                    if (text !== "") {
+                        noUnitRadio.checked = false
+                        kgRadio.checked = true
+                    } else {
+                        noUnitRadio.checked = true
+                        kgRadio.checked = false
+                        lbRadio.checked = false
+                    }
                 }
             }
-        }
 
-        // Selector de unidades con RadioButtons
-        ColumnLayout {
-            Layout.fillWidth: true
-            spacing: 5
-
-            Label {
-                text: "Unidades:"
-                font.pixelSize: Style.caption
-                color: Style.textSecondary
-            }
-
+            // Selector de unidades
             RowLayout {
-                RadioButton {
-                    id: noUnitRadio
-                    text: "-"
-                    checked: true
-                    enabled: valueField.text === ""
-                    onCheckedChanged: if (checked && valueField.text !== "") kgRadio.checked = true
-                }
+                spacing: 10
+                Layout.alignment: Qt.AlignVCenter
 
                 RadioButton {
                     id: kgRadio
@@ -79,6 +83,14 @@ Dialog {
                     id: lbRadio
                     text: "lb"
                     enabled: valueField.text !== ""
+                }
+
+                RadioButton {
+                    id: noUnitRadio
+                    text: "-"
+                    checked: true
+                    enabled: valueField.text === ""
+                    onCheckedChanged: if (checked && valueField.text !== "") kgRadio.checked = true
                 }
             }
         }
@@ -98,22 +110,71 @@ Dialog {
             color: Style.textSecondary
         }
 
-        Button {
-            id: saveButton
+
+        // Fila para los botones Guardar y Cancelar
+        RowLayout {
             Layout.fillWidth: true
-            text: "Guardar"
-            enabled: nameField.text !== "" && newExerciseGroupFilter.anySelected
-            onClicked: {
-                let unit = noUnitRadio.checked ? "-" : (kgRadio.checked ? "kg" : "lb")
-                dataCenter.addExercise(
-                    nameField.text,
-                    newExerciseGroupFilter.selectedGroup,
-                    valueField.text ? parseFloat(valueField.text) : 0,
-                    unit,
-                    repsField.text ? parseInt(repsField.text) : 0
-                )
-                root.close()
-                resetForm()
+            spacing: 10
+            Button {
+                id: cancelButton
+                Layout.fillWidth: true
+                text: "Cancelar"
+                flat: true
+
+                background: Rectangle {
+                    implicitHeight: 40
+                    radius: 5
+                    color: cancelButton.down ? Style.buttonNegativePressed :
+                           Style.buttonNegative
+                    border.color: Qt.darker(color, 1.1)
+                }
+
+                contentItem: Text {
+                    text: cancelButton.text
+                    font.pixelSize: 14
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                    color: Style.buttonTextNegative
+                }
+                onClicked: root.close()
+            }
+
+            Button {
+                id: saveButton
+                Layout.fillWidth: true
+                text: "Guardar"
+                enabled: nameField.text !== "" && newExerciseGroupFilter.anySelected
+
+                background: Rectangle {
+                    implicitHeight: 40
+                    radius: 5
+                    color: !saveButton.enabled ? Style.buttonPositiveDisabled :
+                                       saveButton.down ? Style.buttonPositivePressed :
+                                       Style.buttonPositive
+                    border.color: Qt.darker(color, 1.1)
+                }
+
+                contentItem: Text {
+                    text: saveButton.text
+                    font.pixelSize: 14
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                    color: !saveButton.enabled ? Style.buttonTextDisabled :
+                           Style.buttonText  // Blanco en todos los estados activos
+                }
+
+                onClicked: {
+                    let unit = noUnitRadio.checked ? "-" : (kgRadio.checked ? "kg" : "lb")
+                    dataCenter.addExercise(
+                        nameField.text,
+                        newExerciseGroupFilter.selectedGroup,
+                        valueField.text ? parseFloat(valueField.text) : 0,
+                        unit,
+                        repsField.text ? parseInt(repsField.text) : 0
+                    )
+                    root.close()
+                    resetForm()
+                }
             }
         }
     }

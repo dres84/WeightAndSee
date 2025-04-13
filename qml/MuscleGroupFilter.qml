@@ -89,8 +89,9 @@ Item {
                     anchors.topMargin: 3
                     horizontalAlignment: Text.AlignHCenter
                     font.family: Style.interFont.name
+                    font.bold: true
                     font.pixelSize: Style.caption
-                    color: textColor
+                    color: Style.muscleColor(model.name)
                     opacity: model.selected ? 1.0 : 0.4
                 }
             }
