@@ -12,12 +12,10 @@ RoundButton {
     property int shadowOffset: 2                 // Desplazamiento sombra
     property real shadowBlur: 0.5               // Difuminado sombra
 
-    // Tamaño estándar FAB (Floating Action Button)
     width: 60
-    height: 60
+    height: width
     radius: width/2  // Círculo perfecto
 
-    // Fuente
     font {
         pixelSize: 24
         bold: true
@@ -45,6 +43,7 @@ RoundButton {
         id: contentItem
         font: root.font
         color: root.textColor
+        anchors.centerIn: parent
         horizontalAlignment: Text.AlignHCenter
         verticalAlignment: Text.AlignVCenter
     }

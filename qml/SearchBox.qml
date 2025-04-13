@@ -7,7 +7,7 @@ Rectangle {
     id: root
     height: 40
     radius: 25
-    color: Style.surface
+    color: Style.soft
 
     property string text: searchField.text
 

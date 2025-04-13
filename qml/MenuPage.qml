@@ -22,8 +22,12 @@ Page {
     }
 
     ColumnLayout {
-        anchors.fill: parent
-        anchors.margins: Style.bigSpace
+        anchors.top: parent.top
+        anchors.bottom: addButton.top
+        anchors.topMargin: 20
+        anchors.bottomMargin: 10
+        anchors.horizontalCenter: parent.horizontalCenter
+        width: parent.width - Style.bigSpace * 2
         spacing: 5
 
         // Buscador
@@ -43,6 +47,7 @@ Page {
         MuscleGroupFilter {
             id: groupFilter
             Layout.fillWidth: true
+            Layout.topMargin: 5
         }
 
         // Separador
@@ -133,7 +138,7 @@ Page {
         anchors {
             bottom: parent.bottom
             right: parent.right
-            margins: 20
+            margins: 15
         }
         buttonColor: Style.buttonPositive
         buttonText: "+"
@@ -146,7 +151,7 @@ Page {
         anchors {
             bottom: parent.bottom
             horizontalCenter: parent.horizontalCenter
-            margins: 20
+            margins: 15
         }
         buttonText: "\u232B"
         buttonColor: Style.buttonNeutral
@@ -159,7 +164,7 @@ Page {
         anchors {
             bottom: parent.bottom
             left: parent.left
-            margins: 20
+            margins: 15
         }
         buttonColor: Style.buttonNegative
         buttonText: allOpened ? "x" : "-"
