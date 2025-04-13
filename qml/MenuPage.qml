@@ -45,6 +45,7 @@ Page {
             Layout.fillWidth: true
         }
 
+        // Separador
         Rectangle {
             Layout.fillWidth: true
             height: 1
@@ -126,22 +127,20 @@ Page {
     }
 
     // Botón flotante para agregar ejercicio
-    RoundButton {
+
+    FloatButton {
         id: addButton
         anchors {
             bottom: parent.bottom
             right: parent.right
             margins: 20
         }
-        width: 60
-        height: 60
-        radius: 30
-        text: "+"
-        font.pixelSize: 24
+        buttonColor: Style.buttonPositive
+        buttonText: "+"
         onClicked: addDialog.open()
     }
 
-    RoundButton {
+    FloatButton {
         id: deleteFileButton
         visible: showDeleteFileButton
         anchors {
@@ -149,15 +148,12 @@ Page {
             horizontalCenter: parent.horizontalCenter
             margins: 20
         }
-        width: 60
-        height: 60
-        radius: 30
-        text: "\u232B"
-        font.pixelSize: 24
+        buttonText: "\u232B"
+        buttonColor: Style.buttonNeutral
         onClicked: dataCenter.deleteFile()
     }
 
-    RoundButton {
+    FloatButton {
         id: deleteButton
         visible: showDeleteButton
         anchors {
@@ -165,11 +161,8 @@ Page {
             left: parent.left
             margins: 20
         }
-        width: 60
-        height: 60
-        radius: 30
-        text: allOpened ? "X" : "-"
-        font.pixelSize: 24
+        buttonColor: Style.buttonNegative
+        buttonText: allOpened ? "x" : "-"
         onClicked: allOpened ? listView.closeAll() : listView.openAll()
     }
 
