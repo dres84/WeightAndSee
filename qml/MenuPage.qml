@@ -66,7 +66,8 @@ Page {
             clip: true
             model: exerciseModel
             currentIndex: -1
-            interactive: contentY >= 0 && contentY <= contentHeight - height
+            flickableDirection: Flickable.VerticalFlick
+            interactive: contentHeight > height
 
             delegate: ExerciseDelegate {
                 height: (root.searchQuery === "" && groupsSelected.indexOf(muscleGroup) !== -1)
