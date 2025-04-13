@@ -26,7 +26,6 @@ Page {
         anchors.margins: Style.bigSpace
         spacing: 5
 
-
         // Buscador
         SearchBox {
             id: searchBox
@@ -44,6 +43,13 @@ Page {
         MuscleGroupFilter {
             id: groupFilter
             Layout.fillWidth: true
+        }
+
+        Rectangle {
+            Layout.fillWidth: true
+            height: 1
+            radius: 5
+            color: "white"
         }
 
         // Lista de ejercicios

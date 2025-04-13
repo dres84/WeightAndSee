@@ -45,17 +45,11 @@ Dialog {
             Layout.fillWidth: true
             spacing: 10
 
-            TextField {
+            NumericTextField {
                 id: valueField
                 Layout.fillWidth: true
                 Layout.preferredWidth: parent.width * 0.5
                 placeholderText: "Peso (opcional)"
-                validator: DoubleValidator {
-                    bottom: 0.1
-                    top: 1000
-                    decimals: 2
-                }
-                inputMethodHints: Qt.ImhFormattedNumbersOnly
                 onTextChanged: {
                     if (text !== "") {
                         noUnitRadio.checked = false
@@ -95,12 +89,12 @@ Dialog {
             }
         }
 
-        TextField {
+        NumericTextField {
             id: repsField
             Layout.fillWidth: true
             placeholderText: "Repeticiones (opcional)"
             validator: IntValidator { bottom: 0 }
-            inputMethodHints: Qt.ImhDigitsOnly
+            allowDecimals: false
         }
 
         Label {

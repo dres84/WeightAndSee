@@ -77,18 +77,12 @@ Dialog {
             spacing: 10
 
             // Campo de valor
-            TextField {
+            NumericTextField {
                 id: valueField
                 Layout.fillWidth: true
                 Layout.preferredWidth: parent.width * 0.6
                 text: currentValue > 0 ? currentValue : ""
                 placeholderText: "Nuevo valor*"
-                validator: DoubleValidator {
-                    bottom: 0.1
-                    top: 1000
-                    decimals: 2
-                }
-                inputMethodHints: Qt.ImhFormattedNumbersOnly
                 onTextChanged: {
                     validateForm()
                 }
@@ -123,16 +117,12 @@ Dialog {
         }
 
         // Repeticiones
-        TextField {
+        NumericTextField {
             id: repsField
             Layout.fillWidth: true
             text: repetitions > 0 ? repetitions : ""
+            allowDecimals: false
             placeholderText: "Nuevas repeticiones*"
-            validator: IntValidator {
-                bottom: 1
-                top: 100
-            }
-            inputMethodHints: Qt.ImhDigitsOnly
             onTextChanged: validateForm()
         }
 

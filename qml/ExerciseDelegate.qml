@@ -154,8 +154,8 @@ Item {
 
             onPressed: {
                 console.log("onPressed ", name);
-                dragged = false;
                 closeOthers()
+                dragged = false;
             }
 
             onReleased: {

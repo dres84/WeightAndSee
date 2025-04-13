@@ -30,6 +30,7 @@ qt_add_qml_module(appgymWeights
         qml/MuscleGroupFilter.qml
         qml/NewExerciseDialog.qml
         qml/EditExerciseDialog.qml
+        qml/NumericTextField.qml
         qml/Style.qml
     RESOURCES
         android/AndroidManifest.xml
