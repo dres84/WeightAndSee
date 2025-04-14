@@ -9,6 +9,8 @@ Item {
 
     property color textColor: Style.text
     property bool anySelected: false
+    property bool allSelected: selectedGroups.length === groupModel.count
+    property bool noneSelected: (singleSelection && selectedGroup === "") || (!singleSelection && selectedGroups.length === 0)
     property bool singleSelection: false
     property string selectedGroup: "" // solo con singleSelection = true
     property var selectedGroups: []   // solo con singleSelection = false
@@ -210,6 +212,4 @@ Item {
         if (!singleSelection) updateSelectedNames()
     }
 
-
-    Component.onCompleted: selectAll()
 }

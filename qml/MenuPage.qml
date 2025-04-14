@@ -14,6 +14,7 @@ Page {
     property bool showTestButtons: true
     property bool allOpened: false
     property var groupsSelected: groupFilter.selectedGroups
+    property var noneSelected: groupFilter.noneSelected
 
 
     Rectangle {
@@ -70,8 +71,10 @@ Page {
             interactive: contentHeight > height
 
             delegate: ExerciseDelegate {
-                height: (root.searchQuery === "" && groupsSelected.indexOf(muscleGroup) !== -1)
-                        || ( root.searchQuery !== "" && name.toLowerCase().indexOf(root.searchQuery.toLowerCase()) !== -1) ? 60 : 0
+                property bool noGroupSelected: root.searchQuery === "" && noneSelected
+                property bool groupSelected: root.searchQuery === "" && groupsSelected.indexOf(muscleGroup) !== -1
+                property bool queryMatch: root.searchQuery !== "" && name.toLowerCase().indexOf(root.searchQuery.toLowerCase()) !== -1
+                height: (noGroupSelected || groupSelected || queryMatch) ? 60 : 0
                 visible: height > 1
                 Component.onCompleted: {
                     console.log("Tenemos " + name + " e índice: " + index)

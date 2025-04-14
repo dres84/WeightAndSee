@@ -170,7 +170,6 @@ Dialog {
             id: newExerciseGroupFilter
             Layout.fillWidth: true
             textColor: Style.surface
-            Component.onCompleted: deselectAll()
             singleSelection: true
         }
 

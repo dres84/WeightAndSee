@@ -146,33 +146,49 @@ Item {
             }
         }
 
-        MouseArea {
-            anchors.fill: parent
-
-            onClicked: {
-                console.log("onClicked ", name);
+        TapHandler {
+            onTapped: {
+                console.log("onTapped", name)
                 editExercise()
             }
-
-            drag.target: contentItem
-            drag.axis: Drag.XAxis
-            drag.minimumX: -deleteButton.width
-            drag.maximumX: 0
-
-            onPressed: {
-                console.log("onPressed ", name);
-                closeOthers()
-                dragged = false;
+            onLongPressed: {
+                if (!isOpened) {
+                    console.log("onLongPressed abrimos " + name)
+                    open()
+                }
             }
+            onPressedChanged: {
+                if (pressed) {
+                    closeOthers()
+                }
+            }
+        }
 
-            onReleased: {
-                if (dragged) {
-                    if (contentItem.x < -deleteButton.width/2) {
-                        contentItem.x = -deleteButton.width; // Mantener abierto
+        DragHandler {
+            target: contentItem
+            xAxis.enabled: true
+            yAxis.enabled: false
+            xAxis.minimum: -deleteButton.width
+            xAxis.maximum: 0
+
+            onActiveChanged: {
+                if (active) {
+                    console.log("onPressed", name)
+                    closeOthers()
+                    dragged = false
+                } else {
+                    // Detectar si se arrastró lo suficiente
+                    if (contentItem.x < -deleteButton.width / 2) {
+                        contentItem.x = -deleteButton.width
                     } else {
-                        close(); // Cerrar si no se arrastró suficiente
+                        close()
+                        contentItem.x = 0
                     }
                 }
+            }
+
+            onTranslationChanged: {
+                dragged = true
             }
         }
     }
@@ -192,9 +208,8 @@ Item {
                 height: 30
             }
 
-            MouseArea {
-                anchors.fill: parent
-                onClicked: {
+            TapHandler {
+                onTapped: {
                     console.log("Intentamos eliminar el elemento " + name)
                     dataCenter.removeExercise(name)
                     contentItem.x = 0;
