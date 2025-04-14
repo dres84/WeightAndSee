@@ -21,7 +21,8 @@ public:
                                  double value, const QString& unit, int reps);
     Q_INVOKABLE void updateExercise(const QString& name, double value, int reps);
     Q_INVOKABLE void removeExercise(const QString& name);
-    Q_INVOKABLE void deleteFile();
+    Q_INVOKABLE void reloadDefaultData();
+    Q_INVOKABLE void deleteAllExercises();
 
     Q_INVOKABLE QString getMuscleGroup(const QString& exerciseName) const;
     Q_INVOKABLE double getCurrentValue(const QString& exerciseName) const;

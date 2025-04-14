@@ -142,7 +142,7 @@ void DataCenter::removeExercise(const QString& name) {
     }
 }
 
-void DataCenter::deleteFile() {
+void DataCenter::reloadDefaultData() {
     QFile file(getFilePath());
     if (file.exists()) {
         if (file.remove()) {
@@ -154,6 +154,27 @@ void DataCenter::deleteFile() {
     } else {
         qWarning("El archivo no existe");
     }
+}
+
+void DataCenter::deleteAllExercises() {
+    QFile file(getFilePath());
+    if (file.exists()) {
+        if (file.remove()) {
+            qDebug("Archivo eliminado correctamente, inicializando estructura vacía...");
+        } else {
+            qWarning("No se pudo eliminar el archivo");
+            return;
+        }
+    }
+
+    // Crear estructura vacía
+    m_data = QJsonObject{
+        {"exercises", QJsonObject{}}
+    };
+
+    save();
+    emit dataChanged();
+    qDebug() << "Estructura vacía lista para ingresar ejercicios manualmente.";
 }
 
 QString DataCenter::getFilePath() const {

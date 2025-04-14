@@ -11,7 +11,7 @@ Page {
     required property DataCenter dataCenter
     property string searchQuery: searchBox.text
     property bool showDeleteButton: true
-    property bool showDeleteFileButton: true
+    property bool showTestButtons: true
     property bool allOpened: false
     property var groupsSelected: groupFilter.selectedGroups
 
@@ -133,45 +133,61 @@ Page {
     }
 
     // Botón flotante para agregar ejercicio
-
-    FloatButton {
-        id: addButton
-        anchors {
-            bottom: parent.bottom
-            right: parent.right
-            margins: 15
-        }
-        buttonColor: Style.buttonPositive
-        buttonText: "+"
-        onClicked: addDialog.open()
-    }
-
-    FloatButton {
-        id: deleteFileButton
-        visible: showDeleteFileButton
-        anchors {
-            bottom: parent.bottom
-            horizontalCenter: parent.horizontalCenter
-            margins: 15
-        }
-        buttonText: "\u232B"
-        buttonColor: Style.buttonNeutral
-        onClicked: dataCenter.deleteFile()
-    }
-
+    // Botón de eliminar alineado a la izquierda
     FloatButton {
         id: deleteButton
         visible: showDeleteButton
         anchors {
             bottom: parent.bottom
             left: parent.left
-            margins: 15
+            bottomMargin: 15
+            leftMargin: 15
         }
         buttonColor: Style.buttonNegative
         buttonText: allOpened ? "x" : "-"
         onClicked: allOpened ? listView.closeAll() : listView.openAll()
     }
 
+    // Botones centrales (recargar y borrar archivo)
+    Row {
+        id: centerButtons
+        visible: showTestButtons
+        spacing: 20
+        anchors {
+            bottom: parent.bottom
+            horizontalCenter: parent.horizontalCenter
+            bottomMargin: 15
+        }
+
+        FloatButton {
+            id: reloadButton
+            buttonColor: Style.buttonNeutral
+            buttonText: "\u21BB" // Reload symbol
+            onClicked: dataCenter.reloadDefaultData()
+        }
+
+        FloatButton {
+            id: deleteFileButton
+            buttonColor: Style.buttonNeutral
+            buttonText: "\u232B"
+            onClicked: dataCenter.deleteAllExercises()
+        }
+    }
+
+    FloatButton {
+        id: addButton
+        anchors {
+            bottom: parent.bottom
+            right: parent.right
+            bottomMargin: 15
+            rightMargin: 15
+        }
+        buttonColor: Style.buttonPositive
+        buttonText: "+"
+        onClicked: addDialog.open()
+    }
+
+    // Dialogs
     NewExerciseDialog {
         id: addDialog
     }

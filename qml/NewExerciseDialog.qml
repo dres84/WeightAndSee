@@ -1,13 +1,13 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
+import QtQuick.Effects
 import gymWeights 1.0
 
 Dialog {
     id: root
     modal: true
     title: "Añadir nuevo ejercicio"
-    //standardButtons: Dialog.Save | Dialog.Cancel
     anchors.centerIn: Overlay.overlay
     width: Math.min(parent.width * 0.9, 400)
 
@@ -22,7 +22,7 @@ Dialog {
         nameField.text = name
         newExerciseGroupFilter.selectGroup(group)
         nameField.focus = false
-        filteredExercises = []
+        filteredExercisesPopup.close()
     }
 
     onExerciseSelected: function(name, group) {
@@ -42,18 +42,24 @@ Dialog {
         }
 
         TextField {
-
             id: nameField
             Layout.fillWidth: true
             placeholderText: "Nombre del ejercicio*"
             font.pixelSize: Style.body
-            rightPadding: clearButton.width + 10 // 5px de espacio + 5px de margen
+            rightPadding: clearButton.width + 10
             maximumLength: 22
 
-            // Botón de limpiar (sin efectos hover)
-            MouseArea { // MouseArea sigue siendo útil para detectar taps
+            onFocusChanged: {
+                if (focus && text.length > 0 && filteredExercises.length > 0) {
+                    filteredExercisesPopup.open()
+                } else if (!focus) {
+                    filteredExercisesPopup.close()
+                }
+            }
+
+            MouseArea {
                 id: clearButton
-                width: 28 // Área táctil un poco más grande para móvil
+                width: 28
                 height: parent.height
                 anchors.right: parent.right
                 anchors.verticalCenter: parent.verticalCenter
@@ -63,46 +69,98 @@ Dialog {
                 onClicked: {
                     nameField.text = ""
                     nameField.forceActiveFocus()
+                    filteredExercisesPopup.close()
+                    newExerciseGroupFilter.deselectAll()
                 }
 
-                Text { // Icono
+                Text {
                     anchors.centerIn: parent
-                    text: "\u232B" // Icono de borrar
+                    text: "\u232B"
                     font.pixelSize: Style.heading1
                     color: Style.textSecondary
                 }
             }
         }
 
-        ListView {
-            id: suggestionsList
-            width: parent.width
-            height: Math.min(5 * 30, contentHeight)
+        Popup {
+            id: filteredExercisesPopup
+            y: nameField.y + nameField.height + 2
+            width: nameField.width
+            height: Math.min(6 * 42, filteredExercisesList.contentHeight)
+            padding: 0
+            closePolicy: Popup.CloseOnPressOutside | Popup.CloseOnEscape
             visible: filteredExercises.length > 0 && nameField.focus && nameField.text.length > 0
-            model: filteredExercises
-            delegate: Item {
-                width: suggestionsList.width
-                height: 36
 
-                MouseArea {
-                    id: mouseArea
-                    anchors.fill: parent
-                    hoverEnabled: true
+            property bool hasMoreItems: filteredExercisesList.contentHeight > height
 
-                    onClicked: {
-                        root.exerciseSelected(modelData.name, modelData.group)
+            background: Rectangle {
+                color: "#FFFFFF"  // Fondo blanco
+                border.color: "#E0E0E0"
+                border.width: 1
+                radius: 4
+                layer.enabled: true
+                layer.effect: MultiEffect {
+                    shadowEnabled: true
+                    shadowColor: "#10000000"
+                    shadowVerticalOffset: 2
+                    shadowBlur: 0.5
+                }
+            }
+
+            ListView {
+                id: filteredExercisesList
+                anchors.fill: parent
+                clip: true
+                model: filteredExercises
+                boundsBehavior: Flickable.StopAtBounds
+
+                ScrollBar.vertical: ScrollBar {
+                    policy: ScrollBar.AsNeeded
+                    width: 4
+                    background: Rectangle { color: "transparent" }
+                }
+
+                delegate: Rectangle {
+                    width: parent.width
+                    height: 42
+                    color: tapArea.pressed ? "#F5F5F5" : "#FFFFFF"
+
+                    TapHandler {
+                        id: tapArea
+                        onTapped: root.exerciseSelected(modelData.name, modelData.group)
                     }
 
-                    Rectangle {
+                    RowLayout {
                         anchors.fill: parent
-                        color: mouseArea.containsMouse ? "#eeeeee" : "transparent"
+                        anchors.leftMargin: 12
+                        anchors.rightMargin: 12
+                        spacing: 8
 
+                        // Nombre del ejercicio
                         Text {
-                            anchors.centerIn: parent
-                            text: modelData.name + " (" + modelData.group + ")"
-                            font.pixelSize: 14
-                            color: Style.surface
+                            Layout.fillWidth: true
+                            text: modelData.name
+                            font.pixelSize: 15
+                            color: "#212121"  // Texto oscuro
+                            elide: Text.ElideRight
                         }
+
+                        // Grupo muscular con color correspondiente
+                        Text {
+                            text: modelData.group
+                            font.pixelSize: 12
+                            font.weight: Font.Medium
+                            color: Style.muscleColor(modelData.group)  // Color del grupo
+                            Layout.rightMargin: filteredExercisesPopup.hasMoreItems && index === 5 ? 12 : 0
+                        }
+                    }
+
+                    // Separador
+                    Rectangle {
+                        anchors.bottom: parent.bottom
+                        width: parent.width
+                        height: index === 5 && filteredExercisesPopup.hasMoreItems ? 0 : 0.5
+                        color: "#EEEEEE"
                     }
                 }
             }
@@ -116,8 +174,6 @@ Dialog {
             singleSelection: true
         }
 
-        // Campo de valor con lógica condicional
-        // Fila de valor y unidades
         RowLayout {
             Layout.fillWidth: true
             spacing: 10
@@ -139,7 +195,6 @@ Dialog {
                 }
             }
 
-            // Selector de unidades
             RowLayout {
                 spacing: 10
                 Layout.alignment: Qt.AlignVCenter
@@ -181,8 +236,6 @@ Dialog {
             color: Style.textSecondary
         }
 
-
-        // Fila para los botones Guardar y Cancelar
         RowLayout {
             Layout.fillWidth: true
             spacing: 10
@@ -231,7 +284,7 @@ Dialog {
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter
                     color: !saveButton.enabled ? Style.buttonTextDisabled :
-                           Style.buttonText  // Blanco en todos los estados activos
+                           Style.buttonText
                 }
 
                 onClicked: {
@@ -256,6 +309,7 @@ Dialog {
         repsField.text = ""
         noUnitRadio.checked = true
         newExerciseGroupFilter.deselectAll()
+        filteredExercisesPopup.close()
     }
 
     function getSelectedUnit() {
@@ -268,6 +322,7 @@ Dialog {
         function onTextChanged() {
             if (nameField.text === "") {
                 filteredExercises = []
+                filteredExercisesPopup.close()
                 return
             }
 
@@ -294,8 +349,10 @@ Dialog {
 
             filteredExercises = startsWith.concat(contains)
 
-            for (let i = 0; i < filteredExercises.length; i++) {
-                console.log("Ejercicio filtrado " + i + ":", JSON.stringify(filteredExercises[i]))
+            if (filteredExercises.length > 0 && nameField.focus) {
+                filteredExercisesPopup.open()
+            } else {
+                filteredExercisesPopup.close()
             }
         }
     }
@@ -304,20 +361,13 @@ Dialog {
         target: exerciseProvider
         function onExercisesChanged() {
             exerciseList = exerciseProvider.exercises
-            console.log("Ejercicios actualizados desde signal:", JSON.stringify(exerciseList))
         }
     }
 
     Component.onCompleted: {
         if (exerciseProvider) {
             exerciseList = exerciseProvider.exercises
-            console.log("✅ Lista de ejercicios cargada:")
-            for (let i = 0; i < exerciseList.length; i++) {
-                let ex = exerciseList[i]
-                console.log(`🔹 ${i}: ${ex.name} (${ex.group})`)
-            }
 
-            // Detección de duplicados case-insensitive
             let seen = {}
             for (let i = 0; i < exerciseList.length; i++) {
                 let key = (exerciseList[i].name + "|" + exerciseList[i].group).toLowerCase()
@@ -329,5 +379,4 @@ Dialog {
             }
         }
     }
-
 }
