@@ -42,10 +42,36 @@ Dialog {
         }
 
         TextField {
+
             id: nameField
             Layout.fillWidth: true
             placeholderText: "Nombre del ejercicio*"
             font.pixelSize: Style.body
+            rightPadding: clearButton.width + 10 // 5px de espacio + 5px de margen
+            maximumLength: 22
+
+            // Botón de limpiar (sin efectos hover)
+            MouseArea { // MouseArea sigue siendo útil para detectar taps
+                id: clearButton
+                width: 28 // Área táctil un poco más grande para móvil
+                height: parent.height
+                anchors.right: parent.right
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.rightMargin: 5
+                visible: nameField.text.length > 0
+
+                onClicked: {
+                    nameField.text = ""
+                    nameField.forceActiveFocus()
+                }
+
+                Text { // Icono
+                    anchors.centerIn: parent
+                    text: "\u232B" // Icono de borrar
+                    font.pixelSize: Style.heading1
+                    color: Style.textSecondary
+                }
+            }
         }
 
         ListView {
