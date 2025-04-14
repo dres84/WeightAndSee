@@ -40,6 +40,7 @@ qt_add_qml_module(appgymWeights
     SOURCES
         datacenter.h datacenter.cpp
         exercisemodel.h exercisemodel.cpp
+        exerciseprovider.h exerciseprovider.cpp
 
 #    RESOURCES icons/core.png icons/tren_inferior.png icons/tren_superior.png
 )
@@ -64,6 +65,12 @@ qt_add_resources(appgymWeights "fonts"
 #    PREFIX "/fonts"
     FILES
         fonts/Inter-Medium.ttf
+)
+
+qt_add_resources(appgymWeights "data"
+#    PREFIX "/data"
+    FILES
+        data/exerciseList.txt
 )
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.

@@ -11,6 +11,23 @@ Dialog {
     anchors.centerIn: Overlay.overlay
     width: Math.min(parent.width * 0.9, 400)
 
+    property var exerciseProvider: ExerciseProvider{}
+    property var exerciseList: []
+    property var filteredExercises: []
+    property bool exercisesLoaded: false
+
+    signal exerciseSelected(string name, string group)
+
+    function handleExerciseSelected(name, group) {
+        nameField.text = name
+        newExerciseGroupFilter.selectGroup(group)
+        nameField.focus = false
+        filteredExercises = []
+    }
+
+    onExerciseSelected: function(name, group) {
+        handleExerciseSelected(name, group)
+    }
 
     ColumnLayout {
         width: parent.width
@@ -29,6 +46,40 @@ Dialog {
             Layout.fillWidth: true
             placeholderText: "Nombre del ejercicio*"
             font.pixelSize: Style.body
+        }
+
+        ListView {
+            id: suggestionsList
+            width: parent.width
+            height: Math.min(5 * 30, contentHeight)
+            visible: filteredExercises.length > 0 && nameField.focus && nameField.text.length > 0
+            model: filteredExercises
+            delegate: Item {
+                width: suggestionsList.width
+                height: 36
+
+                MouseArea {
+                    id: mouseArea
+                    anchors.fill: parent
+                    hoverEnabled: true
+
+                    onClicked: {
+                        root.exerciseSelected(modelData.name, modelData.group)
+                    }
+
+                    Rectangle {
+                        anchors.fill: parent
+                        color: mouseArea.containsMouse ? "#eeeeee" : "transparent"
+
+                        Text {
+                            anchors.centerIn: parent
+                            text: modelData.name + " (" + modelData.group + ")"
+                            font.pixelSize: 14
+                            color: Style.surface
+                        }
+                    }
+                }
+            }
         }
 
         MuscleGroupFilter {
@@ -185,4 +236,72 @@ Dialog {
         if (noUnitRadio.checked) return "-"
         return kgRadio.checked ? "kg" : "lb"
     }
+
+    Connections {
+        target: nameField
+        function onTextChanged() {
+            if (nameField.text === "") {
+                filteredExercises = []
+                return
+            }
+
+            let query = nameField.text.toLowerCase()
+            let seen = {}
+            let startsWith = []
+            let contains = []
+
+            for (let i = 0; i < exerciseList.length; i++) {
+                let e = exerciseList[i]
+                let nameLower = e.name.toLowerCase()
+                let groupLower = e.group.toLowerCase()
+                let key = nameLower + "|" + groupLower
+
+                if (seen[key]) continue
+                seen[key] = true
+
+                if (nameLower.startsWith(query)) {
+                    startsWith.push(e)
+                } else if (nameLower.includes(query)) {
+                    contains.push(e)
+                }
+            }
+
+            filteredExercises = startsWith.concat(contains)
+
+            for (let i = 0; i < filteredExercises.length; i++) {
+                console.log("Ejercicio filtrado " + i + ":", JSON.stringify(filteredExercises[i]))
+            }
+        }
+    }
+
+    Connections {
+        target: exerciseProvider
+        function onExercisesChanged() {
+            exerciseList = exerciseProvider.exercises
+            console.log("Ejercicios actualizados desde signal:", JSON.stringify(exerciseList))
+        }
+    }
+
+    Component.onCompleted: {
+        if (exerciseProvider) {
+            exerciseList = exerciseProvider.exercises
+            console.log("✅ Lista de ejercicios cargada:")
+            for (let i = 0; i < exerciseList.length; i++) {
+                let ex = exerciseList[i]
+                console.log(`🔹 ${i}: ${ex.name} (${ex.group})`)
+            }
+
+            // Detección de duplicados case-insensitive
+            let seen = {}
+            for (let i = 0; i < exerciseList.length; i++) {
+                let key = (exerciseList[i].name + "|" + exerciseList[i].group).toLowerCase()
+                if (seen[key]) {
+                    console.warn("⚠️ Duplicado encontrado:", key)
+                } else {
+                    seen[key] = true
+                }
+            }
+        }
+    }
+
 }

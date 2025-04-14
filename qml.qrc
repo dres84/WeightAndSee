@@ -23,10 +23,13 @@
         <file>qml/MuscleGroupFilter.qml</file>
         <file>qml/NewExerciseDialog.qml</file>
         <file>qml/EditExerciseDialog.qml</file>
-	<file>qml/NumericTextField.qml</file>
+        <file>qml/NumericTextField.qml</file>
         <file>qml/FloatButton.qml</file>
     </qresource>
     <qresource prefix="/fonts">
         <file>fonts/Inter-Medium.ttf</file>
+    </qresource>
+    <qresource prefix="/data">
+        <file>data/exerciseList.txt</file>
     </qresource>
 </RCC>

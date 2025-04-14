@@ -1,0 +1,246 @@
+Press militar | Hombros
+Overhead Press | Shoulders
+Press Arnold | Hombros
+Arnold Press | Shoulders
+Elevaciones laterales | Hombros
+Lateral Raises | Shoulders
+Elevaciones frontales | Hombros
+Front Raises | Shoulders
+Elevaciones posteriores | Hombros
+Rear Delt Raises | Shoulders
+Face pull | Hombros
+Face Pull | Shoulders
+Encogimientos de hombros | Hombros
+Shrugs | Shoulders
+Press con mancuernas | Hombros
+Dumbbell Shoulder Press | Shoulders
+Press tras nuca | Hombros
+Behind-the-Neck Press | Shoulders
+Press en máquina para hombros | Hombros
+Machine Shoulder Press | Shoulders
+Elevaciones laterales en máquina | Hombros
+Machine Lateral Raise | Shoulders
+Pájaros con mancuernas | Hombros
+Bent-over Lateral Raises | Shoulders
+Remo al cuello | Hombros
+Upright Row | Shoulders
+Remo al mentón con cuerda | Hombros
+Rope Upright Row | Shoulders
+Curl con barra | Brazos
+Barbell Curl | Arms
+Curl con barra Z | Brazos
+EZ Bar Curl | Arms
+Curl concentrado | Brazos
+Concentration Curl | Arms
+Curl martillo | Brazos
+Hammer Curl | Arms
+Curl inclinado | Brazos
+Incline Dumbbell Curl | Arms
+Curl araña | Brazos
+Spider Curl | Arms
+Curl predicador | Brazos
+Preacher Curl | Arms
+Curl en polea baja | Brazos
+Cable Curl | Arms
+Curl con cuerda | Brazos
+Rope Curl | Arms
+Máquina de bíceps | Brazos
+Biceps Curl Machine | Arms
+Curl alterno | Brazos
+Alternating Curl | Arms
+Curl banco scott | Brazos
+Scott Curl | Arms
+Press cerrado | Brazos
+Close-grip Bench Press | Arms
+Extensión de tríceps | Brazos
+Triceps Extension | Arms
+Extensión con mancuernas | Brazos
+Dumbbell Triceps Extension | Arms
+Patada de tríceps | Brazos
+Triceps Kickback | Arms
+Extensión en polea alta | Brazos
+Overhead Cable Extension | Arms
+Extensión en polea con cuerda | Brazos
+Rope Pushdown | Arms
+Extensión en polea con barra | Brazos
+Bar Pushdown | Arms
+Máquina de tríceps | Brazos
+Triceps Pushdown Machine | Arms
+Fondos en paralelas | Brazos
+Dips | Arms
+Fondos en banco | Brazos
+Bench Dips | Arms
+Curl spider en banco inclinado | Brazos
+Incline Spider Curl | Arms
+Curl en banco predicador con mancuerna | Brazos
+Single Dumbbell Preacher Curl | Arms
+Press de banca | Pecho
+Bench Press | Chest
+Press inclinado | Pecho
+Incline Bench Press | Chest
+Press declinado | Pecho
+Decline Bench Press | Chest
+Press con mancuernas | Pecho
+Dumbbell Bench Press | Chest
+Aperturas con mancuernas | Pecho
+Dumbbell Flyes | Chest
+Aperturas en máquina | Pecho
+Pec Deck Machine | Chest
+Crossover con polea | Pecho
+Cable Crossover | Chest
+Press en máquina para pecho | Pecho
+Chest Press Machine | Chest
+Pullover con mancuerna | Pecho
+Dumbbell Pullover | Chest
+Pullover en máquina | Pecho
+Machine Pullover | Chest
+Flexiones | Pecho
+Push-ups | Chest
+Flexiones inclinadas | Pecho
+Incline Push-ups | Chest
+Flexiones declinadas | Pecho
+Decline Push-ups | Chest
+Flexiones diamante | Pecho
+Diamond Push-ups | Chest
+Press en máquina sentado | Pecho
+Seated Chest Press | Chest
+Press en máquina inclinado | Pecho
+Incline Chest Machine | Chest
+Press en máquina declinado | Pecho
+Decline Chest Machine | Chest
+Flexiones explosivas | Pecho
+Clap Push-ups | Chest
+Dominadas | Espalda
+Pull-ups | Back
+Chin-ups | Espalda
+Chin-ups | Back
+Jalón al pecho | Espalda
+Lat Pulldown | Back
+Jalón tras nuca | Espalda
+Behind-the-neck Pulldown | Back
+Remo con barra | Espalda
+Barbell Row | Back
+Remo con mancuerna | Espalda
+Dumbbell Row | Back
+Remo en máquina | Espalda
+Seated Row Machine | Back
+Remo en polea baja | Espalda
+Low Cable Row | Back
+Remo en T | Espalda
+T-Bar Row | Back
+Pull-over con polea alta | Espalda
+Straight Arm Pulldown | Back
+Peso muerto | Espalda
+Deadlift | Back
+Peso muerto rumano | Espalda
+Romanian Deadlift | Back
+Peso muerto con piernas rígidas | Espalda
+Stiff-leg Deadlift | Back
+Extensiones de espalda | Espalda
+Back Extensions | Back
+Máquina de espalda baja | Espalda
+Lower Back Machine | Back
+Máquina dorsales | Espalda
+Lat Machine | Back
+Remo invertido | Espalda
+Inverted Row | Back
+Jalón con agarre estrecho | Espalda
+Close-grip Pulldown | Back
+Remo unilateral en máquina | Espalda
+Unilateral Machine Row | Back
+Crunch | Core
+Crunch | Core
+Crunch en máquina | Core
+Machine Crunch | Core
+Elevación de piernas | Core
+Leg Raises | Core
+Elevación colgado | Core
+Hanging Leg Raises | Core
+Plancha | Core
+Plank | Core
+Plancha lateral | Core
+Side Plank | Core
+Russian twist | Core
+Russian Twist | Core
+Cable Woodchopper | Core
+Cable Woodchopper | Core
+Ab Wheel | Core
+Ab Wheel Rollout | Core
+Encogimientos inversos | Core
+Reverse Crunch | Core
+Bicycle Crunch | Core
+Bicycle Crunch | Core
+Toes to bar | Core
+Toes to Bar | Core
+L-Sit | Core
+L-Sit | Core
+Crunch con balón | Core
+Medicine Ball Crunch | Core
+V-ups | Core
+V-ups | Core
+Sit-up | Core
+Sit-up | Core
+Mountain climbers | Core
+Mountain Climbers | Core
+Twist con cable | Core
+Cable Twist | Core
+Encogimientos oblicuos | Core
+Oblique Crunches | Core
+Plancha con elevación de pierna | Core
+Plank with Leg Lift | Core
+Sentadilla | Piernas
+Squat | Legs
+Sentadilla frontal | Piernas
+Front Squat | Legs
+Sentadilla hack | Piernas
+Hack Squat | Legs
+Sentadilla con barra guiada | Piernas
+Smith Machine Squat | Legs
+Sentadilla sumo | Piernas
+Sumo Squat | Legs
+Prensa de piernas | Piernas
+Leg Press | Legs
+Prensa inclinada | Piernas
+Incline Leg Press | Legs
+Extensión de piernas | Piernas
+Leg Extension | Legs
+Curl femoral tumbado | Piernas
+Lying Leg Curl | Legs
+Curl femoral sentado | Piernas
+Seated Leg Curl | Legs
+Curl femoral de pie | Piernas
+Standing Leg Curl | Legs
+Zancadas | Piernas
+Lunges | Legs
+Zancadas caminando | Piernas
+Walking Lunges | Legs
+Sentadilla búlgara | Piernas
+Bulgarian Split Squat | Legs
+Step-ups | Piernas
+Step-ups | Legs
+Nordic Curl | Piernas
+Nordic Curl | Legs
+Wall sit | Piernas
+Wall Sit | Legs
+Hip thrust con barra | Piernas
+Barbell Hip Thrust | Legs
+Hip thrust en máquina | Piernas
+Machine Hip Thrust | Legs
+Puente de glúteos | Piernas
+Glute Bridge | Legs
+Máquina abductores | Piernas
+Abductor Machine | Legs
+Máquina aductores | Piernas
+Adductor Machine | Legs
+Elevación de talones sentado | Piernas
+Seated Calf Raise | Legs
+Elevación de talones de pie | Piernas
+Standing Calf Raise | Legs
+Sissy squat | Piernas
+Sissy Squat | Legs
+Peso muerto sumo | Piernas
+Sumo Deadlift | Legs
+Jump squat | Piernas
+Jump Squat | Legs
+Sentadilla con pausa | Piernas
+Pause Squat | Legs

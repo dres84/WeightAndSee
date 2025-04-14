@@ -85,6 +85,28 @@ Item {
                             }
                         }
                     }
+
+                    states: State {
+                        name: "selected"
+                        when: model.selected
+                        PropertyChanges {
+                            target: imageContainer
+                            scale: 1.05
+                            opacity: 1
+                        }
+                    }
+
+                    transitions: Transition {
+                        from: ""
+                        to: "selected"
+                        NumberAnimation {
+                            target: imageContainer
+                            properties: "scale, opacity"
+                            duration: 200
+                            easing.type: Easing.OutQuad
+                        }
+                        reversible: true
+                    }
                 }
 
                 Text {
@@ -147,6 +169,47 @@ Item {
         }
         selectedGroups = names
     }
+
+    function selectGroup(groupInput) {
+        let namesToSelect = []
+
+        if (typeof groupInput === "string") {
+            namesToSelect = [groupInput.toLowerCase()]
+        } else if (Array.isArray(groupInput)) {
+            namesToSelect = groupInput.map(n => n.toLowerCase())
+        } else {
+            console.warn("selectGroup: tipo no válido")
+            return
+        }
+
+        // Reset all first
+        for (let i = 0; i < groupModel.count; i++) {
+            groupModel.setProperty(i, "selected", false)
+        }
+
+        let any = false
+
+        for (let i = 0; i < groupModel.count; i++) {
+            let item = groupModel.get(i)
+            let isMatch = namesToSelect.indexOf(item.name.toLowerCase()) !== -1
+
+            if (singleSelection && isMatch) {
+                groupModel.setProperty(i, "selected", true)
+                selectedGroup = item.name
+                any = true
+                break // solo uno
+            }
+
+            if (!singleSelection && isMatch) {
+                groupModel.setProperty(i, "selected", true)
+                any = true
+            }
+        }
+
+        anySelected = any
+        if (!singleSelection) updateSelectedNames()
+    }
+
 
     Component.onCompleted: selectAll()
 }
