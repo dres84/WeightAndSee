@@ -9,7 +9,7 @@ Dialog {
     title: "Añadir nuevo registro"
     //standardButtons: Dialog.Save | Dialog.Cancel
     anchors.centerIn: Overlay.overlay
-    width: Math.min(parent.width * 0.9, 400)
+    width: Math.min(parent.width * 0.8, 400)
     padding: 20
 
     property string exerciseName: ""
@@ -18,6 +18,10 @@ Dialog {
     property string unit: dataCenter.getUnit(exerciseName)
     property int sets: dataCenter.getSets(exerciseName)
     property int repetitions: dataCenter.getRepetitions(exerciseName)
+
+    property bool weightHasChanged: currentValue.toString() !== weightField.text
+    property bool setsHasChanged: sets.toString() !== setsField.text
+    property bool repetitionsHasChanged: repetitions.toString() !== repsField.text
 
     signal exerciseUpdated()
 
@@ -85,14 +89,11 @@ Dialog {
 
             // Campo de valor
             NumericTextField {
-                id: valueField
+                id: weightField
                 Layout.fillWidth: true
                 Layout.preferredWidth: parent.width * 0.6
                 text: currentValue > 0 ? currentValue : ""
-                placeholderText: "Nuevo valor*"
-                onTextChanged: {
-                    validateForm()
-                }
+                placeholderText: "Peso*"
             }
 
             // Selector de unidades
@@ -103,22 +104,15 @@ Dialog {
                 RadioButton {
                     id: kgRadio
                     text: "kg"
-                    checked: unit === "kg" && valueField.text !== ""
-                    enabled: valueField.text !== ""
+                    checked: unit === "kg" || unit === "-"
+                    enabled: currentValue === 0
                 }
 
                 RadioButton {
                     id: lbRadio
                     text: "lb"
-                    checked: unit === "lb" && valueField.text !== ""
-                    enabled: valueField.text !== ""
-                }
-
-                RadioButton {
-                    id: noneRadio
-                    text: "-"
-                    checked: unit === "-" || valueField.text === ""
-                    enabled: valueField.text === ""
+                    checked: unit === "lb"
+                    enabled: currentValue === 0
                 }
             }
         }
@@ -133,8 +127,7 @@ Dialog {
                 Layout.fillWidth: true
                 text: sets > 0 ? sets : ""
                 allowDecimals: false
-                placeholderText: "Nuevas series*"
-                onTextChanged: validateForm()
+                placeholderText: "Series*"
             }
 
             // Repeticiones
@@ -143,8 +136,7 @@ Dialog {
                 Layout.fillWidth: true
                 text: repetitions > 0 ? repetitions : ""
                 allowDecimals: false
-                placeholderText: "Nuevas repeticiones*"
-                onTextChanged: validateForm()
+                placeholderText: "Repeticiones*"
             }
         }
 
@@ -181,7 +173,7 @@ Dialog {
                 id: saveButton
                 Layout.fillWidth: true
                 text: "Guardar Cambios"
-                enabled: false
+                enabled: weightHasChanged || setsHasChanged || repetitionsHasChanged
 
                 background: Rectangle {
                     implicitHeight: 40
@@ -202,10 +194,10 @@ Dialog {
                 }
 
                 onClicked: {
-                    var newValue = parseFloat(valueField.text)
+                    var newValue = parseFloat(weightField.text)
                     var newSets = parseInt(setsField.text)
                     var newReps = parseInt(repsField.text)
-                    var unit = noneRadio.checked ? "-" : (kgRadio.checked ? "kg" : "lb")
+                    var unit = weightField.text === "" ? "-" : (kgRadio.checked ? "kg" : "lb")
 
                     dataCenter.updateExercise(
                         exerciseName,
@@ -221,19 +213,11 @@ Dialog {
         }
     }
 
-    function validateForm() {
-        var valueValid = valueField.text !== "" && parseFloat(valueField.text) > 0
-        var repsValid = repsField.text !== "" && parseInt(repsField.text) > -1
-        var setsValid = setsField.text !== "" && parseInt(setsField.text) > -1
-
-        saveButton.enabled = valueValid && repsValid && setsValid
-    }
-
     onSetsChanged: console.log("New sets: " + sets)
     onRepetitionsChanged: console.log("New repetitions: " + repetitions)
 
     onExerciseNameChanged: {
-        console.log("== Registro abierto ==")
+        console.log("== Valor al cargar nuevo ejercicio ==")
         console.log("Nombre del ejercicio:", exerciseName)
         console.log("Grupo muscular:", muscleGroup)
         console.log("Valor actual:", currentValue)

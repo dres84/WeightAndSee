@@ -178,20 +178,10 @@ Dialog {
             spacing: 10
 
             NumericTextField {
-                id: valueField
+                id: weightField
                 Layout.fillWidth: true
                 Layout.preferredWidth: parent.width * 0.5
                 placeholderText: "Peso (opcional)"
-                onTextChanged: {
-                    if (text !== "") {
-                        noUnitRadio.checked = false
-                        kgRadio.checked = true
-                    } else {
-                        noUnitRadio.checked = true
-                        kgRadio.checked = false
-                        lbRadio.checked = false
-                    }
-                }
             }
 
             RowLayout {
@@ -201,21 +191,12 @@ Dialog {
                 RadioButton {
                     id: kgRadio
                     text: "kg"
-                    enabled: valueField.text !== ""
+                    checked: true
                 }
 
                 RadioButton {
                     id: lbRadio
                     text: "lb"
-                    enabled: valueField.text !== ""
-                }
-
-                RadioButton {
-                    id: noUnitRadio
-                    text: "-"
-                    checked: true
-                    enabled: valueField.text === ""
-                    onCheckedChanged: if (checked && valueField.text !== "") kgRadio.checked = true
                 }
             }
         }
@@ -301,11 +282,11 @@ Dialog {
                 }
 
                 onClicked: {
-                    let unit = noUnitRadio.checked ? "-" : (kgRadio.checked ? "kg" : "lb")
+                    let unit = weightField.text === "" ? "-" : (kgRadio.checked ? "kg" : "lb")
                     dataCenter.addExercise(
                         nameField.text,
                         newExerciseGroupFilter.selectedGroup,
-                        valueField.text ? parseFloat(valueField.text) : 0,
+                        weightField.text ? parseFloat(weightField.text) : 0,
                         unit,
                         repsField.text ? parseInt(setsField.text) : 0, // si no hay repeticiones, no pasamos series
                         repsField.text ? parseInt(repsField.text) : 0
@@ -319,17 +300,12 @@ Dialog {
 
     function resetForm() {
         nameField.text = ""
-        valueField.text = ""
+        weightField.text = ""
         repsField.text = ""
         setsField.text = "3"
-        noUnitRadio.checked = true
+        kgRadio.checked = true
         newExerciseGroupFilter.deselectAll()
         filteredExercisesPopup.close()
-    }
-
-    function getSelectedUnit() {
-        if (noUnitRadio.checked) return "-"
-        return kgRadio.checked ? "kg" : "lb"
     }
 
     Connections {
