@@ -92,7 +92,6 @@ Dialog {
                 id: weightField
                 Layout.fillWidth: true
                 Layout.preferredWidth: parent.width * 0.6
-                text: currentValue > 0 ? currentValue : ""
                 placeholderText: "Peso*"
             }
 
@@ -125,16 +124,15 @@ Dialog {
             NumericTextField {
                 id: setsField
                 Layout.fillWidth: true
-                text: sets > 0 ? sets : ""
                 allowDecimals: false
                 placeholderText: "Series*"
+                onTextChanged: console.log("Sets field text changed to " + text)
             }
 
             // Repeticiones
             NumericTextField {
                 id: repsField
                 Layout.fillWidth: true
-                text: repetitions > 0 ? repetitions : ""
                 allowDecimals: false
                 placeholderText: "Repeticiones*"
             }
@@ -213,8 +211,32 @@ Dialog {
         }
     }
 
-    onSetsChanged: console.log("New sets: " + sets)
-    onRepetitionsChanged: console.log("New repetitions: " + repetitions)
+    onCurrentValueChanged: {
+        console.log("New currentValue: " + currentValue)
+        weightField.text = currentValue > 0 ? currentValue : ""
+    }
+
+    onSetsChanged: {
+        console.log("New sets: " + sets) ;
+        setsField.text = sets > 0 ? sets : ""
+    }
+    onRepetitionsChanged: {
+        console.log("New repetitions: " + repetitions);
+        repsField.text = repetitions > 0 ? repetitions : ""
+    }
+
+    onOpened: {
+        weightField.text = currentValue > 0 ? currentValue : ""
+        setsField.text = sets > 0 ? sets : ""
+        repsField.text = repetitions > 0 ? repetitions : ""
+    }
+
+    onClosed: {
+        //unfocus all
+        weightField.focus = false
+        setsField.focus = false
+        repsField.focus = false
+    }
 
     onExerciseNameChanged: {
         console.log("== Valor al cargar nuevo ejercicio ==")
@@ -222,7 +244,7 @@ Dialog {
         console.log("Grupo muscular:", muscleGroup)
         console.log("Valor actual:", currentValue)
         console.log("Unidad:", unit)
-        console.log("Series:", sets)
+        console.log("Series:", setsField.text)
         console.log("Repeticiones:", repetitions)
     }
 }

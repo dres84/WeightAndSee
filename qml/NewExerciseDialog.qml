@@ -355,6 +355,13 @@ Dialog {
         }
     }
 
+    onClosed: {
+        weightField.focus = false
+        setsField.focus = false
+        repsField.focus = false
+    }
+
+
     Component.onCompleted: {
         if (exerciseProvider) {
             exerciseList = exerciseProvider.exercises
