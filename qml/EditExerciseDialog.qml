@@ -16,6 +16,7 @@ Dialog {
     property string muscleGroup: dataCenter.getMuscleGroup(exerciseName)
     property double currentValue: dataCenter.getCurrentValue(exerciseName)
     property string unit: dataCenter.getUnit(exerciseName)
+    property int sets: dataCenter.getSets(exerciseName)
     property int repetitions: dataCenter.getRepetitions(exerciseName)
 
     signal exerciseUpdated()
@@ -122,14 +123,29 @@ Dialog {
             }
         }
 
-        // Repeticiones
-        NumericTextField {
-            id: repsField
+        RowLayout {
             Layout.fillWidth: true
-            text: repetitions > 0 ? repetitions : ""
-            allowDecimals: false
-            placeholderText: "Nuevas repeticiones*"
-            onTextChanged: validateForm()
+            spacing: 10
+
+            // Series
+            NumericTextField {
+                id: setsField
+                Layout.fillWidth: true
+                text: sets > 0 ? sets : ""
+                allowDecimals: false
+                placeholderText: "Nuevas series*"
+                onTextChanged: validateForm()
+            }
+
+            // Repeticiones
+            NumericTextField {
+                id: repsField
+                Layout.fillWidth: true
+                text: repetitions > 0 ? repetitions : ""
+                allowDecimals: false
+                placeholderText: "Nuevas repeticiones*"
+                onTextChanged: validateForm()
+            }
         }
 
         // Fila para los botones Guardar y Cancelar
@@ -187,12 +203,14 @@ Dialog {
 
                 onClicked: {
                     var newValue = parseFloat(valueField.text)
+                    var newSets = parseInt(setsField.text)
                     var newReps = parseInt(repsField.text)
                     var unit = noneRadio.checked ? "-" : (kgRadio.checked ? "kg" : "lb")
 
                     dataCenter.updateExercise(
                         exerciseName,
                         newValue,
+                        newReps > 0 ? newSets : 0,
                         newReps
                     )
 
@@ -205,8 +223,22 @@ Dialog {
 
     function validateForm() {
         var valueValid = valueField.text !== "" && parseFloat(valueField.text) > 0
-        var repsValid = repsField.text !== "" && parseInt(repsField.text) > 0
+        var repsValid = repsField.text !== "" && parseInt(repsField.text) > -1
+        var setsValid = setsField.text !== "" && parseInt(setsField.text) > -1
 
-        saveButton.enabled = valueValid && repsValid
+        saveButton.enabled = valueValid && repsValid && setsValid
+    }
+
+    onSetsChanged: console.log("New sets: " + sets)
+    onRepetitionsChanged: console.log("New repetitions: " + repetitions)
+
+    onExerciseNameChanged: {
+        console.log("== Registro abierto ==")
+        console.log("Nombre del ejercicio:", exerciseName)
+        console.log("Grupo muscular:", muscleGroup)
+        console.log("Valor actual:", currentValue)
+        console.log("Unidad:", unit)
+        console.log("Series:", sets)
+        console.log("Repeticiones:", repetitions)
     }
 }

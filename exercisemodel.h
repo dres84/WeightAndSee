@@ -15,6 +15,7 @@ public:
         QDateTime timestamp;
         double value;
         QString unit;
+        int sets;
         int repetitions;
 
         QJsonObject toJson() const;
@@ -27,6 +28,7 @@ public:
         double currentValue;
         QString unit;
         int repetitions;
+        int sets;
         QDateTime lastUpdated;
         QList<HistoryRecord> history;
 
@@ -39,6 +41,7 @@ public:
         MuscleGroupRole,
         CurrentValueRole,
         UnitRole,
+        SetsRole,
         RepetitionsRole,
         LastUpdatedRole,
         HistoryRole
@@ -51,12 +54,11 @@ public:
     QVariant data(const QModelIndex &index, int role) const override;
     QHash<int, QByteArray> roleNames() const override;
 
-    // Métodos públicos
     Q_INVOKABLE void loadFromJson(const QJsonObject& json);
     Q_INVOKABLE QJsonObject toJson() const;
     Q_INVOKABLE void addExercise(const QString& name, const QString& muscleGroup,
-                                 double value, const QString& unit, int reps);
-    Q_INVOKABLE void updateExercise(int index, double value, int reps);
+                                 double value, const QString& unit, int sets, int reps);
+    Q_INVOKABLE void updateExercise(int index, double value, int sets, int reps);
     Q_INVOKABLE void removeExercise(int index);
 
 signals:

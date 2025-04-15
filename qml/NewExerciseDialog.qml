@@ -220,12 +220,26 @@ Dialog {
             }
         }
 
-        NumericTextField {
-            id: repsField
+        RowLayout {
             Layout.fillWidth: true
-            placeholderText: "Repeticiones (opcional)"
-            validator: IntValidator { bottom: 0 }
-            allowDecimals: false
+            spacing: 10
+
+            NumericTextField {
+                id: setsField
+                Layout.fillWidth: true
+                placeholderText: "Series (opcional)"
+                validator: IntValidator { bottom: 0 }
+                allowDecimals: false
+                text: "3"
+            }
+
+            NumericTextField {
+                id: repsField
+                Layout.fillWidth: true
+                placeholderText: "Repeticiones (opcional)"
+                validator: IntValidator { bottom: 0 }
+                allowDecimals: false
+            }
         }
 
         Label {
@@ -293,6 +307,7 @@ Dialog {
                         newExerciseGroupFilter.selectedGroup,
                         valueField.text ? parseFloat(valueField.text) : 0,
                         unit,
+                        repsField.text ? parseInt(setsField.text) : 0, // si no hay repeticiones, no pasamos series
                         repsField.text ? parseInt(repsField.text) : 0
                     )
                     root.close()
@@ -306,6 +321,7 @@ Dialog {
         nameField.text = ""
         valueField.text = ""
         repsField.text = ""
+        setsField.text = "3"
         noUnitRadio.checked = true
         newExerciseGroupFilter.deselectAll()
         filteredExercisesPopup.close()

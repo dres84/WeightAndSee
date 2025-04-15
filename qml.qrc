@@ -13,11 +13,9 @@
         <file>icons/shoulders.svg</file>
     </qresource>
     <qresource prefix="/qml">
-        <file>qml/BasePage.qml</file>
         <file>qml/MenuPage.qml</file>
         <file>qml/NavigationHeader.qml</file>
         <file>qml/ExerciseDelegate.qml</file>
-        <file>qml/SelectionPage.qml</file>
         <file>qml/SearchBox.qml</file>
         <file>qml/Style.qml</file>
         <file>qml/MuscleGroupFilter.qml</file>

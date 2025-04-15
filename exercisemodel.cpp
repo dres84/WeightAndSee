@@ -9,6 +9,7 @@ QJsonObject ExerciseModel::Exercise::toJson() const {
     obj["muscleGroup"] = muscleGroup;
     obj["currentValue"] = currentValue;
     obj["unit"] = unit;
+    obj["sets"] = sets;
     obj["repetitions"] = repetitions;
     obj["lastUpdated"] = lastUpdated.toString(Qt::ISODate);
 
@@ -23,10 +24,11 @@ QJsonObject ExerciseModel::Exercise::toJson() const {
 
 ExerciseModel::Exercise ExerciseModel::Exercise::fromJson(const QString& key, const QJsonObject& json) {
     Exercise exercise;
-    exercise.name = key; // ← Aquí usamos la clave como nombre
+    exercise.name = key;
     exercise.muscleGroup = json["muscleGroup"].toString();
     exercise.currentValue = json["currentValue"].toDouble();
     exercise.unit = json["unit"].toString();
+    exercise.sets = json.contains("sets") ? json["sets"].toInt() : 3;
     exercise.repetitions = json["repetitions"].toInt();
     exercise.lastUpdated = QDateTime::fromString(json["lastUpdated"].toString(), Qt::ISODate);
 
@@ -43,6 +45,7 @@ QJsonObject ExerciseModel::HistoryRecord::toJson() const {
     obj["timestamp"] = timestamp.toString(Qt::ISODate);
     obj["value"] = value;
     obj["unit"] = unit;
+    obj["sets"] = sets;
     obj["repetitions"] = repetitions;
     return obj;
 }
@@ -52,6 +55,7 @@ ExerciseModel::HistoryRecord ExerciseModel::HistoryRecord::fromJson(const QJsonO
     record.timestamp = QDateTime::fromString(json["timestamp"].toString(), Qt::ISODate);
     record.value = json["value"].toDouble();
     record.unit = json["unit"].toString();
+    record.sets = json.contains("sets") ? json["sets"].toInt() : 3;
     record.repetitions = json["repetitions"].toInt();
     return record;
 }
@@ -74,6 +78,7 @@ QVariant ExerciseModel::data(const QModelIndex& index, int role) const {
     case MuscleGroupRole: return exercise.muscleGroup;
     case CurrentValueRole: return exercise.currentValue;
     case UnitRole: return exercise.unit;
+    case SetsRole: return exercise.sets;
     case RepetitionsRole: return exercise.repetitions;
     case LastUpdatedRole: return exercise.lastUpdated;
     case HistoryRole: {
@@ -83,7 +88,8 @@ QVariant ExerciseModel::data(const QModelIndex& index, int role) const {
                 {"timestamp", record.timestamp},
                 {"value", record.value},
                 {"unit", record.unit},
-                {"repetitions", record.repetitions}
+                {"repetitions", record.repetitions},
+                {"sets", record.sets}
             });
         }
         return history;
@@ -98,6 +104,7 @@ QHash<int, QByteArray> ExerciseModel::roleNames() const {
         {MuscleGroupRole, "muscleGroup"},
         {CurrentValueRole, "currentValue"},
         {UnitRole, "unit"},
+        {SetsRole, "sets"},
         {RepetitionsRole, "repetitions"},
         {LastUpdatedRole, "lastUpdated"},
         {HistoryRole, "history"}
@@ -134,7 +141,7 @@ QJsonObject ExerciseModel::toJson() const {
 }
 
 void ExerciseModel::addExercise(const QString& name, const QString& muscleGroup,
-                                double value, const QString& unit, int reps) {
+                                double value, const QString& unit, int sets, int reps) {
     beginInsertRows(QModelIndex(), rowCount(), rowCount());
 
     Exercise newExercise;
@@ -142,6 +149,7 @@ void ExerciseModel::addExercise(const QString& name, const QString& muscleGroup,
     newExercise.muscleGroup = muscleGroup;
     newExercise.currentValue = value;
     newExercise.unit = unit;
+    newExercise.sets = sets;
     newExercise.repetitions = reps;
     newExercise.lastUpdated = QDateTime::currentDateTime();
 
@@ -149,7 +157,7 @@ void ExerciseModel::addExercise(const QString& name, const QString& muscleGroup,
     endInsertRows();
 }
 
-void ExerciseModel::updateExercise(int index, double value, int reps) {
+void ExerciseModel::updateExercise(int index, double value, int sets, int reps) {
     if (index < 0 || index >= m_exercises.count())
         return;
 
@@ -158,12 +166,14 @@ void ExerciseModel::updateExercise(int index, double value, int reps) {
     currentRecord.timestamp = m_exercises[index].lastUpdated;
     currentRecord.value = m_exercises[index].currentValue;
     currentRecord.unit = m_exercises[index].unit;
+    currentRecord.sets = m_exercises[index].sets;
     currentRecord.repetitions = m_exercises[index].repetitions;
 
     m_exercises[index].history.prepend(currentRecord);
 
     // Actualizar valores
     m_exercises[index].currentValue = value;
+    m_exercises[index].sets = sets;
     m_exercises[index].repetitions = reps;
     m_exercises[index].lastUpdated = QDateTime::currentDateTime();
 

@@ -18,8 +18,8 @@ public:
     Q_INVOKABLE void load();
     Q_INVOKABLE void save();
     Q_INVOKABLE void addExercise(const QString& name, const QString& muscleGroup,
-                                 double value, const QString& unit, int reps);
-    Q_INVOKABLE void updateExercise(const QString& name, double value, int reps);
+                                 double value, const QString& unit, int sets, int reps);
+    Q_INVOKABLE void updateExercise(const QString& name, double value, int sets, int reps);
     Q_INVOKABLE void removeExercise(const QString& name);
     Q_INVOKABLE void reloadDefaultData();
     Q_INVOKABLE void deleteAllExercises();
@@ -28,6 +28,7 @@ public:
     Q_INVOKABLE double getCurrentValue(const QString& exerciseName) const;
     Q_INVOKABLE QString getUnit(const QString& exerciseName) const;
     Q_INVOKABLE int getRepetitions(const QString& exerciseName) const;
+    Q_INVOKABLE int getSets(const QString& exerciseName) const;
 
 signals:
     void dataChanged();

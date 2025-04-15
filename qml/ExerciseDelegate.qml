@@ -13,6 +13,7 @@ Item {
     required property double currentValue
     required property string unit
     required property int repetitions
+    required property int sets
     required property var history
     required property int index
 
@@ -135,7 +136,7 @@ Item {
 
                 Text {
                     anchors.right: parent.right
-                    text: root.repetitions > 0 ? "x" + root.repetitions : "-"
+                    text: root.repetitions > 0 ? (root.sets > 0 ? root.sets : "") + "x" + root.repetitions : "-"
                     font {
                         family: Style.interFont.name
                         pixelSize: Style.caption

@@ -55,6 +55,7 @@ void DataCenter::ensureHistoriesExist() {
             record["timestamp"] = exercise["lastUpdated"].toString();
             record["value"] = exercise["currentValue"].toDouble();
             record["unit"] = exercise["unit"].toString();
+            record["sets"] = exercise["sets"].toInt();
             record["repetitions"] = exercise["repetitions"].toInt();
 
             history.append(record);
@@ -78,7 +79,7 @@ void DataCenter::save() {
 }
 
 void DataCenter::addExercise(const QString& name, const QString& muscleGroup,
-                             double value, const QString& unit, int reps) {
+                             double value, const QString& unit, int sets, int reps) {
     QJsonObject exercises = m_data["exercises"].toObject();
     QDateTime now = QDateTime::currentDateTime();
 
@@ -86,12 +87,14 @@ void DataCenter::addExercise(const QString& name, const QString& muscleGroup,
         {"muscleGroup", muscleGroup},
         {"currentValue", value},
         {"unit", unit},
+        {"sets", sets},
         {"repetitions", reps},
         {"lastUpdated", now.toString(Qt::ISODate)},
         {"history", QJsonArray{QJsonObject{
                         {"timestamp", now.toString(Qt::ISODate)},
                         {"value", value},
                         {"unit", unit},
+                        {"sets", sets},
                         {"repetitions", reps}
                     }}}
     };
@@ -102,7 +105,7 @@ void DataCenter::addExercise(const QString& name, const QString& muscleGroup,
     emit dataChanged();
 }
 
-void DataCenter::updateExercise(const QString& name, double value, int reps) {
+void DataCenter::updateExercise(const QString& name, double value, int sets, int reps) {
     QJsonObject exercises = m_data["exercises"].toObject();
     if (!exercises.contains(name)) return;
 
@@ -114,10 +117,12 @@ void DataCenter::updateExercise(const QString& name, double value, int reps) {
         {"timestamp", exercise["lastUpdated"].toString()},
         {"value", exercise["currentValue"].toDouble()},
         {"unit", exercise["unit"].toString()},
+        {"sets", exercise["sets"].toInt()},
         {"repetitions", exercise["repetitions"].toInt()}
     });
 
     exercise["currentValue"] = value;
+    exercise["sets"] = sets;
     exercise["repetitions"] = reps;
     exercise["lastUpdated"] = now.toString(Qt::ISODate);
     exercise["history"] = history;
@@ -195,19 +200,22 @@ void DataCenter::loadDefaultData() {
         {"currentValue", 75.0},
         {"unit", "kg"},
         {"repetitions", 8},
+        {"sets", 3},
         {"lastUpdated", now.toString(Qt::ISODate)},
         {"history", QJsonArray{
                         QJsonObject{
                             {"timestamp", yesterday.toString(Qt::ISODate)},
                             {"value", 70.0},
                             {"unit", "kg"},
-                            {"repetitions", 8}
+                            {"repetitions", 8},
+                            {"sets", 3}
                         },
                         QJsonObject{
                             {"timestamp", lastWeek.toString(Qt::ISODate)},
                             {"value", 65.0},
                             {"unit", "kg"},
-                            {"repetitions", 10}
+                            {"repetitions", 10},
+                            {"sets", 3}
                         }
                     }}
     };
@@ -217,19 +225,22 @@ void DataCenter::loadDefaultData() {
         {"currentValue", 65.0},
         {"unit", "kg"},
         {"repetitions", 10},
+        {"sets", 3},
         {"lastUpdated", now.toString(Qt::ISODate)},
         {"history", QJsonArray{
                         QJsonObject{
                             {"timestamp", yesterday.toString(Qt::ISODate)},
                             {"value", 60.0},
                             {"unit", "kg"},
-                            {"repetitions", 10}
+                            {"repetitions", 10},
+                            {"sets", 3}
                         },
                         QJsonObject{
                             {"timestamp", lastWeek.toString(Qt::ISODate)},
                             {"value", 55.0},
                             {"unit", "kg"},
-                            {"repetitions", 10}
+                            {"repetitions", 10},
+                            {"sets", 3}
                         }
                     }}
     };
@@ -240,13 +251,15 @@ void DataCenter::loadDefaultData() {
         {"currentValue", 110.0},
         {"unit", "kg"},
         {"repetitions", 5},
+        {"sets", 3},
         {"lastUpdated", now.toString(Qt::ISODate)},
         {"history", QJsonArray{
                         QJsonObject{
                             {"timestamp", yesterday.toString(Qt::ISODate)},
                             {"value", 100.0},
                             {"unit", "kg"},
-                            {"repetitions", 6}
+                            {"repetitions", 6},
+                            {"sets", 3}
                         }
                     }}
     };
@@ -256,19 +269,22 @@ void DataCenter::loadDefaultData() {
         {"currentValue", 50.0},
         {"unit", "kg"},
         {"repetitions", 12},
+        {"sets", 3},
         {"lastUpdated", now.toString(Qt::ISODate)},
         {"history", QJsonArray{
                         QJsonObject{
                             {"timestamp", yesterday.toString(Qt::ISODate)},
                             {"value", 48.0},
                             {"unit", "kg"},
-                            {"repetitions", 12}
+                            {"repetitions", 12},
+                            {"sets", 3}
                         },
                         QJsonObject{
                             {"timestamp", lastWeek.toString(Qt::ISODate)},
                             {"value", 45.0},
                             {"unit", "kg"},
-                            {"repetitions", 12}
+                            {"repetitions", 12},
+                            {"sets", 3}
                         }
                     }}
     };
@@ -279,31 +295,36 @@ void DataCenter::loadDefaultData() {
         {"currentValue", 140.0},
         {"unit", "kg"},
         {"repetitions", 5},
+        {"sets", 3},
         {"lastUpdated", now.toString(Qt::ISODate)},
         {"history", QJsonArray{
                         QJsonObject{
                             {"timestamp", now.toString(Qt::ISODate)},
                             {"value", 140.0},
                             {"unit", "kg"},
-                            {"repetitions", 5}
+                            {"repetitions", 5},
+                            {"sets", 3}
                         },
                         QJsonObject{
                             {"timestamp", yesterday.toString(Qt::ISODate)},
                             {"value", 135.0},
                             {"unit", "kg"},
-                            {"repetitions", 5}
+                            {"repetitions", 5},
+                            {"sets", 3}
                         },
                         QJsonObject{
                             {"timestamp", lastWeek.toString(Qt::ISODate)},
                             {"value", 130.0},
                             {"unit", "kg"},
-                            {"repetitions", 5}
+                            {"repetitions", 5},
+                            {"sets", 3}
                         },
                         QJsonObject{
                             {"timestamp", lastMonth.toString(Qt::ISODate)},
                             {"value", 120.0},
                             {"unit", "kg"},
-                            {"repetitions", 6}
+                            {"repetitions", 6},
+                            {"sets", 3}
                         }
                     }}
     };
@@ -314,31 +335,36 @@ void DataCenter::loadDefaultData() {
         {"currentValue", 0},
         {"unit", "-"},
         {"repetitions", 3},
+        {"sets", 3},
         {"lastUpdated", now.toString(Qt::ISODate)},
         {"history", QJsonArray{
                         QJsonObject{
                             {"timestamp", now.toString(Qt::ISODate)},
                             {"value", 0},
                             {"unit", "-"},
-                            {"repetitions", 3}
+                            {"repetitions", 3},
+                            {"sets", 3}
                         },
                         QJsonObject{
                             {"timestamp", yesterday.toString(Qt::ISODate)},
                             {"value", 0},
                             {"unit", "-"},
-                            {"repetitions", 4}
+                            {"repetitions", 4},
+                            {"sets", 3}
                         },
                         QJsonObject{
                             {"timestamp", lastWeek.toString(Qt::ISODate)},
                             {"value", 0},
                             {"unit", "-"},
-                            {"repetitions", 5}
+                            {"repetitions", 5},
+                            {"sets", 3}
                         },
                         QJsonObject{
                             {"timestamp", lastMonth.toString(Qt::ISODate)},
                             {"value", 0},
                             {"unit", "-"},
-                            {"repetitions", 6}
+                            {"repetitions", 6},
+                            {"sets", 3}
                         }
                     }}
     };
@@ -348,19 +374,22 @@ void DataCenter::loadDefaultData() {
         {"currentValue", 70.0},
         {"unit", "kg"},
         {"repetitions", 8},
+        {"sets", 3},
         {"lastUpdated", now.toString(Qt::ISODate)},
         {"history", QJsonArray{
                         QJsonObject{
                             {"timestamp", yesterday.toString(Qt::ISODate)},
                             {"value", 65.0},
                             {"unit", "kg"},
-                            {"repetitions", 8}
+                            {"repetitions", 8},
+                            {"sets", 3}
                         },
                         QJsonObject{
                             {"timestamp", lastWeek.toString(Qt::ISODate)},
                             {"value", 60.0},
                             {"unit", "kg"},
-                            {"repetitions", 10}
+                            {"repetitions", 10},
+                            {"sets", 3}
                         }
                     }}
     };
@@ -371,31 +400,36 @@ void DataCenter::loadDefaultData() {
         {"currentValue", 50.0},
         {"unit", "kg"},
         {"repetitions", 6},
+        {"sets", 3},
         {"lastUpdated", now.toString(Qt::ISODate)},
         {"history", QJsonArray{
                         QJsonObject{
                             {"timestamp", now.toString(Qt::ISODate)},
                             {"value", 50.0},
                             {"unit", "kg"},
-                            {"repetitions", 6}
+                            {"repetitions", 6},
+                            {"sets", 3}
                         },
                         QJsonObject{
                             {"timestamp", yesterday.toString(Qt::ISODate)},
                             {"value", 48.0},
                             {"unit", "kg"},
-                            {"repetitions", 6}
+                            {"repetitions", 6},
+                            {"sets", 3}
                         },
                         QJsonObject{
                             {"timestamp", lastWeek.toString(Qt::ISODate)},
                             {"value", 45.0},
                             {"unit", "kg"},
-                            {"repetitions", 7}
+                            {"repetitions", 7},
+                            {"sets", 3}
                         },
                         QJsonObject{
                             {"timestamp", lastMonth.toString(Qt::ISODate)},
                             {"value", 40.0},
                             {"unit", "kg"},
-                            {"repetitions", 8}
+                            {"repetitions", 8},
+                            {"sets", 3}
                         }
                     }}
     };
@@ -405,19 +439,22 @@ void DataCenter::loadDefaultData() {
         {"currentValue", 15.0},
         {"unit", "kg"},
         {"repetitions", 12},
+        {"sets", 3},
         {"lastUpdated", now.toString(Qt::ISODate)},
         {"history", QJsonArray{
                         QJsonObject{
                             {"timestamp", yesterday.toString(Qt::ISODate)},
                             {"value", 14.0},
                             {"unit", "kg"},
-                            {"repetitions", 12}
+                            {"repetitions", 12},
+                            {"sets", 3}
                         },
                         QJsonObject{
                             {"timestamp", lastWeek.toString(Qt::ISODate)},
                             {"value", 13.0},
                             {"unit", "kg"},
-                            {"repetitions", 12}
+                            {"repetitions", 12},
+                            {"sets", 3}
                         }
                     }}
     };
@@ -428,31 +465,36 @@ void DataCenter::loadDefaultData() {
         {"currentValue", 12.0},
         {"unit", "kg"},
         {"repetitions", 10},
+        {"sets", 3},
         {"lastUpdated", now.toString(Qt::ISODate)},
         {"history", QJsonArray{
                         QJsonObject{
                             {"timestamp", now.toString(Qt::ISODate)},
                             {"value", 12.0},
                             {"unit", "kg"},
-                            {"repetitions", 10}
+                            {"repetitions", 10},
+                            {"sets", 3}
                         },
                         QJsonObject{
                             {"timestamp", yesterday.toString(Qt::ISODate)},
                             {"value", 11.0},
                             {"unit", "kg"},
-                            {"repetitions", 12}
+                            {"repetitions", 12},
+                            {"sets", 3}
                         },
                         QJsonObject{
                             {"timestamp", lastWeek.toString(Qt::ISODate)},
                             {"value", 10.0},
                             {"unit", "kg"},
-                            {"repetitions", 15}
+                            {"repetitions", 15},
+                            {"sets", 3}
                         },
                         QJsonObject{
                             {"timestamp", lastMonth.toString(Qt::ISODate)},
                             {"value", 9.0},
                             {"unit", "kg"},
-                            {"repetitions", 15}
+                            {"repetitions", 15},
+                            {"sets", 3}
                         }
                     }}
     };
@@ -462,19 +504,22 @@ void DataCenter::loadDefaultData() {
         {"currentValue", 20.0},
         {"unit", "kg"},
         {"repetitions", 10},
+        {"sets", 3},
         {"lastUpdated", now.toString(Qt::ISODate)},
         {"history", QJsonArray{
                         QJsonObject{
                             {"timestamp", yesterday.toString(Qt::ISODate)},
                             {"value", 18.0},
                             {"unit", "kg"},
-                            {"repetitions", 12}
+                            {"repetitions", 12},
+                            {"sets", 3}
                         },
                         QJsonObject{
                             {"timestamp", lastWeek.toString(Qt::ISODate)},
                             {"value", 16.0},
                             {"unit", "kg"},
-                            {"repetitions", 10}
+                            {"repetitions", 10},
+                            {"sets", 3}
                         }
                     }}
     };
@@ -485,19 +530,22 @@ void DataCenter::loadDefaultData() {
         {"currentValue", 0},
         {"unit", "-"},
         {"repetitions", 1},
+        {"sets", 3},
         {"lastUpdated", now.toString(Qt::ISODate)},
         {"history", QJsonArray{
                         QJsonObject{
                             {"timestamp", yesterday.toString(Qt::ISODate)},
                             {"value", 0},
                             {"unit", "-"},
-                            {"repetitions", 1}
+                            {"repetitions", 1},
+                            {"sets", 3}
                         },
                         QJsonObject{
                             {"timestamp", lastWeek.toString(Qt::ISODate)},
                             {"value", 0},
                             {"unit", "-"},
-                            {"repetitions", 1}
+                            {"repetitions", 1},
+                            {"sets", 3}
                         }
                     }}
     };
@@ -507,19 +555,22 @@ void DataCenter::loadDefaultData() {
         {"currentValue", 0},
         {"unit", "-"},
         {"repetitions", 15},
+        {"sets", 3},
         {"lastUpdated", now.toString(Qt::ISODate)},
         {"history", QJsonArray{
                         QJsonObject{
                             {"timestamp", yesterday.toString(Qt::ISODate)},
                             {"value", 0},
                             {"unit", "-"},
-                            {"repetitions", 15}
+                            {"repetitions", 15},
+                            {"sets", 3}
                         },
                         QJsonObject{
                             {"timestamp", lastWeek.toString(Qt::ISODate)},
                             {"value", 0},
                             {"unit", "-"},
-                            {"repetitions", 15}
+                            {"repetitions", 15},
+                            {"sets", 3}
                         }
                     }}
     };
@@ -529,19 +580,22 @@ void DataCenter::loadDefaultData() {
         {"currentValue", 0},
         {"unit", "-"},
         {"repetitions", 20},
+        {"sets", 3},
         {"lastUpdated", now.toString(Qt::ISODate)},
         {"history", QJsonArray{
                         QJsonObject{
                             {"timestamp", yesterday.toString(Qt::ISODate)},
                             {"value", 0},
                             {"unit", "-"},
-                            {"repetitions", 20}
+                            {"repetitions", 20},
+                            {"sets", 3}
                         },
                         QJsonObject{
                             {"timestamp", lastWeek.toString(Qt::ISODate)},
                             {"value", 0},
                             {"unit", "-"},
-                            {"repetitions", 20}
+                            {"repetitions", 20},
+                            {"sets", 3}
                         }
                     }}
     };
@@ -551,19 +605,22 @@ void DataCenter::loadDefaultData() {
         {"currentValue", 0},
         {"unit", "-"},
         {"repetitions", 15},
+        {"sets", 3},
         {"lastUpdated", now.toString(Qt::ISODate)},
         {"history", QJsonArray{
                         QJsonObject{
                             {"timestamp", yesterday.toString(Qt::ISODate)},
                             {"value", 0},
                             {"unit", "-"},
-                            {"repetitions", 15}
+                            {"repetitions", 15},
+                            {"sets", 3}
                         },
                         QJsonObject{
                             {"timestamp", lastWeek.toString(Qt::ISODate)},
                             {"value", 0},
                             {"unit", "-"},
-                            {"repetitions", 15}
+                            {"repetitions", 15},
+                            {"sets", 3}
                         }
                     }}
     };
@@ -602,4 +659,12 @@ int DataCenter::getRepetitions(const QString& exerciseName) const
     if (!exercises.contains(exerciseName)) return 0;
 
     return exercises[exerciseName].toObject()["repetitions"].toInt();
+}
+
+int DataCenter::getSets(const QString& exerciseName) const
+{
+    QJsonObject exercises = m_data["exercises"].toObject();
+    if (!exercises.contains(exerciseName)) return 0;
+
+    return exercises[exerciseName].toObject()["sets"].toInt();
 }

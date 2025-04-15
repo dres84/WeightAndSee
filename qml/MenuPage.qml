@@ -44,6 +44,15 @@ Page {
             }
         }
 
+        Label {
+            text: "o filtra por grupo muscular:"
+            font.family: Style.interFont.name
+            font.bold: true
+            font.pixelSize: Style.caption
+            topPadding: 5
+            color: Style.text
+        }
+
         // Filtros de grupos musculares
         MuscleGroupFilter {
             id: groupFilter
