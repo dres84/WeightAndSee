@@ -34,6 +34,7 @@ QtObject {
     readonly property int heading1: 24
     readonly property int heading2: 20
     readonly property int body: 16
+    readonly property int semi: 14
     readonly property int caption: 12
 
     // Espacios

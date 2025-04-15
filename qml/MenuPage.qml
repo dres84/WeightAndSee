@@ -47,10 +47,9 @@ Page {
         Label {
             text: "o filtra por grupo muscular:"
             font.family: Style.interFont.name
-            font.bold: true
-            font.pixelSize: Style.caption
+            font.pixelSize: Style.semi
             topPadding: 5
-            color: Style.text
+            color: Style.textSecondary
         }
 
         // Filtros de grupos musculares

@@ -25,8 +25,18 @@ Dialog {
         }
         return currentValue.toString() !== weightField.text
     }
-    property bool setsHasChanged: sets.toString() !== setsField.text
-    property bool repetitionsHasChanged: repetitions.toString() !== repsField.text
+    property bool setsHasChanged: {
+        if (sets.toString() === "0" && setsField.text === "") {
+            return false
+        }
+        return sets.toString() !== setsField.text
+    }
+    property bool repetitionsHasChanged: {
+        if (repetitions.toString() === "0" && repsField.text === "") {
+            return false
+        }
+        return repetitions.toString() !== repsField.text
+    }
 
     signal exerciseUpdated()
 
