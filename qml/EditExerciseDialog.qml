@@ -19,7 +19,12 @@ Dialog {
     property int sets: dataCenter.getSets(exerciseName)
     property int repetitions: dataCenter.getRepetitions(exerciseName)
 
-    property bool weightHasChanged: currentValue.toString() !== weightField.text
+    property bool weightHasChanged: {
+        if (currentValue.toString() === "0" && weightField.text === "") {
+            return false
+        }
+        return currentValue.toString() !== weightField.text
+    }
     property bool setsHasChanged: sets.toString() !== setsField.text
     property bool repetitionsHasChanged: repetitions.toString() !== repsField.text
 
