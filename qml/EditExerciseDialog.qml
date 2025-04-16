@@ -19,12 +19,14 @@ Dialog {
     property int sets: dataCenter.getSets(exerciseName)
     property int repetitions: dataCenter.getRepetitions(exerciseName)
 
+    property bool saveButtonEnabled: (weightHasChanged || setsHasChanged || repetitionsHasChanged)
+                                     && !weightEmptyError && !setsEmptyError && !repsEmptyError
+    property bool saveButtonEnabledDebug: false
+
     property bool weightHasChanged: {
         if (currentValue.toString() === "0" && weightField.text === "") {
-            console.log("weightHasChanged 1")
             return false
         }
-        console.log("weightHasChanged 2: " + currentValue.toString() !== weightField.text)
         return currentValue.toString() !== weightField.text
     }
     property bool setsHasChanged: {
@@ -39,6 +41,7 @@ Dialog {
         }
         return repetitions.toString() !== repsField.text
     }
+
 
     // No dejamos guardar registro si antes tenía dato y ahora no
     property bool weightEmptyError: currentValue > 0 && weightField.text === ""
@@ -203,8 +206,7 @@ Dialog {
                 id: saveButton
                 Layout.fillWidth: true
                 text: "Guardar Cambios"
-                enabled: (weightHasChanged || setsHasChanged || repetitionsHasChanged)
-                         && !weightEmptyError && !setsEmptyError && !repsEmptyError
+                enabled: saveButtonEnabled
 
                 background: Rectangle {
                     implicitHeight: 40
@@ -225,7 +227,7 @@ Dialog {
                 }
 
                 onClicked: {
-                    var newValue = parseFloat(weightField.text)
+                    var newValue = weightField.text === "" ? "0" : parseFloat(weightField.text)
                     var newSets = parseInt(setsField.text)
                     var newReps = parseInt(repsField.text)
                     var newUnit = weightField.text === "" ? "-" : (kgRadio.checked ? "kg" : "lb")
@@ -287,6 +289,15 @@ Dialog {
         console.log("Unidad:", unit)
         console.log("Series:", sets)
         console.log("Repeticiones:", repetitions)
+        console.log(" ")
     }
+
+    function debugSaveButtonState() {
+        console.log(`Estado: ${weightHasChanged}|${setsHasChanged}|${repetitionsHasChanged} ` +
+                   `No Errores: ${!weightEmptyError}|${!setsEmptyError}|${!repsEmptyError} ` +
+                   `Resultado: ${saveButtonEnabled}`);
+    }
+
+    onSaveButtonEnabledChanged: saveButtonEnabledDebug && debugSaveButtonState()
 
 }
