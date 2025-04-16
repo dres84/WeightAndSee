@@ -21,8 +21,10 @@ Dialog {
 
     property bool weightHasChanged: {
         if (currentValue.toString() === "0" && weightField.text === "") {
+            console.log("weightHasChanged 1")
             return false
         }
+        console.log("weightHasChanged 2: " + currentValue.toString() !== weightField.text)
         return currentValue.toString() !== weightField.text
     }
     property bool setsHasChanged: {
@@ -37,6 +39,11 @@ Dialog {
         }
         return repetitions.toString() !== repsField.text
     }
+
+    // No dejamos guardar registro si antes tenía dato y ahora no
+    property bool weightEmptyError: currentValue > 0 && weightField.text === ""
+    property bool setsEmptyError: sets > 0 && setsField.text === ""
+    property bool repsEmptyError: repetitions > 0 && repsField.text === ""
 
     signal exerciseUpdated()
 
@@ -108,6 +115,7 @@ Dialog {
                 Layout.fillWidth: true
                 Layout.preferredWidth: parent.width * 0.6
                 placeholderText: "Peso*"
+                onTextChanged: console.log("weightField to " + text)
             }
 
             // Selector de unidades
@@ -186,7 +194,8 @@ Dialog {
                 id: saveButton
                 Layout.fillWidth: true
                 text: "Guardar Cambios"
-                enabled: weightHasChanged || setsHasChanged || repetitionsHasChanged
+                enabled: (weightHasChanged || setsHasChanged || repetitionsHasChanged)
+                         && !weightEmptyError && !setsEmptyError && !repsEmptyError
 
                 background: Rectangle {
                     implicitHeight: 40
@@ -210,11 +219,12 @@ Dialog {
                     var newValue = parseFloat(weightField.text)
                     var newSets = parseInt(setsField.text)
                     var newReps = parseInt(repsField.text)
-                    var unit = weightField.text === "" ? "-" : (kgRadio.checked ? "kg" : "lb")
+                    var newUnit = weightField.text === "" ? "-" : (kgRadio.checked ? "kg" : "lb")
 
                     dataCenter.updateExercise(
                         exerciseName,
                         newValue,
+                        newUnit,
                         newReps > 0 ? newSets : 0,
                         newReps
                     )
@@ -241,9 +251,16 @@ Dialog {
     }
 
     onOpened: {
+        console.log("EditExerciseDialog opened")
         weightField.text = currentValue > 0 ? currentValue : ""
         setsField.text = sets > 0 ? sets : ""
         repsField.text = repetitions > 0 ? repetitions : ""
+
+        //por si volvemos a abrir el mismo elemento y hemos modificado algo previamente
+        currentValue = dataCenter.getCurrentValue(exerciseName)
+        unit =  dataCenter.getUnit(exerciseName)
+        sets = dataCenter.getSets(exerciseName)
+        repetitions = dataCenter.getRepetitions(exerciseName)
     }
 
     onClosed: {
@@ -259,7 +276,7 @@ Dialog {
         console.log("Grupo muscular:", muscleGroup)
         console.log("Valor actual:", currentValue)
         console.log("Unidad:", unit)
-        console.log("Series:", setsField.text)
+        console.log("Series:", sets)
         console.log("Repeticiones:", repetitions)
     }
 }

@@ -157,7 +157,7 @@ void ExerciseModel::addExercise(const QString& name, const QString& muscleGroup,
     endInsertRows();
 }
 
-void ExerciseModel::updateExercise(int index, double value, int sets, int reps) {
+void ExerciseModel::updateExercise(int index, double value, const QString& unit, int sets, int reps) {
     if (index < 0 || index >= m_exercises.count())
         return;
 
@@ -174,6 +174,7 @@ void ExerciseModel::updateExercise(int index, double value, int sets, int reps) 
     // Actualizar valores
     m_exercises[index].currentValue = value;
     m_exercises[index].sets = sets;
+    m_exercises[index].unit = unit;
     m_exercises[index].repetitions = reps;
     m_exercises[index].lastUpdated = QDateTime::currentDateTime();
 

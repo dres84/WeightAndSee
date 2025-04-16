@@ -105,7 +105,7 @@ void DataCenter::addExercise(const QString& name, const QString& muscleGroup,
     emit dataChanged();
 }
 
-void DataCenter::updateExercise(const QString& name, double value, int sets, int reps) {
+void DataCenter::updateExercise(const QString& name, double value, const QString& unit, int sets, int reps) {
     QJsonObject exercises = m_data["exercises"].toObject();
     if (!exercises.contains(name)) return;
 
@@ -122,6 +122,7 @@ void DataCenter::updateExercise(const QString& name, double value, int sets, int
     });
 
     exercise["currentValue"] = value;
+    exercise["unit"] = unit;
     exercise["sets"] = sets;
     exercise["repetitions"] = reps;
     exercise["lastUpdated"] = now.toString(Qt::ISODate);

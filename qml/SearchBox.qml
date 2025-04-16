@@ -20,7 +20,7 @@ Rectangle {
         font.family: Style.interFont.name
         font.pixelSize: Style.body
         color: Style.text
-        placeholderText: "🔍 Buscar ejercicio..."
+        placeholderText: "🔍 Busca un ejercicio..."
         placeholderTextColor: Style.textSecondary
         background: Item {}
 

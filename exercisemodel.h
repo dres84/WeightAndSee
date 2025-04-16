@@ -58,7 +58,7 @@ public:
     Q_INVOKABLE QJsonObject toJson() const;
     Q_INVOKABLE void addExercise(const QString& name, const QString& muscleGroup,
                                  double value, const QString& unit, int sets, int reps);
-    Q_INVOKABLE void updateExercise(int index, double value, int sets, int reps);
+    Q_INVOKABLE void updateExercise(int index, double value, const QString& unit, int sets, int reps);
     Q_INVOKABLE void removeExercise(int index);
 
 signals:
