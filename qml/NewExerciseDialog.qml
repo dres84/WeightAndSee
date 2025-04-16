@@ -182,6 +182,7 @@ Dialog {
                 Layout.fillWidth: true
                 Layout.preferredWidth: parent.width * 0.5
                 placeholderText: "Peso (opcional)"
+                maximumLength: 4
             }
 
             RowLayout {
@@ -211,6 +212,7 @@ Dialog {
                 placeholderText: "Series (opcional)"
                 validator: IntValidator { bottom: 0 }
                 allowDecimals: false
+                maximumLength: 3
                 text: "3"
             }
 
@@ -220,6 +222,7 @@ Dialog {
                 placeholderText: "Repeticiones (opcional)"
                 validator: IntValidator { bottom: 0 }
                 allowDecimals: false
+                maximumLength: 4
             }
         }
 

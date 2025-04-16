@@ -113,9 +113,9 @@ Dialog {
             NumericTextField {
                 id: weightField
                 Layout.fillWidth: true
+                maximumLength: 4
                 Layout.preferredWidth: parent.width * 0.6
                 placeholderText: currentValue > 0 ? "Peso*" : "Peso (opcional)"
-                onTextChanged: console.log("weightField to " + text)
             }
 
             // Selector de unidades
@@ -148,6 +148,7 @@ Dialog {
                 id: setsField
                 Layout.fillWidth: true
                 allowDecimals: false
+                maximumLength: 3
                 placeholderText: sets > 0 ? "Series*" : "Series (opcional)"
                 onTextChanged: console.log("Sets field text changed to " + text)
             }
@@ -157,6 +158,7 @@ Dialog {
                 id: repsField
                 Layout.fillWidth: true
                 allowDecimals: false
+                maximumLength: 4
                 placeholderText: repetitions > 0 ? "Repeticiones*" : "Repeticiones (opcional)"
             }
         }
@@ -275,7 +277,6 @@ Dialog {
         weightField.focus = false
         setsField.focus = false
         repsField.focus = false
-        saveButton.enabled = false
     }
 
     onExerciseNameChanged: {
@@ -287,4 +288,5 @@ Dialog {
         console.log("Series:", sets)
         console.log("Repeticiones:", repetitions)
     }
+
 }
