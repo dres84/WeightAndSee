@@ -114,7 +114,7 @@ Dialog {
                 id: weightField
                 Layout.fillWidth: true
                 Layout.preferredWidth: parent.width * 0.6
-                placeholderText: "Peso*"
+                placeholderText: currentValue > 0 ? "Peso*" : "Peso (opcional)"
                 onTextChanged: console.log("weightField to " + text)
             }
 
@@ -148,7 +148,7 @@ Dialog {
                 id: setsField
                 Layout.fillWidth: true
                 allowDecimals: false
-                placeholderText: "Series*"
+                placeholderText: sets > 0 ? "Series*" : "Series (opcional)"
                 onTextChanged: console.log("Sets field text changed to " + text)
             }
 
@@ -157,8 +157,15 @@ Dialog {
                 id: repsField
                 Layout.fillWidth: true
                 allowDecimals: false
-                placeholderText: "Repeticiones*"
+                placeholderText: repetitions > 0 ? "Repeticiones*" : "Repeticiones (opcional)"
             }
+        }
+
+        Label {
+            text: "* Campos obligatorios"
+            font.italic: true
+            font.pixelSize: Style.caption
+            color: Style.textSecondary
         }
 
         // Fila para los botones Guardar y Cancelar
@@ -268,6 +275,7 @@ Dialog {
         weightField.focus = false
         setsField.focus = false
         repsField.focus = false
+        saveButton.enabled = false
     }
 
     onExerciseNameChanged: {

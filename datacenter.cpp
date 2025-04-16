@@ -199,7 +199,7 @@ void DataCenter::loadDefaultData() {
     exercises["Bench Press"] = QJsonObject{
         {"muscleGroup", "Pecho"},
         {"currentValue", 75.0},
-        {"unit", "kg"},
+        {"unit", "lb"},
         {"repetitions", 8},
         {"sets", 3},
         {"lastUpdated", now.toString(Qt::ISODate)},
@@ -207,14 +207,14 @@ void DataCenter::loadDefaultData() {
                         QJsonObject{
                             {"timestamp", yesterday.toString(Qt::ISODate)},
                             {"value", 70.0},
-                            {"unit", "kg"},
+                            {"unit", "lb"},
                             {"repetitions", 8},
                             {"sets", 3}
                         },
                         QJsonObject{
                             {"timestamp", lastWeek.toString(Qt::ISODate)},
                             {"value", 65.0},
-                            {"unit", "kg"},
+                            {"unit", "lb"},
                             {"repetitions", 10},
                             {"sets", 3}
                         }
@@ -373,7 +373,7 @@ void DataCenter::loadDefaultData() {
     exercises["Bent-over Row"] = QJsonObject{
         {"muscleGroup", "Espalda"},
         {"currentValue", 70.0},
-        {"unit", "kg"},
+        {"unit", "lb"},
         {"repetitions", 8},
         {"sets", 3},
         {"lastUpdated", now.toString(Qt::ISODate)},
@@ -381,14 +381,14 @@ void DataCenter::loadDefaultData() {
                         QJsonObject{
                             {"timestamp", yesterday.toString(Qt::ISODate)},
                             {"value", 65.0},
-                            {"unit", "kg"},
+                            {"unit", "lb"},
                             {"repetitions", 8},
                             {"sets", 3}
                         },
                         QJsonObject{
                             {"timestamp", lastWeek.toString(Qt::ISODate)},
                             {"value", 60.0},
-                            {"unit", "kg"},
+                            {"unit", "lb"},
                             {"repetitions", 10},
                             {"sets", 3}
                         }
