@@ -30,6 +30,9 @@ public:
     Q_INVOKABLE int getRepetitions(const QString& exerciseName) const;
     Q_INVOKABLE int getSets(const QString& exerciseName) const;
 
+    // Para las gráficas
+    Q_INVOKABLE QVariantList getExerciseHistoryDetailed(const QString& exerciseName) const;
+
 signals:
     void dataChanged();
 

@@ -290,44 +290,31 @@ void DataCenter::loadDefaultData() {
                     }}
     };
 
+    QJsonArray history;
+    for (int i = 19; i >= 0; --i) {
+        QDateTime entryTime = now.addDays(-i * 2);  // Cada entrada separada por 2 días
+        double value = 139 - i;  // Aumenta 1 kg cada vez
+        int repetitions = (i < 5) ? 6 : 5;  // Últimos 5 registros con 6 reps, el resto 5
+        int sets = 3;
+
+        history.append(QJsonObject{
+            {"timestamp", entryTime.toString(Qt::ISODate)},
+            {"value", value},
+            {"unit", "kg"},
+            {"repetitions", repetitions},
+            {"sets", sets}
+        });
+    }
+
     // ESPALDA (Ejercicios con peso o repeticiones)
     exercises["Deadlift"] = QJsonObject{
         {"muscleGroup", "Espalda"},
-        {"currentValue", 140.0},
+        {"currentValue", 139.0},
         {"unit", "kg"},
         {"repetitions", 5},
         {"sets", 3},
         {"lastUpdated", now.toString(Qt::ISODate)},
-        {"history", QJsonArray{
-                        QJsonObject{
-                            {"timestamp", now.toString(Qt::ISODate)},
-                            {"value", 140.0},
-                            {"unit", "kg"},
-                            {"repetitions", 5},
-                            {"sets", 3}
-                        },
-                        QJsonObject{
-                            {"timestamp", yesterday.toString(Qt::ISODate)},
-                            {"value", 135.0},
-                            {"unit", "kg"},
-                            {"repetitions", 5},
-                            {"sets", 3}
-                        },
-                        QJsonObject{
-                            {"timestamp", lastWeek.toString(Qt::ISODate)},
-                            {"value", 130.0},
-                            {"unit", "kg"},
-                            {"repetitions", 5},
-                            {"sets", 3}
-                        },
-                        QJsonObject{
-                            {"timestamp", lastMonth.toString(Qt::ISODate)},
-                            {"value", 120.0},
-                            {"unit", "kg"},
-                            {"repetitions", 6},
-                            {"sets", 3}
-                        }
-                    }}
+        {"history", history}
     };
 
     // Pull-up es ejercicio basado en repeticiones (sin peso)
@@ -669,3 +656,31 @@ int DataCenter::getSets(const QString& exerciseName) const
 
     return exercises[exerciseName].toObject()["sets"].toInt();
 }
+
+QVariantList DataCenter::getExerciseHistoryDetailed(const QString &exerciseName) const {
+    QVariantList historyList;
+
+    if (!m_data.contains("exercises")) return historyList;
+
+    QJsonObject exercisesObj = m_data["exercises"].toObject();
+    if (!exercisesObj.contains(exerciseName)) return historyList;
+
+    QJsonObject exerciseObj = exercisesObj[exerciseName].toObject();
+    if (!exerciseObj.contains("history")) return historyList;
+
+    QJsonArray historyArray = exerciseObj["history"].toArray();
+
+    for (const QJsonValue& entryVal : historyArray) {
+        QJsonObject entry = entryVal.toObject();
+        QVariantMap map;
+        map["date"] = entry["timestamp"].toString().left(10);  // o usa entry["date"] si así está
+        map["weight"] = entry["value"].toDouble();
+        map["unit"] = entry["unit"].toString();
+        map["sets"] = entry["sets"].toInt();
+        map["reps"] = entry["repetitions"].toInt(); // asegúrate del nombre correcto
+        historyList.append(map);
+    }
+
+    return historyList;
+}
+

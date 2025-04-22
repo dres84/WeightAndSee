@@ -92,8 +92,14 @@ Page {
                 }
                 onCloseOthers: listView.closeAll()
                 onEditExercise: {
-                    editDialog.exerciseName = name;
-                    editDialog.open()
+                    //editDialog.exerciseName = name;
+                    //editDialog.open()
+                    graphLoader.exerciseNameToLoad = name
+                    graphLoader.active = true
+                }
+                onOpenChart: {
+                    graphLoader.exerciseNameToLoad = name
+                    graphLoader.active = true
                 }
             }
             spacing: 1
@@ -143,7 +149,6 @@ Page {
         }
     }
 
-    // Botón flotante para agregar ejercicio
     // Botón de eliminar alineado a la izquierda
     FloatButton {
         id: deleteButton
@@ -185,6 +190,7 @@ Page {
         }
     }
 
+    // Botón de añadir ejercicio alineado a la derecha
     FloatButton {
         id: addButton
         anchors {
@@ -208,6 +214,24 @@ Page {
 
         onExerciseUpdated: {
             console.log("Ejercicio actualizado:", exerciseName);
+        }
+    }
+
+    // Loader para gráficos
+    Loader {
+        id: graphLoader
+        anchors.fill: parent
+        visible: graphLoader.active
+        sourceComponent: graphComponent
+        active: false
+        property string exerciseNameToLoad: ""
+
+        Component {
+            id: graphComponent
+            ExerciseGraph {
+                exerciseName: graphLoader.exerciseNameToLoad
+                onGoBack: graphLoader.active = false
+            }
         }
     }
 
