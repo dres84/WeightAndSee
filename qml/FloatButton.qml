@@ -2,22 +2,22 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Effects
 
-RoundButton {
+Button {
     id: root
 
     // Propiedades personalizables
     property alias buttonText: contentItem.text  // Texto del botón
-    property color buttonColor: Style.primary    // Color base (rojo por defecto)
+    property color buttonColor: Style.buttonPositive // Color base (verde por defecto)
     property color textColor: Style.buttonTextNegative // Color del texto
     property int shadowOffset: 2                 // Desplazamiento sombra
     property real shadowBlur: 0.5               // Difuminado sombra
+    property int fontPixelSize: 24
 
-    width: 60
-    height: width
-    radius: width/2  // Círculo perfecto
+    height: 60
+    property int radius: 10  // Círculo perfecto
 
     font {
-        pixelSize: 24
+        pixelSize: fontPixelSize
         bold: true
     }
 
@@ -34,7 +34,7 @@ RoundButton {
             shadowBlur: root.shadowBlur
             shadowHorizontalOffset: 0
             shadowVerticalOffset: root.shadowOffset
-            shadowScale: 1.05
+            shadowScale: 1.2
         }
     }
 

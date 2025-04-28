@@ -159,8 +159,10 @@ Page {
             bottomMargin: 15
             leftMargin: 15
         }
+        height: 50
         buttonColor: Style.buttonNegative
-        buttonText: allOpened ? "x" : "-"
+        fontPixelSize: Style.caption
+        buttonText: allOpened ? "Cancelar borrado" : "Borrar ejercicio"
         onClicked: allOpened ? listView.closeAll() : listView.openAll()
     }
 
@@ -177,6 +179,8 @@ Page {
 
         FloatButton {
             id: reloadButton
+            height: 50
+            width: 30
             buttonColor: Style.buttonNeutral
             buttonText: "\u21BB" // Reload symbol
             onClicked: dataCenter.reloadDefaultData()
@@ -184,6 +188,8 @@ Page {
 
         FloatButton {
             id: deleteFileButton
+            height: 50
+            width: 30
             buttonColor: Style.buttonNeutral
             buttonText: "\u232B"
             onClicked: dataCenter.deleteAllExercises()
@@ -199,8 +205,10 @@ Page {
             bottomMargin: 15
             rightMargin: 15
         }
+        height: 50
         buttonColor: Style.buttonPositive
-        buttonText: "+"
+        buttonText: "Nuevo ejercicio"
+        fontPixelSize: Style.caption
         onClicked: addDialog.open()
     }
 

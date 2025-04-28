@@ -6,11 +6,10 @@ QtObject {
     readonly property color background: "#121212"
     readonly property color surface: "#1E1E1E"
     readonly property color soft: "#2C2C2C"
-    readonly property color primary: "#FF5A5F"  // Rojo coral más vivo
-    readonly property color secondary: "#00A8A8"  // Turquesa más intenso
     readonly property color text: "#FFFFFF"
     readonly property color textSecondary: "#BDBDBD"
     readonly property color divider: "#373737"
+    readonly property color textDisabled: "#666666"
 
     // Colores para botones
     readonly property color buttonPositive: "#4CAF50"

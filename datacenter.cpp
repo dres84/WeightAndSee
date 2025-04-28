@@ -192,6 +192,10 @@ void DataCenter::loadDefaultData() {
     QDateTime yesterday = now.addDays(-1);
     QDateTime lastWeek = now.addDays(-7);
     QDateTime lastMonth = now.addMonths(-1);
+    QDateTime sixMonthAgo = now.addMonths(-6);
+    QDateTime oneYearAgo = now.addYears(-1);
+    QDateTime threeYearsAgo = now.addYears(-3);
+
 
     QJsonObject exercises;
 
@@ -217,6 +221,13 @@ void DataCenter::loadDefaultData() {
                             {"unit", "lb"},
                             {"repetitions", 10},
                             {"sets", 3}
+                        },
+                        QJsonObject{
+                            {"timestamp", sixMonthAgo.toString(Qt::ISODate)},
+                            {"value", 55.0},
+                            {"unit", "lb"},
+                            {"repetitions", 10},
+                            {"sets", 3}
                         }
                     }}
     };
@@ -239,6 +250,20 @@ void DataCenter::loadDefaultData() {
                         QJsonObject{
                             {"timestamp", lastWeek.toString(Qt::ISODate)},
                             {"value", 55.0},
+                            {"unit", "kg"},
+                            {"repetitions", 10},
+                            {"sets", 3}
+                        },
+                        QJsonObject{
+                            {"timestamp", oneYearAgo.toString(Qt::ISODate)},
+                            {"value", 40.0},
+                            {"unit", "kg"},
+                            {"repetitions", 10},
+                            {"sets", 3}
+                        },
+                        QJsonObject{
+                            {"timestamp", threeYearsAgo.toString(Qt::ISODate)},
+                            {"value", 50.0},
                             {"unit", "kg"},
                             {"repetitions", 10},
                             {"sets", 3}
@@ -291,8 +316,8 @@ void DataCenter::loadDefaultData() {
     };
 
     QJsonArray history;
-    for (int i = 19; i >= 0; --i) {
-        QDateTime entryTime = now.addDays(-i * 2);  // Cada entrada separada por 2 días
+    for (int i = 59; i >= 0; --i) {
+        QDateTime entryTime = now.addDays(-i * 1);  // Cada entrada separada por 1 día
         double value = 139 - i;  // Aumenta 1 kg cada vez
         int repetitions = (i < 5) ? 6 : 5;  // Últimos 5 registros con 6 reps, el resto 5
         int sets = 3;
