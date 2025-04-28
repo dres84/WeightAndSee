@@ -5,7 +5,7 @@ import QtQuick.Layouts 1.15
 Item {
     id: summaryGrid
     width: parent.width
-    height: 100
+    height: 90
     z: 1 // Para que esté por encima del gráfico
 
     property var currentData: filteredData
@@ -81,7 +81,7 @@ Item {
     GridLayout {
         anchors {
             fill: parent
-            topMargin: 10
+            topMargin: 5
         }
         columns: 3
         columnSpacing: 10
@@ -91,7 +91,7 @@ Item {
             title: isWeight ? "Inicial" : "Iniciales"
             value: initialValue.value.toFixed(isWeight ? 1 : 0)
             unitValue: unitText
-            muscleGroup: muscleGroup
+            muscleGroupText: muscleGroup
             icon: isWeight ? "weight" : "reps"
             dateText: formatShortDate(initialValue.date)
             Layout.fillWidth: true
@@ -103,7 +103,7 @@ Item {
             title: "Récord"
             value: recordValue.value.toFixed(isWeight ? 1 : 0)
             unitValue: unitText
-            muscleGroup: muscleGroup
+            muscleGroupText: muscleGroup
             icon: "record"
             iconColor: "#FFC107" // Amarillo dorado para records
             dateText: formatShortDate(recordValue.date)
@@ -116,7 +116,7 @@ Item {
             title: "Evolución"
             value: (evolution.value > 0 ? "+" : "") + evolution.value.toFixed(isWeight ? 1 : 0)
             unitValue: unitText
-            muscleGroup: muscleGroup
+            muscleGroupText: muscleGroup
             icon: evolution.value >= 0 ? "trend-up" : "trend-down"
             iconColor: evolution.value >= 0 ? "#4CAF50" : "#F44336" // Verde o rojo
             dateText: "Desde " + formatShortDate(evolution.startDate)
