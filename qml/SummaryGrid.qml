@@ -4,17 +4,13 @@ import QtQuick.Layouts 1.15
 
 Item {
     id: summaryGrid
-    anchors {
-        top: periodButtons.bottom
-        left: parent.left
-        right: parent.right
-    }
-    height: 110
+    width: parent.width
+    height: 100
     z: 1 // Para que esté por encima del gráfico
 
     property var currentData: filteredData
-    property bool isWeight: isWeightGraph
-    property string unit: filteredData.length > 0 ? (filteredData[0]?.unit || "kg") : "kg"
+    property bool isWeight: true
+    required property string unitText
 
     // Calculamos los valores del resumen
     property var initialValue: calculateInitialValue()
@@ -85,16 +81,16 @@ Item {
     GridLayout {
         anchors {
             fill: parent
-            margins: 15
+            topMargin: 10
         }
         columns: 3
-        columnSpacing: 15
+        columnSpacing: 10
 
         // Primer elemento: Valor inicial
         SummaryItem {
-            title: isWeight ? "Peso Inicial" : "Reps Iniciales"
+            title: isWeight ? "Inicial" : "Iniciales"
             value: initialValue.value.toFixed(isWeight ? 1 : 0)
-            unit: isWeight ? unit : "reps"
+            unitValue: unitText
             muscleGroup: muscleGroup
             icon: isWeight ? "weight" : "reps"
             dateText: formatShortDate(initialValue.date)
@@ -104,11 +100,11 @@ Item {
 
         // Segundo elemento: Record
         SummaryItem {
-            title: isWeight ? "Record Peso" : "Máx. Reps"
+            title: "Récord"
             value: recordValue.value.toFixed(isWeight ? 1 : 0)
-            unit: isWeight ? unit : "reps"
+            unitValue: unitText
             muscleGroup: muscleGroup
-            icon: "trend-up"
+            icon: "record"
             iconColor: "#FFC107" // Amarillo dorado para records
             dateText: formatShortDate(recordValue.date)
             Layout.fillWidth: true
@@ -119,7 +115,7 @@ Item {
         SummaryItem {
             title: "Evolución"
             value: (evolution.value > 0 ? "+" : "") + evolution.value.toFixed(isWeight ? 1 : 0)
-            unit: isWeight ? unit : "reps"
+            unitValue: unitText
             muscleGroup: muscleGroup
             icon: evolution.value >= 0 ? "trend-up" : "trend-down"
             iconColor: evolution.value >= 0 ? "#4CAF50" : "#F44336" // Verde o rojo
@@ -134,6 +130,6 @@ Item {
     function formatShortDate(dateStr) {
         if (!dateStr) return ""
         var date = new Date(dateStr)
-        return date.getDate() + "/" + (date.getMonth()+1)
+        return date.getDate() + "/" + (date.getMonth()+1) + "/" + date.getFullYear()
     }
 }

@@ -309,7 +309,7 @@ void DataCenter::loadDefaultData() {
                             {"timestamp", lastWeek.toString(Qt::ISODate)},
                             {"value", 45.0},
                             {"unit", "kg"},
-                            {"repetitions", 12},
+                            {"repetitions", 15},
                             {"sets", 3}
                         }
                     }}
@@ -575,7 +575,7 @@ void DataCenter::loadDefaultData() {
                             {"timestamp", yesterday.toString(Qt::ISODate)},
                             {"value", 0},
                             {"unit", "-"},
-                            {"repetitions", 15},
+                            {"repetitions", 12},
                             {"sets", 3}
                         },
                         QJsonObject{
@@ -607,7 +607,7 @@ void DataCenter::loadDefaultData() {
                             {"timestamp", lastWeek.toString(Qt::ISODate)},
                             {"value", 0},
                             {"unit", "-"},
-                            {"repetitions", 20},
+                            {"repetitions", 25},
                             {"sets", 3}
                         }
                     }}
@@ -632,7 +632,7 @@ void DataCenter::loadDefaultData() {
                             {"timestamp", lastWeek.toString(Qt::ISODate)},
                             {"value", 0},
                             {"unit", "-"},
-                            {"repetitions", 15},
+                            {"repetitions", 16},
                             {"sets", 3}
                         }
                     }}

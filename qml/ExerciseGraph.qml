@@ -22,8 +22,8 @@ Item {
     property int minPointSpacing: 35
 
     property var monthNames: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"]
-    property bool isWeightGraph: filteredData.some(item => item.weight > 0)
-
+    property bool isWeightGraph: unit !== "Reps"
+    property string unit: "Kg" //"Kg", "lb" o "Reps"
 
     function filterData() {
         if (selectedPeriod === 0) {
@@ -81,11 +81,14 @@ Item {
 
     Component.onCompleted: {
         exerciseData = dataCenter.getExerciseHistoryDetailed(exerciseName)
+        graph.unit = dataCenter.getUnit(exerciseName) === "-" ? "Reps" : dataCenter.getUnit(exerciseName)
+        isWeightGraph = unit !== "Reps" // Asegurar que se calcule primero
+        graph.muscleGroup = dataCenter.getMuscleGroup(exerciseName)
+
         if (exerciseData.length > 0) {
             exerciseData.sort((a, b) => new Date(a.date) - new Date(b.date))
             filterData()
         }
-        muscleGroup = dataCenter.getMuscleGroup(exerciseName)
     }
 
     Rectangle {
@@ -131,9 +134,9 @@ Item {
     Row {
         id: periodButtons
         anchors.top: header.bottom
-        width: parent.width - marginLeft
+        width: parent.width - marginLeft/2
         anchors.horizontalCenter: parent.horizontalCenter
-        height: 40
+        height: 45
         spacing: 5
 
         Repeater {
@@ -178,10 +181,21 @@ Item {
         }
     }
 
+    SummaryGrid {
+        id: summaryGrid
+        anchors {
+            top: periodButtons.bottom
+            horizontalCenter: parent.horizontalCenter
+        }
+        width: periodButtons.width
+        isWeight: isWeightGraph
+        unitText: unit
+    }
+
     Item {
         id: chartContainer
         anchors {
-            top: periodButtons.bottom
+            top: summaryGrid.bottom
             left: parent.left
             right: parent.right
             bottom: parent.bottom
@@ -244,7 +258,7 @@ Item {
                     ctx.textAlign = "center"
                     ctx.font = (Style.body + 2) + "px sans-serif"
                     ctx.fillStyle = Style.text
-                    var unitLabel = isWeightGraph ? (filteredData[0]?.unit || "kg") : "Reps"
+                    var unitLabel = unit
                     ctx.fillText(unitLabel, width/2, mt - 23)
                 }
             }
@@ -305,7 +319,6 @@ Item {
                             }
                         }
 
-                        var isWeightGraph = filteredData.some(item => item.weight > 0)
                         var values = filteredData.map(item => isWeightGraph ? item.weight : item.reps)
                         var maxVal = Math.max(...values) * 1.2
                         var minVal = 0

@@ -10,10 +10,10 @@ Item {
     // Propiedades requeridas
     required property string title
     required property string value
-    required property string unit
+    required property string unitValue
     required property string muscleGroup
     property string icon: ""
-    property color iconColor: Style.textSecondary
+    property color iconColor: "#808080" // Gris por defecto
     property string dateText: ""
     property color valueColor: Style.text
 
@@ -57,14 +57,16 @@ Item {
                     id: iconText
                     anchors.centerIn: parent
                     text: {
-                        if(root.icon === "weight") return "⚖️"
-                        if(root.icon === "trend-up") return "📈"
-                        if(root.icon === "trend-down") return "📉"
+                        if(root.icon === "weight") return "🏋🏻"
+                        if(root.icon === "trend-up") return "↑"
+                        if(root.icon === "trend-down") return "↓"
                         if(root.icon === "reps") return "🔁"
+                        if(root.icon === "record") return "🏆" // Copa reemplazada por estrella
                         return root.icon
                     }
                     font.pixelSize: 20
                     color: root.iconColor
+                    font.family: "Arial" // Para mejor visualización de símbolos
                 }
             }
 
@@ -97,7 +99,7 @@ Item {
 
             Label {
                 id: unitLabel
-                text: root.unit
+                text: root.unitValue
                 font.family: Style.interFont ? Style.interFont.name : "Arial"
                 font.pixelSize: Style.body ? Style.body : 16
                 color: Style.textSecondary
