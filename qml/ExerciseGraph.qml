@@ -589,6 +589,7 @@ Item {
         }
         visible: highlightedIndex !== -1
         headerColor: Style.muscleColor(muscleGroup)
+        opacity: 0.8
 
         // Asegurar que no se solape con el eje X
         onYChanged: {
@@ -608,7 +609,7 @@ Item {
         details: {
             if (highlightedIndex < 0) return "";
             return isWeightGraph ?
-                `${filteredData[highlightedIndex].sets} x${filteredData[highlightedIndex].reps} reps` :
+                `${filteredData[highlightedIndex].sets} x ${filteredData[highlightedIndex].reps} reps` :
                 `${filteredData[highlightedIndex].sets} series`;
         }
     }

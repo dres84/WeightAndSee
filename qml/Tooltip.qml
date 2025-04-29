@@ -58,6 +58,7 @@ Rectangle {
             text: root.details
             font.family: Style.interFont.name
             font.pixelSize: Style.caption
+            font.bold: true
             color: "#666"
             anchors.horizontalCenter: parent.horizontalCenter
         }
