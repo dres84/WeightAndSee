@@ -10,8 +10,8 @@ Rectangle {
     property string details: ""
     property color headerColor: "transparent"
 
-    width: 110
-    height: 80
+    width: 90
+    height: 70
     radius: 5
     color: "#FFF9F0"
     border.color: "#E0D0B8"
@@ -40,10 +40,10 @@ Rectangle {
     Column {
         anchors {
             top: parent.top
-            topMargin: 30
+            topMargin: 28
             horizontalCenter: parent.horizontalCenter
         }
-        spacing: 5
+        spacing: 3
 
         Text {
             text: root.value

@@ -80,7 +80,7 @@ Item {
                 Layout.fillWidth: true
                 text: root.title
                 font.family: Style.interFont ? Style.interFont.name : "Arial"
-                font.pixelSize: Style.caption + 1
+                font.pixelSize: Style.caption
                 font.weight: Font.DemiBold
                 color: Style.textSecondary
                 elide: Text.ElideRight
