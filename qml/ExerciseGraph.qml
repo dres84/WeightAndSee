@@ -91,7 +91,7 @@ Item {
     Component.onCompleted: {
         exerciseData = dataCenter.getExerciseHistoryDetailed(exerciseName)
         graph.unit = dataCenter.getUnit(exerciseName) === "-" ? "Reps" : dataCenter.getUnit(exerciseName)
-        isWeightGraph = unit !== "Reps" // Asegurar que se calcule primero
+        isWeightGraph = unit !== "Reps"
         graph.muscleGroup = dataCenter.getMuscleGroup(exerciseName)
 
         if (exerciseData.length > 0) {
@@ -145,7 +145,7 @@ Item {
         anchors.top: header.bottom
         width: parent.width - marginLeft * 0.66
         anchors.horizontalCenter: parent.horizontalCenter
-        height: 50
+        height: 45
         spacing: 5
 
         Repeater {
@@ -263,12 +263,6 @@ Item {
                         ctx.textBaseline = "middle"
                         ctx.fillText(v.toFixed(isWeightGraph ? 1 : 0), width - 10, y)
                     }
-
-                    ctx.textAlign = "center"
-                    ctx.font = (Style.body + 2) + "px sans-serif"
-                    ctx.fillStyle = Style.text
-                    var unitLabel = unit
-                    ctx.fillText(unitLabel, width/2, mt - 23)
                 }
             }
         }
@@ -315,15 +309,19 @@ Item {
                         var lastDate = new Date(filteredData[filteredData.length-1].date)
                         var totalDays = lastDate - firstDate
 
-                        // Calcular posiciones X de los puntos
+                        // Calcular posiciones X de los puntos con espacio mínimo
                         var xPositions = []
                         if (filteredData.length <= 1) {
                             xPositions = [innerMargin]
                         } else {
+                            var availableWidth = plotWidth - 2 * innerMargin
+                            var requiredWidth = (filteredData.length - 1) * minPointSpacing
+                            var scaleFactor = availableWidth / Math.max(availableWidth, requiredWidth)
+
                             for (var i = 0; i < filteredData.length; i++) {
                                 var date = new Date(filteredData[i].date)
                                 var daysFromStart = date - firstDate
-                                var x = innerMargin + (daysFromStart / totalDays) * (plotWidth - 2*innerMargin)
+                                var x = innerMargin + (daysFromStart / totalDays) * (plotWidth - 2*innerMargin) * scaleFactor
                                 xPositions.push(x)
                             }
                         }
@@ -337,16 +335,17 @@ Item {
                             var currentDate = new Date(firstDate)
                             currentDate.setDate(1) // Empezar desde el primer día del mes
 
-                            // Primero dibujar todos los fondos de mes
                             while (currentDate <= lastDate) {
-                                var firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1)
-                                var lastDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0)
+                                let firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1)
+                                let lastDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0)
 
                                 // Calcular posiciones X para inicio/fin de mes
-                                var monthStartX = (firstDayOfMonth - firstDate) / totalDays * (plotWidth - 1.5 * innerMargin)
-                                var monthEndX = innerMargin * 2 + ((lastDayOfMonth - firstDate) / totalDays) * (plotWidth)
+                                let monthStartX = (firstDayOfMonth - firstDate) / totalDays * (plotWidth - 1.5 * innerMargin)
+                                let monthEndX = innerMargin * 2 + ((lastDayOfMonth - firstDate) / totalDays) * (plotWidth)
 
-                                // Ajustar a los márgenes
+                                //let monthStartX = innerMargin + ((firstDayOfMonth - firstDate) / totalDays) * (plotWidth - 2*innerMargin)
+                                //let monthEndX = innerMargin + ((lastDayOfMonth - firstDate) / totalDays) * (plotWidth - 2*innerMargin)
+
                                 monthStartX = Math.max(0, monthStartX)
                                 monthEndX = Math.min(width, monthEndX)
 
@@ -356,37 +355,30 @@ Item {
                                         Qt.lighter(Style.soft, 1.1) :
                                         Qt.lighter(Style.soft, 1.3)
                                     ctx.fillRect(monthStartX, mt, monthEndX - monthStartX, plotHeight)
-                                }
 
-                                // Avanzar al siguiente mes
-                                currentDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1)
-                            }
-
-                            // Luego dibujar las etiquetas para evitar superposiciones
-                            currentDate = new Date(firstDate)
-                            currentDate.setDate(1)
-                            while (currentDate <= lastDate) {
-                                let firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1)
-                                let lastDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0)
-
-                                let monthStartX = innerMargin +((firstDayOfMonth - firstDate) / totalDays) * (plotWidth - 2*innerMargin)
-                                let monthEndX = innerMargin + ((lastDayOfMonth - firstDate) / totalDays) * (plotWidth - 2*innerMargin)
-
-                                monthStartX = Math.max(0, monthStartX)
-                                monthEndX = Math.min(width, monthEndX)
-
-                                if (monthEndX > monthStartX) {
-                                    // Etiqueta del mes debajo del rectángulo
+                                    // Etiqueta del mes dentro del gráfico
                                     ctx.save()
                                     ctx.font = Style.semi + "px sans-serif"
-                                    ctx.fillStyle = Style.text
+                                    ctx.fillStyle = Style.textSecondary
                                     ctx.textAlign = "center"
-                                    ctx.textBaseline = "top"
-                                    ctx.fillText(
-                                        formatMonthYear(filteredData[0].date),
-                                        monthStartX + (monthEndX - monthStartX)/2,
-                                        height - mb + 25 // Posición debajo del eje X
-                                    )
+                                    ctx.textBaseline = "bottom"
+
+                                    // Calcular cuántas etiquetas caben y espaciarlas uniformemente
+                                    var labelWidth = ctx.measureText(monthNames[currentDate.getMonth()]).width + 20
+                                    var numLabels = Math.floor((monthEndX - monthStartX) / labelWidth)
+                                    numLabels = Math.max(1, numLabels)
+                                    var labelSpacing = (monthEndX - monthStartX) / numLabels
+
+                                    for (var j = 0; j < numLabels; j++) {
+                                        var labelX = monthStartX + (j + 0.5) * labelSpacing
+                                        if (labelX >= monthStartX && labelX <= monthEndX) {
+                                            ctx.fillText(
+                                                monthNames[currentDate.getMonth()],
+                                                labelX,
+                                                height - mb - 5 // Posición dentro del gráfico, justo encima del eje X
+                                            )
+                                        }
+                                    }
                                     ctx.restore()
                                 }
 
@@ -402,26 +394,66 @@ Item {
                         ctx.lineTo(width, height - mb)
                         ctx.stroke()
 
-                        // Dibujar escala X (solo día)
+                        // Dibujar escala X (solo días 1, 10, 20 y 30)
                         ctx.font = (Style.caption - 1) + "px sans-serif"
-                        ctx.fillStyle = Style.text
-                        for (var i = 0; i < filteredData.length; i++) {
-                            var x = xPositions[i]
+                        ctx.fillStyle = Style.textSecondary
+
+                        // Si hay un punto seleccionado, solo mostrar ese día
+                        if (highlightedIndex !== -1) {
+                            var selectedDate = new Date(filteredData[highlightedIndex].date)
+                            var selectedDay = selectedDate.getDate()
+                            var selectedMonth = monthNames[selectedDate.getMonth()]
+                            var selectedYear = selectedDate.getFullYear().toString().substr(2)
+
+                            var selectedX = xPositions[highlightedIndex]
+
                             ctx.beginPath()
-                            ctx.moveTo(x, height - mb)
-                            ctx.lineTo(x, height - mb + 5)
+                            ctx.moveTo(selectedX, height - mb)
+                            ctx.lineTo(selectedX, height - mb + 5)
                             ctx.stroke()
 
                             ctx.save()
-                            ctx.translate(x, height - mb + 10)
-                            //ctx.rotate(Math.PI / 4)
-                            ctx.textAlign = "left"
+                            ctx.fillStyle = Style.text
+                            ctx.textAlign = "center"
                             ctx.textBaseline = "top"
-                            ctx.fillText(formatDayOnly(filteredData[i].date), 0, 0)
+                            ctx.fillText(`${selectedDay} ${selectedMonth} '${selectedYear}`, selectedX, height - mb + 10)
                             ctx.restore()
+                        } else {
+                            // Mostrar solo días clave (1, 10, 20, 30) si caben
+                            for (var i = 0; i < filteredData.length; i++) {
+                                var date = new Date(filteredData[i].date)
+                                var day = date.getDate()
+                                var showDay = (day === 1 || day === 10 || day === 20 || day === 30)
+
+                                if (showDay) {
+                                    var x = xPositions[i]
+                                    // Verificar que haya espacio para mostrar este día
+                                    var canShow = true
+                                    if (i > 0) {
+                                        var prevX = xPositions[i-1]
+                                        var spaceNeeded = ctx.measureText(day.toString()).width + 10
+                                        canShow = (x - prevX) > spaceNeeded
+                                    }
+
+                                    if (canShow) {
+                                        ctx.beginPath()
+                                        ctx.moveTo(x, height - mb)
+                                        ctx.lineTo(x, height - mb + 5)
+                                        ctx.stroke()
+
+                                        ctx.save()
+                                        ctx.translate(x, height - mb + 10)
+                                        ctx.textAlign = "center"
+                                        ctx.textBaseline = "top"
+                                        ctx.fillText(day.toString(), 0, 0)
+                                        ctx.restore()
+                                    }
+                                }
+                            }
                         }
 
-                        // Dibujar línea del gráfico
+                        // Resto del código para dibujar la línea del gráfico, puntos, etc...
+                        // (Mantener el mismo código que ya tenías para estas partes)
                         ctx.strokeStyle = Qt.lighter(Style.text, 1.3)
                         ctx.lineWidth = 3
                         ctx.beginPath()
@@ -437,7 +469,7 @@ Item {
 
                         // Línea resaltada
                         if (highlightedIndex !== -1 && highlightedIndex < filteredData.length) {
-                            ctx.strokeStyle = Style.muscleColor(muscleGroup) //Style.buttonPositive
+                            ctx.strokeStyle = Style.muscleColor(muscleGroup)
                             ctx.lineWidth = 3
                             ctx.beginPath()
                             for (let i = 0; i <= highlightedIndex; i++) {
@@ -460,14 +492,14 @@ Item {
                             ctx.beginPath()
                             if (i === highlightedIndex) {
                                 ctx.arc(x, y, 8, 0, Math.PI * 2)
-                                ctx.fillStyle = Qt.darker(Style.muscleColor(muscleGroup), 1.3) //Style.buttonPositive
+                                ctx.fillStyle = Qt.darker(Style.muscleColor(muscleGroup), 1.3)
                                 ctx.fill()
                                 ctx.lineWidth = 2
                                 ctx.strokeStyle = Style.text
                                 ctx.stroke()
                             } else {
                                 ctx.arc(x, y, 6, 0, Math.PI * 2)
-                                ctx.fillStyle = Style.muscleColor(muscleGroup) //Style.buttonPositive
+                                ctx.fillStyle = Style.muscleColor(muscleGroup)
                                 ctx.fill()
                             }
                         }
@@ -482,14 +514,13 @@ Item {
                             ctx.save()
                             ctx.strokeStyle = Style.muscleColor(muscleGroup)
                             ctx.lineWidth = 2
-                            ctx.setLineDash([3, 3]) // Patrón: 3px línea, 3px espacio
+                            ctx.setLineDash([3, 3])
                             ctx.beginPath()
                             ctx.moveTo(x, y)
-                            ctx.lineTo(x, height - marginBottom) // Hasta el eje X
+                            ctx.lineTo(x, height - marginBottom)
                             ctx.stroke()
                             ctx.restore()
                         }
-
                     }
 
                     TapHandler {
@@ -500,7 +531,6 @@ Item {
                             var closestIndex = -1
                             var minDist = Infinity
 
-                            // Calcular posiciones X y valores Y
                             var plotWidth = chartCanvas.width
                             var plotHeight = chartCanvas.height - marginTop - marginBottom
                             var xPositions = []
@@ -523,7 +553,6 @@ Item {
                                 }
                             }
 
-                            // Encontrar el punto más cercano
                             for (var i = 0; i < filteredData.length; i++) {
                                 var d = Math.abs(tapX - xPositions[i])
                                 if (d < minDist) {
@@ -538,7 +567,6 @@ Item {
                                 var xs = xPositions[highlightedIndex]
                                 var ys = getY(isWeightGraph ? item.weight : item.reps, minVal, maxVal, plotHeight)
 
-                                // Actualizar posición del tooltip (convertir a coordenadas globales)
                                 tooltipPos = chartCanvas.mapToItem(graph, xs, ys)
 
                                 chartCanvas.requestPaint()
@@ -557,45 +585,47 @@ Item {
                 }
             }
         }
+
+        Text {
+            id: unitLabel
+            anchors {
+                left: scrollView.left
+                leftMargin: 10
+                top: scrollView.top
+                topMargin: marginTop + 10
+            }
+            text: unit
+            font.pixelSize: Style.semi
+            color: Style.textSecondary
+        }
     }
 
     Tooltip {
         id: tooltip
         x: {
             if (highlightedIndex === -1) return 0
-
-            // Posición horizontal centrada respecto al punto
             var proposedX = tooltipPos.x - width/2
-
-            // Ajustar para no salirse de los márgenes
             var leftBound = marginLeft
             var rightBound = graph.width - marginRight - width
-
-            // Si el tooltip es más ancho que el espacio disponible, lo pegamos al margen
             if (width > (graph.width - marginLeft - marginRight)) {
                 return marginLeft
             }
-
             return Math.max(leftBound, Math.min(proposedX, rightBound))
         }
         y: {
             if (highlightedIndex === -1) return 0
-            // 25px de margen sobre el punto
             var proposedY = tooltipPos.y - height - 25
-            // Margen mínimo superior
             var minY = marginTop
-            // Si no cabe arriba, mostrarlo abajo con 20px de margen
             return (proposedY < minY) ? tooltipPos.y + 20 : proposedY
         }
         visible: highlightedIndex !== -1
         headerColor: Style.muscleColor(muscleGroup)
         opacity: 0.8
 
-        // Asegurar que no se solape con el eje X
         onYChanged: {
             var minY = marginTop
             if (y < minY) {
-                y = tooltipPos.y + 20 // Mostrar debajo si no cabe arriba
+                y = tooltipPos.y + 20
             }
         }
 
