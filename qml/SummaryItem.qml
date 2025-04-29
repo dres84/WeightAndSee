@@ -16,6 +16,10 @@ Item {
     property color iconColor: "#808080" // Gris por defecto
     property string dateText: ""
     property color valueColor: Style.text
+    property bool sinceDate: false
+
+    Layout.fillWidth: true
+    Layout.fillHeight: true
 
     // Barra lateral izquierda
     Rectangle {
@@ -113,7 +117,7 @@ Item {
             id: dateLabel
             text: root.dateText
             font.family: Style.interFont ? Style.interFont.name : "Arial"
-            font.pixelSize: Style.caption - 2
+            font.pixelSize: sinceDate ? Style.caption - 2 : Style.caption
             color: Style.textSecondary
             opacity: 0.8
         }

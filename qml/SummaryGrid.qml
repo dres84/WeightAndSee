@@ -94,8 +94,6 @@ Item {
             muscleGroupText: muscleGroup
             icon: isWeight ? "weight" : "reps"
             dateText: formatShortDate(initialValue.date)
-            Layout.fillWidth: true
-            Layout.fillHeight: true
         }
 
         // Segundo elemento: Record
@@ -107,8 +105,6 @@ Item {
             icon: "record"
             iconColor: "#FFC107" // Amarillo dorado para records
             dateText: formatShortDate(recordValue.date)
-            Layout.fillWidth: true
-            Layout.fillHeight: true
         }
 
         // Tercer elemento: Evolución
@@ -121,8 +117,7 @@ Item {
             iconColor: evolution.value >= 0 ? "#4CAF50" : "#F44336" // Verde o rojo
             dateText: "Desde " + formatShortDate(evolution.startDate)
             valueColor: evolution.value >= 0 ? "#4CAF50" : "#F44336" // Verde o rojo
-            Layout.fillWidth: true
-            Layout.fillHeight: true
+            sinceDate: true
         }
     }
 

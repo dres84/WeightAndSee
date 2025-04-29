@@ -61,13 +61,13 @@ QtObject {
     // Colores para grupos musculares (ligeramente más vibrantes)
     function muscleColor(group) {
         switch(group) {
-            case "Pecho":   return "#FF7F97";  // Rosa más vivo
-            case "Espalda": return "#64B5F6";  // Azul más brillante
-            case "Hombros": return "#A1887F";  // Marrón medio (Material Brown 300)
-            case "Brazos":  return "#FFA726";  // Naranja más cálido
-            case "Core":    return "#66BB6A";  // Verde más vivo
-            case "Piernas": return "#AB47BC";  // Púrpura más intenso
-            default: return Style.textSecondary; // Asegúrate que Style.textSecondary está definido
+            case "Pecho":   return "#FF2D62";  // Rosa eléctrico
+            case "Espalda": return "#00B4FF";  // Azul cian brillante
+            case "Hombros": return "#8B4513";  // Marrón cuero premium
+            case "Brazos":  return "#50C878";  // Verde esmeralda suave
+            case "Core":    return "#D4AF37";  // Dorado metálico
+            case "Piernas": return "#CC66FF";  // Púrpura lavanda
+            default: return "#F5F5F5";  // Gris claro
         }
     }
 
