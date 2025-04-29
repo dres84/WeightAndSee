@@ -330,33 +330,59 @@ Item {
                         var maxVal = Math.max(...values) * 1.2
                         var minVal = 0
 
-                        // Dibujar fondos de mes comenzando el día 1
+                        // Dibujar fondos de mes y etiquetas
                         if (filteredData.length > 0) {
                             var currentDate = new Date(firstDate)
-                            currentDate.setDate(1) // Empezar desde el primer día del mes
+                            currentDate.setDate(1)
+                            var prevMonthEndX = -1
+                            var prevMonth = -1
 
                             while (currentDate <= lastDate) {
                                 let firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1)
                                 let lastDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0)
 
-                                // Calcular posiciones X para inicio/fin de mes
+                                // Usamos tus cálculos para las posiciones X de los meses
                                 let monthStartX = (firstDayOfMonth - firstDate) / totalDays * (plotWidth - 1.5 * innerMargin)
                                 let monthEndX = innerMargin * 2 + ((lastDayOfMonth - firstDate) / totalDays) * (plotWidth)
-
-                                //let monthStartX = innerMargin + ((firstDayOfMonth - firstDate) / totalDays) * (plotWidth - 2*innerMargin)
-                                //let monthEndX = innerMargin + ((lastDayOfMonth - firstDate) / totalDays) * (plotWidth - 2*innerMargin)
 
                                 monthStartX = Math.max(0, monthStartX)
                                 monthEndX = Math.min(width, monthEndX)
 
-                                if (monthEndX > monthStartX) {
-                                    // Dibujar fondo del mes
+                                // Verificar si hay datos en este mes
+                                var hasDataInMonth = filteredData.some(item => {
+                                    var itemDate = new Date(item.date)
+                                    return itemDate.getFullYear() === currentDate.getFullYear() &&
+                                           itemDate.getMonth() === currentDate.getMonth()
+                                })
+
+                                if (hasDataInMonth && monthEndX > monthStartX) {
+                                    // Dibujar fondo del mes (manteniendo tu estilo)
                                     ctx.fillStyle = (currentDate.getMonth() % 2 === 0) ?
                                         Qt.lighter(Style.soft, 1.1) :
                                         Qt.lighter(Style.soft, 1.3)
                                     ctx.fillRect(monthStartX, mt, monthEndX - monthStartX, plotHeight)
 
-                                    // Etiqueta del mes dentro del gráfico
+                                    // Mostrar "..." si hay un salto temporal significativo (siempre visible)
+                                    if (prevMonthEndX >= 0 && (monthStartX - prevMonthEndX) > 30 &&
+                                       (currentDate.getMonth() - prevMonth > 1 || currentDate.getFullYear() > new Date(firstDate).getFullYear())) {
+                                        ctx.save()
+                                        ctx.font = Style.semi + "px sans-serif"
+                                        ctx.fillStyle = Style.textSecondary
+                                        ctx.textAlign = "center"
+                                        ctx.textBaseline = "bottom"
+                                        var gapCenter = prevMonthEndX + (monthStartX - prevMonthEndX)/2
+                                        // Asegurar que los "..." sean siempre visibles
+                                        var visibleGapCenter = Math.max(prevMonthEndX + 20,
+                                                                      Math.min(gapCenter, monthStartX - 20))
+                                        ctx.fillText(
+                                            "...",
+                                            visibleGapCenter,
+                                            height - mb - 5
+                                        )
+                                        ctx.restore()
+                                    }
+
+                                    // Etiqueta del mes repetida (como tú prefieres)
                                     ctx.save()
                                     ctx.font = Style.semi + "px sans-serif"
                                     ctx.fillStyle = Style.textSecondary
@@ -364,22 +390,27 @@ Item {
                                     ctx.textBaseline = "bottom"
 
                                     // Calcular cuántas etiquetas caben y espaciarlas uniformemente
-                                    var labelWidth = ctx.measureText(monthNames[currentDate.getMonth()]).width + 20
+                                    var monthLabel = monthNames[currentDate.getMonth()]
+                                    var labelWidth = ctx.measureText(monthLabel).width + 20
                                     var numLabels = Math.floor((monthEndX - monthStartX) / labelWidth)
-                                    numLabels = Math.max(1, numLabels)
+                                    numLabels = Math.max(1, numLabels) // Al menos una etiqueta
                                     var labelSpacing = (monthEndX - monthStartX) / numLabels
 
                                     for (var j = 0; j < numLabels; j++) {
                                         var labelX = monthStartX + (j + 0.5) * labelSpacing
-                                        if (labelX >= monthStartX && labelX <= monthEndX) {
+                                        // Asegurar que la etiqueta no se solape con los bordes
+                                        if (labelX >= monthStartX + 15 && labelX <= monthEndX - 15) {
                                             ctx.fillText(
-                                                monthNames[currentDate.getMonth()],
+                                                monthLabel,
                                                 labelX,
-                                                height - mb - 5 // Posición dentro del gráfico, justo encima del eje X
+                                                height - mb - 5 // Posición dentro del gráfico
                                             )
                                         }
                                     }
                                     ctx.restore()
+
+                                    prevMonthEndX = monthEndX
+                                    prevMonth = currentDate.getMonth()
                                 }
 
                                 currentDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1)
@@ -394,11 +425,11 @@ Item {
                         ctx.lineTo(width, height - mb)
                         ctx.stroke()
 
-                        // Dibujar escala X (solo días 1, 10, 20 y 30)
+                        // Manejo de fechas seleccionadas y días clave
                         ctx.font = (Style.caption - 1) + "px sans-serif"
                         ctx.fillStyle = Style.textSecondary
 
-                        // Si hay un punto seleccionado, solo mostrar ese día
+                        // Si hay un punto seleccionado
                         if (highlightedIndex !== -1) {
                             var selectedDate = new Date(filteredData[highlightedIndex].date)
                             var selectedDay = selectedDate.getDate()
@@ -406,6 +437,19 @@ Item {
                             var selectedYear = selectedDate.getFullYear().toString().substr(2)
 
                             var selectedX = xPositions[highlightedIndex]
+                            var dateText = `${selectedDay} ${selectedMonth} '${selectedYear}`
+                            var textWidth = ctx.measureText(dateText).width
+
+                            // Ajustar posición para que no se salga (respetando tus márgenes)
+                            var textX = selectedX
+                            var minTextX = textWidth/2 + 10
+                            var maxTextX = width - textWidth/2 - 10
+
+                            if (selectedX < minTextX) {
+                                textX = minTextX
+                            } else if (selectedX > maxTextX) {
+                                textX = maxTextX
+                            }
 
                             ctx.beginPath()
                             ctx.moveTo(selectedX, height - mb)
@@ -416,7 +460,7 @@ Item {
                             ctx.fillStyle = Style.text
                             ctx.textAlign = "center"
                             ctx.textBaseline = "top"
-                            ctx.fillText(`${selectedDay} ${selectedMonth} '${selectedYear}`, selectedX, height - mb + 10)
+                            ctx.fillText(dateText, textX, height - mb + 10)
                             ctx.restore()
                         } else {
                             // Mostrar solo días clave (1, 10, 20, 30) si caben
@@ -590,11 +634,12 @@ Item {
             id: unitLabel
             anchors {
                 left: scrollView.left
-                leftMargin: 10
+                leftMargin: 8
                 top: scrollView.top
-                topMargin: marginTop + 10
+                topMargin: marginTop + 8
             }
             text: unit
+            font.bold: true
             font.pixelSize: Style.semi
             color: Style.textSecondary
         }
