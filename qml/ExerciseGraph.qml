@@ -20,6 +20,7 @@ Item {
     property int marginBottom: 60
     property int innerMargin: 20
     property int minPointSpacing: 35
+    property point tooltipPos: Qt.point(0, 0)
 
     property var monthNames: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"]
     property bool isWeightGraph: unit !== "Reps"
@@ -65,6 +66,14 @@ Item {
         return monthNames[date.getMonth()] + " '" + date.getFullYear().toString().substr(2)
     }
 
+    function formatCalendarDate(dateStr) {
+        var date = new Date(dateStr);
+        var day = date.getDate();
+        var month = monthNames[date.getMonth()].substring(0, 3);
+        var year = date.getFullYear().toString();
+        return `${day} ${month} ${year}`;
+    }
+
     function roundRect(ctx, x, y, width, height, radius) {
         ctx.beginPath()
         ctx.moveTo(x + radius, y)
@@ -93,7 +102,7 @@ Item {
 
     Rectangle {
         anchors.fill: parent
-        color: Style.background ? Style.background : softColor
+        color: Style.background
 
         MouseArea {
             anchors.fill: parent
@@ -106,7 +115,7 @@ Item {
         id: header
         anchors.top: parent.top
         width: parent.width
-        height: 60
+        height: 55
         color: "transparent"
 
         FloatButton {
@@ -134,9 +143,9 @@ Item {
     Row {
         id: periodButtons
         anchors.top: header.bottom
-        width: parent.width - marginLeft/2
+        width: parent.width - marginLeft * 0.66
         anchors.horizontalCenter: parent.horizontalCenter
-        height: 45
+        height: 50
         spacing: 5
 
         Repeater {
@@ -416,8 +425,8 @@ Item {
                         ctx.strokeStyle = Qt.lighter(Style.text, 1.3)
                         ctx.lineWidth = 3
                         ctx.beginPath()
-                        for (var i = 0; i < filteredData.length; i++) {
-                            var x = xPositions[i]
+                        for (let i = 0; i < filteredData.length; i++) {
+                            let x = xPositions[i]
                             var yVal = isWeightGraph ? filteredData[i].weight : filteredData[i].reps
                             var y = getY(yVal, minVal, maxVal, plotHeight)
 
@@ -431,10 +440,10 @@ Item {
                             ctx.strokeStyle = Style.muscleColor(muscleGroup) //Style.buttonPositive
                             ctx.lineWidth = 3
                             ctx.beginPath()
-                            for (var i = 0; i <= highlightedIndex; i++) {
-                                var x = xPositions[i]
-                                var yVal = isWeightGraph ? filteredData[i].weight : filteredData[i].reps
-                                var y = getY(yVal, minVal, maxVal, plotHeight)
+                            for (let i = 0; i <= highlightedIndex; i++) {
+                                let x = xPositions[i]
+                                let yVal = isWeightGraph ? filteredData[i].weight : filteredData[i].reps
+                                let y = getY(yVal, minVal, maxVal, plotHeight)
 
                                 if (i === 0) ctx.moveTo(x, y)
                                 else ctx.lineTo(x, y)
@@ -443,10 +452,10 @@ Item {
                         }
 
                         // Dibujar puntos
-                        for (var i = 0; i < filteredData.length; i++) {
-                            var x = xPositions[i]
-                            var yVal = isWeightGraph ? filteredData[i].weight : filteredData[i].reps
-                            var y = getY(yVal, minVal, maxVal, plotHeight)
+                        for (let i = 0; i < filteredData.length; i++) {
+                            let x = xPositions[i]
+                            let yVal = isWeightGraph ? filteredData[i].weight : filteredData[i].reps
+                            let y = getY(yVal, minVal, maxVal, plotHeight)
 
                             ctx.beginPath()
                             if (i === highlightedIndex) {
@@ -463,91 +472,41 @@ Item {
                             }
                         }
 
-                        // Tooltip para punto seleccionado (manteniendo formato completo)
+                        // Dibujar línea discontinua desde punto seleccionado al eje X
                         if (highlightedIndex !== -1 && highlightedIndex < filteredData.length) {
-                            var xs = xPositions[highlightedIndex]
                             var item = filteredData[highlightedIndex]
-                            var ys = getY(isWeightGraph ? item.weight : item.reps, minVal, maxVal, plotHeight)
+                            let x = xPositions[highlightedIndex]
+                            let yVal = isWeightGraph ? item.weight : item.reps
+                            let y = getY(yVal, minVal, maxVal, plotHeight)
 
-                            // Línea vertical
-                            ctx.strokeStyle = Style.muscleColor(muscleGroup) //Style.buttonPositive
+                            ctx.save()
+                            ctx.strokeStyle = Style.muscleColor(muscleGroup)
                             ctx.lineWidth = 2
-                            ctx.setLineDash([4, 2])
+                            ctx.setLineDash([3, 3]) // Patrón: 3px línea, 3px espacio
                             ctx.beginPath()
-                            ctx.moveTo(xs, ys)
-                            ctx.lineTo(xs, height - mb)
+                            ctx.moveTo(x, y)
+                            ctx.lineTo(x, height - marginBottom) // Hasta el eje X
                             ctx.stroke()
-                            ctx.setLineDash([])
-
-                            // Calcular posición tooltip
-                            var tooltipWidth = 100
-                            var tooltipHeight = isWeightGraph ? 80 : 60
-                            var tooltipX = xs + 20
-
-                            if (xs - scrollView.contentItem.x + tooltipWidth + 20 > scrollView.width) {
-                                tooltipX = xs - tooltipWidth - 20
-                            }
-
-                            var availableSpaceAbove = ys - mt
-                            var availableSpaceBelow = (height - mb) - ys
-                            var tooltipY = availableSpaceAbove >= tooltipHeight ? ys - tooltipHeight - 15 :
-                                         availableSpaceBelow >= tooltipHeight ? ys + 15 :
-                                         (availableSpaceAbove > availableSpaceBelow ? mt + 5 : height - mb - tooltipHeight - 5)
-
-                            // Dibujar tooltip
-                            ctx.fillStyle = Style.surface
-                            ctx.strokeStyle = Style.soft
-                            ctx.lineWidth = 1
-                            roundRect(ctx, tooltipX, tooltipY, tooltipWidth, tooltipHeight, 8)
-                            ctx.fill()
-                            ctx.stroke()
-
-                            // Línea conectora
-                            ctx.beginPath()
-                            ctx.strokeStyle = Style.text
-                            ctx.lineWidth = 1
-                            var connectorTipX = tooltipX > xs ? tooltipX : tooltipX + tooltipWidth
-                            var connectorTipY = tooltipY + tooltipHeight/2
-                            ctx.moveTo(connectorTipX, connectorTipY)
-                            ctx.lineTo(xs, ys)
-                            ctx.stroke()
-
-                            // Texto tooltip (formato completo)
-                            ctx.textAlign = "center"
-                            ctx.textBaseline = "middle"
-
-                            if (isWeightGraph) {
-                                ctx.font = Style.heading2 + "px sans-serif"
-                                ctx.fillStyle = Style.text
-                                ctx.fillText(item.weight + " " + (item.unit || "kg"), tooltipX + tooltipWidth / 2, tooltipY + 25)
-
-                                ctx.font = Style.body + "px sans-serif"
-                                ctx.fillStyle = Style.text
-                                ctx.fillText((item.sets || 0) + " x " + (item.reps || 0), tooltipX + tooltipWidth / 2, tooltipY + 45)
-                                ctx.fillText(formatDate(item.date), tooltipX + tooltipWidth / 2, tooltipY + 65)
-                            } else {
-                                ctx.font = Style.body + "px sans-serif"
-                                ctx.fillStyle = Style.text
-                                ctx.fillText((item.sets || 0) + " x " + (item.reps || 0), tooltipX + tooltipWidth / 2, tooltipY + 25)
-
-                                ctx.font = Style.semi + "px sans-serif"
-                                ctx.fillStyle = Style.text
-                                ctx.fillText(formatDate(item.date), tooltipX + tooltipWidth / 2, tooltipY + 45)
-                            }
+                            ctx.restore()
                         }
+
                     }
 
                     TapHandler {
-                        onTapped: {
+                        onTapped: function(eventPoint) {
                             if (filteredData.length === 0) return
 
-                            var tapX = point.position.x + scrollView.contentItem.x
+                            var tapX = eventPoint.position.x + scrollView.contentItem.x
                             var closestIndex = -1
                             var minDist = Infinity
 
-                            // Calcular posiciones X
+                            // Calcular posiciones X y valores Y
                             var plotWidth = chartCanvas.width
+                            var plotHeight = chartCanvas.height - marginTop - marginBottom
                             var xPositions = []
+                            var values = filteredData.map(item => isWeightGraph ? item.weight : item.reps)
+                            var maxVal = Math.max(...values) * 1.2
+                            var minVal = 0
 
                             if (filteredData.length <= 1) {
                                 xPositions = [innerMargin]
@@ -564,6 +523,7 @@ Item {
                                 }
                             }
 
+                            // Encontrar el punto más cercano
                             for (var i = 0; i < filteredData.length; i++) {
                                 var d = Math.abs(tapX - xPositions[i])
                                 if (d < minDist) {
@@ -574,8 +534,17 @@ Item {
 
                             if (minDist < 30) {
                                 highlightedIndex = closestIndex
+                                var item = filteredData[highlightedIndex]
+                                var xs = xPositions[highlightedIndex]
+                                var ys = getY(isWeightGraph ? item.weight : item.reps, minVal, maxVal, plotHeight)
+
+                                // Actualizar posición del tooltip (convertir a coordenadas globales)
+                                tooltipPos = chartCanvas.mapToItem(graph, xs, ys)
+
                                 chartCanvas.requestPaint()
                                 yAxisCanvas.requestPaint()
+                            } else {
+                                highlightedIndex = -1
                             }
                         }
                     }
@@ -587,6 +556,60 @@ Item {
                     scrollView.ScrollBar.horizontal.position = 1.0 - scrollView.width/contentItem.width
                 }
             }
+        }
+    }
+
+    Tooltip {
+        id: tooltip
+        x: {
+            if (highlightedIndex === -1) return 0
+
+            // Posición horizontal centrada respecto al punto
+            var proposedX = tooltipPos.x - width/2
+
+            // Ajustar para no salirse de los márgenes
+            var leftBound = marginLeft
+            var rightBound = graph.width - marginRight - width
+
+            // Si el tooltip es más ancho que el espacio disponible, lo pegamos al margen
+            if (width > (graph.width - marginLeft - marginRight)) {
+                return marginLeft
+            }
+
+            return Math.max(leftBound, Math.min(proposedX, rightBound))
+        }
+        y: {
+            if (highlightedIndex === -1) return 0
+            // 25px de margen sobre el punto
+            var proposedY = tooltipPos.y - height - 25
+            // Margen mínimo superior
+            var minY = marginTop
+            // Si no cabe arriba, mostrarlo abajo con 20px de margen
+            return (proposedY < minY) ? tooltipPos.y + 20 : proposedY
+        }
+        visible: highlightedIndex !== -1
+        headerColor: Style.muscleColor(muscleGroup)
+
+        // Asegurar que no se solape con el eje X
+        onYChanged: {
+            var minY = marginTop
+            if (y < minY) {
+                y = tooltipPos.y + 20 // Mostrar debajo si no cabe arriba
+            }
+        }
+
+        date: highlightedIndex >= 0 ? formatCalendarDate(filteredData[highlightedIndex].date) : ""
+        value: {
+            if (highlightedIndex < 0) return "";
+            return isWeightGraph ?
+                `${filteredData[highlightedIndex].weight} ${unit}` :
+                `${filteredData[highlightedIndex].reps} reps`;
+        }
+        details: {
+            if (highlightedIndex < 0) return "";
+            return isWeightGraph ?
+                `${filteredData[highlightedIndex].sets} x${filteredData[highlightedIndex].reps} reps` :
+                `${filteredData[highlightedIndex].sets} series`;
         }
     }
 }

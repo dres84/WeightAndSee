@@ -29,6 +29,7 @@ qt_add_qml_module(appgymWeights
         qml/NewExerciseDialog.qml
         qml/EditExerciseDialog.qml
         qml/ExerciseGraph.qml
+        qml/Tooltip.qml
         qml/SummaryItem.qml
         qml/SummaryGrid.qml
         qml/NumericTextField.qml
