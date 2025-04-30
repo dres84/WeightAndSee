@@ -606,18 +606,21 @@ Item {
                             }
 
                             if (minDist < 30) {
-                                highlightedIndex = closestIndex
-                                var item = filteredData[highlightedIndex]
-                                var xs = xPositions[highlightedIndex]
-                                var ys = getY(isWeightGraph ? item.weight : item.reps, minVal, maxVal, plotHeight)
+                                if (highlightedIndex !== closestIndex) { // Solo si cambia el índice
+                                    highlightedIndex = closestIndex
+                                    var item = filteredData[highlightedIndex]
+                                    var xs = xPositions[highlightedIndex]
+                                    var ys = getY(isWeightGraph ? item.weight : item.reps, minVal, maxVal, plotHeight)
 
-                                tooltipPos = chartCanvas.mapToItem(graph, xs, ys)
-
-                                chartCanvas.requestPaint()
-                                yAxisCanvas.requestPaint()
+                                    tooltipPos = chartCanvas.mapToItem(graph, xs, ys)
+                                }
                             } else {
-                                highlightedIndex = -1
+                                highlightedIndex = -1 // Esto ocultará el tooltip
                             }
+
+                            // Forzar repintado siempre
+                            chartCanvas.requestPaint()
+                            yAxisCanvas.requestPaint()
                         }
                     }
                 }
