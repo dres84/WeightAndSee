@@ -384,29 +384,27 @@ Item {
 
                                     // Etiqueta del mes repetida (como tú prefieres)
                                     ctx.save()
-                                    ctx.font = Style.semi + "px sans-serif"
+                                    ctx.font = Style.semi + "px " + Style.interFont.name
                                     ctx.fillStyle = Style.textSecondary
                                     ctx.textAlign = "center"
                                     ctx.textBaseline = "bottom"
 
-                                    // Calcular cuántas etiquetas caben y espaciarlas uniformemente
+                                    // Pintar etiqueta mes
                                     var monthLabel = monthNames[currentDate.getMonth()]
-                                    var labelWidth = ctx.measureText(monthLabel).width + 20
-                                    var numLabels = Math.floor((monthEndX - monthStartX) / labelWidth)
-                                    numLabels = Math.max(1, numLabels) // Al menos una etiqueta
-                                    var labelSpacing = (monthEndX - monthStartX) / numLabels
-
-                                    for (var j = 0; j < numLabels; j++) {
-                                        var labelX = monthStartX + (j + 0.5) * labelSpacing
-                                        // Asegurar que la etiqueta no se solape con los bordes
-                                        if (labelX >= monthStartX + 15 && labelX <= monthEndX - 15) {
-                                            ctx.fillText(
-                                                monthLabel,
-                                                labelX,
-                                                height - mb - 5 // Posición dentro del gráfico
-                                            )
-                                        }
+                                    var labelWidth = ctx.measureText(monthLabel).width
+                                    var monthWidth = Math.min(monthEndX - monthStartX, scrollView.width)
+                                    if (monthWidth >= labelWidth) {
+                                        let labelX = monthEndX - monthWidth/2
+                                        console.log("Pintamos " + monthLabel + " en posX: " + labelX + " con endMonthX = " + monthEndX + " monthWidth: " + monthWidth + " y labelWidth: " + labelWidth)
+                                        ctx.fillText(
+                                            monthLabel,
+                                            labelX,
+                                            height - mb - 5 // Posición dentro del gráfico
+                                        )
+                                    } else {
+                                        console.log("No pintamos la etiqueta " + monthLabel + " porque mide " + labelWidth + " y no cabe en " + monthWidth)
                                     }
+
                                     ctx.restore()
 
                                     prevMonthEndX = monthEndX
