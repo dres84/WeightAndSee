@@ -112,26 +112,56 @@ void DataCenter::updateExercise(const QString& name, double value, const QString
     QJsonObject exercise = exercises[name].toObject();
     QDateTime now = QDateTime::currentDateTime();
 
+    // Crear nuevo registro
+    QJsonObject newRecord {
+        {"timestamp", now.toString(Qt::ISODate)},
+        {"value", value},
+        {"unit", unit},
+        {"sets", sets},
+        {"repetitions", reps}
+    };
+
+    // Obtener historial existente
     QJsonArray history = exercise["history"].toArray();
-    history.prepend(QJsonObject{
-        {"timestamp", exercise["lastUpdated"].toString()},
-        {"value", exercise["currentValue"].toDouble()},
-        {"unit", exercise["unit"].toString()},
-        {"sets", exercise["sets"].toInt()},
-        {"repetitions", exercise["repetitions"].toInt()}
+
+    // Añadir nuevo registro
+    history.append(newRecord);
+
+    // Convertir a lista para ordenar
+    QList<QJsonObject> historyList;
+    for (const QJsonValue& val : history) {
+        historyList.append(val.toObject());
+    }
+
+    // Ordenar por fecha (más antiguo primero)
+    std::sort(historyList.begin(), historyList.end(), [](const QJsonObject &a, const QJsonObject &b) {
+        QDateTime dateA = QDateTime::fromString(a["timestamp"].toString(), Qt::ISODate);
+        QDateTime dateB = QDateTime::fromString(b["timestamp"].toString(), Qt::ISODate);
+        return dateA < dateB;
     });
 
+    // Convertir de vuelta a QJsonArray
+    QJsonArray sortedHistory;
+    for (const QJsonObject& obj : historyList) {
+        sortedHistory.append(obj);
+    }
+
+    // Actualizar ejercicio
     exercise["currentValue"] = value;
     exercise["unit"] = unit;
     exercise["sets"] = sets;
     exercise["repetitions"] = reps;
     exercise["lastUpdated"] = now.toString(Qt::ISODate);
-    exercise["history"] = history;
+    exercise["history"] = sortedHistory;
 
     exercises[name] = exercise;
     m_data["exercises"] = exercises;
+
     save();
     emit dataChanged();
+
+    qDebug() << "Ejercicio actualizado:" << name << "| Valor:" << value << unit
+             << "| Sets:" << sets << "| Reps:" << reps;
 }
 
 void DataCenter::removeExercise(const QString& name) {

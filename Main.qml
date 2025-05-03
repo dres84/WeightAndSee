@@ -20,13 +20,6 @@ ApplicationWindow {
         id: exerciseModel
     }
 
-    Connections {
-        target: dataCenter
-        function onDataChanged() {
-            exerciseModel.loadFromJson(dataCenter.data)
-        }
-    }
-
     // 2. Carga inicial
     Component.onCompleted: {
         exerciseModel.loadFromJson(dataCenter.data)

@@ -92,12 +92,6 @@ Page {
                 }
                 onCloseOthers: listView.closeAll()
                 onEditExercise: {
-                    //editDialog.exerciseName = name;
-                    //editDialog.open()
-                    graphLoader.exerciseNameToLoad = name
-                    graphLoader.active = true
-                }
-                onOpenChart: {
                     graphLoader.exerciseNameToLoad = name
                     graphLoader.active = true
                 }
@@ -212,17 +206,9 @@ Page {
         onClicked: addDialog.open()
     }
 
-    // Dialogs
+    // Dialog
     NewExerciseDialog {
         id: addDialog
-    }
-
-    EditExerciseDialog {
-        id: editDialog
-
-        onExerciseUpdated: {
-            console.log("Ejercicio actualizado:", exerciseName);
-        }
     }
 
     // Loader para gráficos
@@ -234,11 +220,19 @@ Page {
         active: false
         property string exerciseNameToLoad: ""
 
+        function reload() {
+            active = false
+            Qt.callLater(function() {
+                active = true
+            })
+        }
+
         Component {
             id: graphComponent
             ExerciseGraph {
                 exerciseName: graphLoader.exerciseNameToLoad
                 onGoBack: graphLoader.active = false
+                onRequestReload: graphLoader.reload()
             }
         }
     }

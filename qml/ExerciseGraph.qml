@@ -5,7 +5,9 @@ import QtQuick.Layouts 1.15
 Item {
     id: graph
     anchors.fill: parent
+
     signal goBack()
+    signal requestReload()
 
     property string exerciseName: ""
     property string muscleGroup: ""
@@ -16,8 +18,8 @@ Item {
 
     property int marginLeft: 50
     property int marginRight: 50
-    property int marginTop: 45
-    property int marginBottom: 60
+    property int marginTop: 25
+    property int marginBottom: 35
     property int innerMargin: 20
     property int minPointSpacing: 35
     property point tooltipPos: Qt.point(0, 0)
@@ -88,7 +90,9 @@ Item {
         ctx.closePath()
     }
 
-    Component.onCompleted: {
+    function loadData() {
+        exerciseData = []
+        filteredData = []
         exerciseData = dataCenter.getExerciseHistoryDetailed(exerciseName)
         graph.unit = dataCenter.getUnit(exerciseName) === "-" ? "Reps" : dataCenter.getUnit(exerciseName)
         isWeightGraph = unit !== "Reps"
@@ -97,6 +101,31 @@ Item {
         if (exerciseData.length > 0) {
             exerciseData.sort((a, b) => new Date(a.date) - new Date(b.date))
             filterData()
+        }
+    }
+
+    function repaint() {
+        filterData()
+        highlightedIndex = -1
+        chartCanvas.requestPaint()
+        yAxisCanvas.requestPaint()
+    }
+
+    Component.onCompleted: {
+        console.log("Cargamos datos en ExerciseGraph para " + exerciseName)
+        loadData()
+    }
+
+
+    Connections {
+        target: dataCenter
+        function onDataChanged() {
+            console.log("--- onDataChanged triggered ---");
+            console.log("ExerciseName:", exerciseName);
+            console.log("Current dataCenter data:", JSON.stringify(dataCenter.data));
+            loadData();
+            console.log("ExerciseData after load:", JSON.stringify(exerciseData));
+            repaint();
         }
     }
 
@@ -143,7 +172,7 @@ Item {
     Row {
         id: periodButtons
         anchors.top: header.bottom
-        width: parent.width - marginLeft * 0.66
+        width: parent.width - Style.bigSpace * 2
         anchors.horizontalCenter: parent.horizontalCenter
         height: 45
         spacing: 5
@@ -181,10 +210,7 @@ Item {
 
                 onClicked: {
                     selectedPeriod = modelData.months
-                    filterData()
-                    highlightedIndex = -1
-                    chartCanvas.requestPaint()
-                    yAxisCanvas.requestPaint()
+                    repaint()
                 }
             }
         }
@@ -207,7 +233,7 @@ Item {
             top: summaryGrid.bottom
             left: parent.left
             right: parent.right
-            bottom: parent.bottom
+            bottom: deleteEntry.top
         }
 
         Item {
@@ -247,7 +273,7 @@ Item {
                     ctx.stroke()
 
                     var numYTicks = 5
-                    ctx.font = Style.caption + "px sans-serif"
+                    ctx.font = Style.caption + "px " + Style.interFont.name
                     ctx.fillStyle = Style.textSecondary
 
                     for (var i = 0; i <= numYTicks; i++) {
@@ -366,7 +392,7 @@ Item {
                                     if (prevMonthEndX >= 0 && (monthStartX - prevMonthEndX) > 30 &&
                                        (currentDate.getMonth() - prevMonth > 1 || currentDate.getFullYear() > new Date(firstDate).getFullYear())) {
                                         ctx.save()
-                                        ctx.font = Style.semi + "px sans-serif"
+                                        ctx.font = Style.semi + "px " + Style.interFont.name
                                         ctx.fillStyle = Style.textSecondary
                                         ctx.textAlign = "center"
                                         ctx.textBaseline = "bottom"
@@ -424,7 +450,7 @@ Item {
                         ctx.stroke()
 
                         // Manejo de fechas seleccionadas y días clave
-                        ctx.font = (Style.caption - 1) + "px sans-serif"
+                        ctx.font = (Style.caption - 1) + "px " + Style.interFont.name
                         ctx.fillStyle = Style.textSecondary
 
                         // Si hay un punto seleccionado
@@ -465,7 +491,7 @@ Item {
                             for (var i = 0; i < filteredData.length; i++) {
                                 var date = new Date(filteredData[i].date)
                                 var day = date.getDate()
-                                var showDay = (day === 1 || day === 10 || day === 20 || day === 30)
+                                var showDay = (day === 1 || day % 3 === 0)
 
                                 if (showDay) {
                                     var x = xPositions[i]
@@ -473,7 +499,7 @@ Item {
                                     var canShow = true
                                     if (i > 0) {
                                         var prevX = xPositions[i-1]
-                                        var spaceNeeded = ctx.measureText(day.toString()).width + 10
+                                        var spaceNeeded = ctx.measureText(day.toString()).width -5
                                         canShow = (x - prevX) > spaceNeeded
                                     }
 
@@ -569,19 +595,21 @@ Item {
                         onTapped: function(eventPoint) {
                             if (filteredData.length === 0) return
 
-                            var tapX = eventPoint.position.x + scrollView.contentItem.x
+                            var tapPos = eventPoint.position
                             var closestIndex = -1
-                            var minDist = Infinity
+                            var minDistSquared = Infinity // Usaremos la distancia al cuadrado para evitar la raíz cuadrada
 
                             var plotWidth = chartCanvas.width
                             var plotHeight = chartCanvas.height - marginTop - marginBottom
                             var xPositions = []
+                            var yPositions = [] // Almacenaremos las posiciones Y de los puntos
                             var values = filteredData.map(item => isWeightGraph ? item.weight : item.reps)
                             var maxVal = Math.max(...values) * 1.2
                             var minVal = 0
 
                             if (filteredData.length <= 1) {
                                 xPositions = [innerMargin]
+                                yPositions = [getY(values[0], minVal, maxVal, plotHeight)]
                             } else {
                                 var firstDate = new Date(filteredData[0].date)
                                 var lastDate = new Date(filteredData[filteredData.length-1].date)
@@ -592,23 +620,27 @@ Item {
                                     var daysFromStart = date - firstDate
                                     var x = innerMargin + (daysFromStart / totalDays) * (plotWidth - 2*innerMargin)
                                     xPositions.push(x)
+                                    yPositions.push(getY(values[i], minVal, maxVal, plotHeight))
                                 }
                             }
 
                             for (var i = 0; i < filteredData.length; i++) {
-                                var d = Math.abs(tapX - xPositions[i])
-                                if (d < minDist) {
-                                    minDist = d
+                                var dx = tapPos.x + scrollView.contentItem.x - xPositions[i]
+                                var dy = tapPos.y - yPositions[i]
+                                var distSquared = dx * dx + dy * dy // Distancia al cuadrado
+
+                                if (distSquared < minDistSquared) {
+                                    minDistSquared = distSquared
                                     closestIndex = i
                                 }
                             }
 
-                            if (minDist < 30) {
+                            if (Math.sqrt(minDistSquared) < 30) { // Usamos la distancia real para la tolerancia
                                 if (highlightedIndex !== closestIndex) { // Solo si cambia el índice
                                     highlightedIndex = closestIndex
                                     var item = filteredData[highlightedIndex]
                                     var xs = xPositions[highlightedIndex]
-                                    var ys = getY(isWeightGraph ? item.weight : item.reps, minVal, maxVal, plotHeight)
+                                    var ys = yPositions[highlightedIndex]
 
                                     tooltipPos = chartCanvas.mapToItem(graph, xs, ys)
                                 }
@@ -643,6 +675,39 @@ Item {
             font.bold: true
             font.pixelSize: Style.semi
             color: Style.textSecondary
+        }
+    }
+
+    FloatButton {
+        id: deleteEntry
+        anchors {
+            bottom: parent.bottom
+            left: parent.left
+            bottomMargin: 15
+            leftMargin: 15
+        }
+        height: 50
+        buttonColor: Style.buttonNegative
+        fontPixelSize: Style.caption
+        buttonText: "Borrar registro"
+        onClicked: console.log("Borrar registro")
+    }
+
+    FloatButton {
+        id: addEntry
+        anchors {
+            bottom: parent.bottom
+            right: parent.right
+            bottomMargin: 15
+            rightMargin: 15
+        }
+        height: 50
+        buttonColor: Style.buttonPositive
+        buttonText: "Añadir registro"
+        fontPixelSize: Style.caption
+        onClicked: {
+            editDialog.exerciseName = exerciseName
+            editDialog.open()
         }
     }
 
@@ -687,6 +752,14 @@ Item {
             return isWeightGraph ?
                 `${filteredData[highlightedIndex].sets} x ${filteredData[highlightedIndex].reps} reps` :
                 `${filteredData[highlightedIndex].sets} series`;
+        }
+    }
+
+    EditExerciseDialog {
+        id: editDialog
+
+        onExerciseUpdated: {
+            console.log("Ejercicio actualizado:", exerciseName);
         }
     }
 }

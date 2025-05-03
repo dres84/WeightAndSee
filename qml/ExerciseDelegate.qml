@@ -22,7 +22,6 @@ Item {
 
     signal closeOthers
     signal editExercise
-    signal openChart
 
     Behavior on height {
         NumberAnimation { duration: Style.animationTime }
