@@ -57,6 +57,7 @@ Item {
                 spacing: 4
                 Layout.alignment: Qt.AlignVCenter
                 Layout.preferredWidth: parent.width * 0.35
+                Layout.leftMargin: isOpened ? -contentItem.x : 0
 
                 Text {
                     text: {
@@ -90,10 +91,12 @@ Item {
             // Peso/Reps
             Column {
                 spacing: 4
-                Layout.alignment: Qt.AlignVCenter
+                Layout.alignment: Qt.AlignVCenter | Qt.AlignRight
                 Layout.preferredWidth: parent.width * 0.3
+                Layout.rightMargin: 10
 
                 Text {
+                    id: textValue
                     text: unit === "-" ? reps + " reps" : weight + " " + unit
                     width: parent.width
                     font {
@@ -105,6 +108,7 @@ Item {
                 }
 
                 Text {
+                    id: textSetsAndReps
                     text: sets + " x " + reps + (unit === "-" ? "" : " reps")
                     width: parent.width
                     font {
@@ -119,15 +123,12 @@ Item {
         }
 
         TapHandler {
-            onLongPressed: {
+            onTapped: {
+                closeAllHistory()
                 if (!isOpened) {
                     open()
-                }
-            }
-            onPressedChanged: {
-                if (pressed) {
-                    // Cerrar otros elementos abiertos
-                    closeAllHistory()
+                } else {
+                    close()
                 }
             }
         }
@@ -176,11 +177,24 @@ Item {
 
         TapHandler {
             onTapped: {
-                console.log("Eliminar registro del historial:", date)
-                dataCenter.removeHistoryEntry(exerciseName, index)
-                // Opcional: cerrar el diálogo después de borrar
-                historyDialog.close()
+                confirmDeleteDialog.show(
+                    index,
+                    exerciseName,
+                    date,
+                    weight,
+                    unit,
+                    reps,
+                    sets
+                )
             }
+        }
+    }
+
+    // Diálogo de confirmación para borrar registro
+    ConfirmDeleteDialog {
+        id: confirmDeleteDialog
+        onConfirmed: function(index) {
+            dataCenter.removeHistoryEntry(exerciseName, index)
         }
     }
 }

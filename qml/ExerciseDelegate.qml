@@ -66,6 +66,7 @@ Item {
                 radius: width / 2
                 color: "transparent"
                 Layout.alignment: Qt.AlignVCenter | Qt.AlignLeft
+                Layout.leftMargin: isOpened ? -contentItem.x : 0 // con esto siempre está visible el icono
                 clip: true // Esto recorta el contenido dentro del círculo
 
                 Image {

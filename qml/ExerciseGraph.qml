@@ -879,7 +879,7 @@ Item {
     }
 
     // Diálogo de historial completo (para borrar registros)
-    Popup {
+    Dialog {
         id: historyDialog
         anchors.centerIn: Overlay.overlay
         width: parent.width * 0.9
@@ -910,7 +910,7 @@ Item {
 
             // Instrucciones
             Label {
-                text: "Desliza hacia la izquierda para borrar"
+                text: "Pulsa o desliza hacia la izquierda para borrar"
                 font.pixelSize: Style.caption
                 color: Style.textSecondary
                 Layout.alignment: Qt.AlignHCenter
