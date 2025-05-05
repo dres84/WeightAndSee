@@ -6,20 +6,20 @@ Item {
     id: summaryGrid
     width: parent.width
     height: 90
-    z: 1 // Para que esté por encima del gráfico
+    z: 1
 
-    property var currentData: filteredData
+    property ListModel currentModel: ListModel {}
     property bool isWeight: true
-    required property string unitText
+    property string unitText: ""
+    property string muscleGroup: ""
 
-    // Calculamos los valores del resumen
     property var initialValue: calculateInitialValue()
     property var recordValue: calculateRecordValue()
     property var evolution: calculateEvolution()
 
     function calculateInitialValue() {
-        if (currentData.length === 0) return { value: 0, date: "" }
-        var first = currentData[0]
+        if (currentModel.count === 0) return { value: 0, date: "" }
+        var first = currentModel.get(0)
         return {
             value: isWeight ? first.weight : first.reps,
             date: first.date
@@ -27,11 +27,11 @@ Item {
     }
 
     function calculateRecordValue() {
-        if (currentData.length === 0) return { value: 0, date: "" }
+        if (currentModel.count === 0) return { value: 0, date: "" }
 
-        var record = currentData[0]
-        for (var i = 1; i < currentData.length; i++) {
-            var current = currentData[i]
+        var record = currentModel.get(0)
+        for (var i = 1; i < currentModel.count; i++) {
+            var current = currentModel.get(i)
             var currentVal = isWeight ? current.weight : current.reps
             var recordVal = isWeight ? record.weight : record.reps
 
@@ -47,16 +47,16 @@ Item {
     }
 
     function calculateEvolution() {
-        if (currentData.length < 2) return { value: 0, percent: 0, startDate: "", endDate: "" }
+        if (currentModel.count < 2) return { value: 0, percent: 0, startDate: "", endDate: "" }
 
-        var first = currentData[0]
-        var last = currentData[currentData.length-1]
+        var first = currentModel.get(0)
+        var last = currentModel.get(currentModel.count-1)
 
         var firstVal = isWeight ? first.weight : first.reps
         var lastVal = isWeight ? last.weight : last.reps
 
         var diff = lastVal - firstVal
-        var percent = (diff / firstVal) * 100
+        var percent = firstVal !== 0 ? (diff / firstVal) * 100 : 0
 
         return {
             value: diff,
@@ -66,8 +66,14 @@ Item {
         }
     }
 
-    // Actualizamos cuando cambian los datos o el período
-    onCurrentDataChanged: {
+    Connections {
+        target: currentModel
+        function onCountChanged() { updateValues() }
+    }
+
+    onIsWeightChanged: updateValues()
+
+    function updateValues() {
         initialValue = calculateInitialValue()
         recordValue = calculateRecordValue()
         evolution = calculateEvolution()
@@ -86,7 +92,6 @@ Item {
         columns: 3
         columnSpacing: 10
 
-        // Primer elemento: Valor inicial
         SummaryItem {
             title: isWeight ? "Inicial" : "Iniciales"
             value: initialValue.value.toFixed(isWeight ? 1 : 0)
@@ -96,32 +101,29 @@ Item {
             dateText: formatShortDate(initialValue.date)
         }
 
-        // Segundo elemento: Record
         SummaryItem {
             title: "Récord"
             value: recordValue.value.toFixed(isWeight ? 1 : 0)
             unitValue: unitText
             muscleGroupText: muscleGroup
             icon: "record"
-            iconColor: "#FFC107" // Amarillo dorado para records
+            iconColor: "#FFC107"
             dateText: formatShortDate(recordValue.date)
         }
 
-        // Tercer elemento: Evolución
         SummaryItem {
             title: "Evolución"
             value: (evolution.value > 0 ? "+" : "") + evolution.value.toFixed(isWeight ? 1 : 0)
             unitValue: unitText
             muscleGroupText: muscleGroup
             icon: evolution.value >= 0 ? "trend-up" : "trend-down"
-            iconColor: evolution.value >= 0 ? "#4CAF50" : "#F44336" // Verde o rojo
+            iconColor: evolution.value >= 0 ? "#4CAF50" : "#F44336"
             dateText: "Desde " + formatShortDate(evolution.startDate)
-            valueColor: evolution.value >= 0 ? "#4CAF50" : "#F44336" // Verde o rojo
+            valueColor: evolution.value >= 0 ? "#4CAF50" : "#F44336"
             sinceDate: true
         }
     }
 
-    // Función para formatear fecha corta
     function formatShortDate(dateStr) {
         if (!dateStr) return ""
         var date = new Date(dateStr)

@@ -28,6 +28,7 @@
         <file>qml/SummaryItem.qml</file>
         <file>qml/SummaryGrid.qml</file>
         <file>qml/Tooltip.qml</file>
+        <file>qml/HistoryDelegate.qml</file>
     </qresource>
     <qresource prefix="/fonts">
         <file>fonts/Inter-Medium.ttf</file>

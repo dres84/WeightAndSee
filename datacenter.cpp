@@ -178,6 +178,46 @@ void DataCenter::removeExercise(const QString& name) {
     }
 }
 
+void DataCenter::removeHistoryEntry(const QString &exerciseName, int index) {
+    QJsonObject exercises = m_data["exercises"].toObject();
+    if (!exercises.contains(exerciseName)) return;
+
+    QJsonObject exercise = exercises[exerciseName].toObject();
+    QJsonArray history = exercise["history"].toArray();
+
+    if (index < 0 || index >= history.size()) return;
+
+    history.removeAt(index);
+    exercise["history"] = history;
+
+    // Actualizar currentValue si era el último registro
+    if (history.isEmpty()) {
+        exercise["currentValue"] = 0;
+        exercise["repetitions"] = 0;
+        exercise["sets"] = 0;
+        exercise["lastUpdated"] = "";
+    } else {
+        // Si era el registro actual, actualizar con el nuevo último
+        const QString lastUpdated = exercise["lastUpdated"].toString();
+        const QString removedTimestamp = history[index].toObject()["timestamp"].toString();
+
+        if (lastUpdated == removedTimestamp) {
+            const QJsonObject lastEntry = history.last().toObject();
+            exercise["currentValue"] = lastEntry["value"].toDouble();
+            exercise["unit"] = lastEntry["unit"].toString();
+            exercise["repetitions"] = lastEntry["repetitions"].toInt();
+            exercise["sets"] = lastEntry["sets"].toInt();
+            exercise["lastUpdated"] = lastEntry["timestamp"].toString();
+        }
+    }
+
+    exercises[exerciseName] = exercise;
+    m_data["exercises"] = exercises;
+
+    save();
+    emit dataChanged();
+}
+
 void DataCenter::reloadDefaultData() {
     QFile file(getFilePath());
     if (file.exists()) {
@@ -717,25 +757,22 @@ QVariantList DataCenter::getExerciseHistoryDetailed(const QString &exerciseName)
 
     if (!m_data.contains("exercises")) return historyList;
 
-    QJsonObject exercisesObj = m_data["exercises"].toObject();
+    const QJsonObject exercisesObj = m_data["exercises"].toObject();
     if (!exercisesObj.contains(exerciseName)) return historyList;
 
-    QJsonObject exerciseObj = exercisesObj[exerciseName].toObject();
-    if (!exerciseObj.contains("history")) return historyList;
+    const QJsonObject exerciseObj = exercisesObj[exerciseName].toObject();
+    const QJsonArray historyArray = exerciseObj["history"].toArray();
 
-    QJsonArray historyArray = exerciseObj["history"].toArray();
-
-    for (const QJsonValue& entryVal : historyArray) {
-        QJsonObject entry = entryVal.toObject();
+    for (const QJsonValueConstRef &entryVal : historyArray) {
+        const QJsonObject entry = entryVal.toObject();
         QVariantMap map;
-        map["date"] = entry["timestamp"].toString().left(10);  // o usa entry["date"] si así está
+        map["date"] = entry["timestamp"].toString();
         map["weight"] = entry["value"].toDouble();
         map["unit"] = entry["unit"].toString();
         map["sets"] = entry["sets"].toInt();
-        map["reps"] = entry["repetitions"].toInt(); // asegúrate del nombre correcto
+        map["reps"] = entry["repetitions"].toInt();
         historyList.append(map);
     }
 
     return historyList;
 }
-

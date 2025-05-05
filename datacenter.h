@@ -21,6 +21,7 @@ public:
                                  double value, const QString& unit, int sets, int reps);
     Q_INVOKABLE void updateExercise(const QString& name, double value, const QString& unit, int sets, int reps);
     Q_INVOKABLE void removeExercise(const QString& name);
+    Q_INVOKABLE void removeHistoryEntry(const QString& exerciseName, int index);
     Q_INVOKABLE void reloadDefaultData();
     Q_INVOKABLE void deleteAllExercises();
 
