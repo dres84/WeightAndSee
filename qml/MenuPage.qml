@@ -31,18 +31,36 @@ Page {
         width: parent.width - Style.bigSpace * 2
         spacing: 5
 
-        // Buscador
-        SearchBox {
-            id: searchBox
+        RowLayout {
+
             Layout.fillWidth: true
-            onTextChanged: {
-                if (text !== "") {
-                    groupFilter.enabled = false
-                } else {
-                    groupFilter.enabled = true
+            // Buscador
+            SearchBox {
+                id: searchBox
+                Layout.fillWidth: true
+                onTextChanged: {
+                    if (text !== "") {
+                        groupFilter.enabled = false
+                    } else {
+                        groupFilter.enabled = true
+                    }
+                }
+            }
+
+            Image {
+                Layout.preferredHeight: 40
+                Layout.preferredWidth: 40
+                source: "qrc:/icons/settings.png"
+                Layout.alignment: Qt.AlignRight
+
+                TapHandler {
+                    onTapped: {
+                        console.log("Settings tapped")
+                    }
                 }
             }
         }
+
 
         Label {
             text: "o filtra por grupo muscular:"

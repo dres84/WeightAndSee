@@ -61,6 +61,7 @@ qt_add_resources(appgymWeights "icons"
         icons/core.svg
         icons/shoulders.svg
         icons/legs.svg
+        icons/settings.png
 )
 
 qt_add_resources(appgymWeights "fonts"

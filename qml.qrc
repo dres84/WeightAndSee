@@ -11,6 +11,7 @@
         <file>icons/core.svg</file>
         <file>icons/legs.svg</file>
         <file>icons/shoulders.svg</file>
+        <file>icons/settings.png</file>
     </qresource>
     <qresource prefix="/qml">
         <file>qml/MenuPage.qml</file>
@@ -26,7 +27,7 @@
         <file>qml/ExerciseGraph.qml</file>
         <file>qml/SummaryItem.qml</file>
         <file>qml/SummaryGrid.qml</file>
-	<file>qml/Tooltip.qml</file>
+        <file>qml/Tooltip.qml</file>
     </qresource>
     <qresource prefix="/fonts">
         <file>fonts/Inter-Medium.ttf</file>

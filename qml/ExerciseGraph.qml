@@ -209,8 +209,11 @@ Item {
                 }
 
                 onClicked: {
-                    selectedPeriod = modelData.months
-                    repaint()
+                    if (selectedPeriod !== modelData.months) {
+                        highlightedIndex = -1
+                        selectedPeriod = modelData.months
+                        repaint()
+                    }
                 }
             }
         }
@@ -592,17 +595,19 @@ Item {
                     }
 
                     TapHandler {
+                        property int lastTappedIndex: -1 // Para rastrear el último punto seleccionado en un tap múltiple
+
                         onTapped: function(eventPoint) {
                             if (filteredData.length === 0) return
 
                             var tapPos = eventPoint.position
-                            var closestIndex = -1
-                            var minDistSquared = Infinity // Usaremos la distancia al cuadrado para evitar la raíz cuadrada
+                            var closestIndices = [] // Almacenará los índices de los puntos cercanos
+                            var minDistSquaredThreshold = 30 * 30 // Umbral de distancia al cuadrado
 
                             var plotWidth = chartCanvas.width
                             var plotHeight = chartCanvas.height - marginTop - marginBottom
                             var xPositions = []
-                            var yPositions = [] // Almacenaremos las posiciones Y de los puntos
+                            var yPositions = []
                             var values = filteredData.map(item => isWeightGraph ? item.weight : item.reps)
                             var maxVal = Math.max(...values) * 1.2
                             var minVal = 0
@@ -627,25 +632,39 @@ Item {
                             for (var i = 0; i < filteredData.length; i++) {
                                 var dx = tapPos.x + scrollView.contentItem.x - xPositions[i]
                                 var dy = tapPos.y - yPositions[i]
-                                var distSquared = dx * dx + dy * dy // Distancia al cuadrado
+                                var distSquared = dx * dx + dy * dy
 
-                                if (distSquared < minDistSquared) {
-                                    minDistSquared = distSquared
-                                    closestIndex = i
+                                if (distSquared < minDistSquaredThreshold) {
+                                    closestIndices.push(i)
                                 }
                             }
 
-                            if (Math.sqrt(minDistSquared) < 30) { // Usamos la distancia real para la tolerancia
-                                if (highlightedIndex !== closestIndex) { // Solo si cambia el índice
-                                    highlightedIndex = closestIndex
-                                    var item = filteredData[highlightedIndex]
-                                    var xs = xPositions[highlightedIndex]
-                                    var ys = yPositions[highlightedIndex]
-
-                                    tooltipPos = chartCanvas.mapToItem(graph, xs, ys)
+                            if (closestIndices.length > 0) {
+                                if (closestIndices.length === 1) {
+                                    // Un solo punto cercano: activar/desactivar selección
+                                    if (highlightedIndex === closestIndices[0]) {
+                                        highlightedIndex = -1; // Deseleccionar
+                                    } else {
+                                        highlightedIndex = closestIndices[0]; // Seleccionar
+                                        tooltipPos = chartCanvas.mapToItem(graph, xPositions[highlightedIndex], yPositions[highlightedIndex]);
+                                        lastTappedIndex = highlightedIndex; // Reset last tapped
+                                    }
+                                } else {
+                                    // Múltiples puntos cercanos: ciclo a través de ellos
+                                    var nextIndex = -1;
+                                    if (lastTappedIndex !== -1 && closestIndices.includes(lastTappedIndex)) {
+                                        var currentIndexInClosest = closestIndices.indexOf(lastTappedIndex);
+                                        nextIndex = closestIndices[(currentIndexInClosest + 1) % closestIndices.length];
+                                    } else {
+                                        nextIndex = closestIndices[0]; // Seleccionar el primero si no hay selección previa
+                                    }
+                                    highlightedIndex = nextIndex;
+                                    tooltipPos = chartCanvas.mapToItem(graph, xPositions[highlightedIndex], yPositions[highlightedIndex]);
+                                    lastTappedIndex = highlightedIndex;
                                 }
                             } else {
-                                highlightedIndex = -1 // Esto ocultará el tooltip
+                                highlightedIndex = -1; // No hay puntos cercanos, deseleccionar
+                                lastTappedIndex = -1;
                             }
 
                             // Forzar repintado siempre
