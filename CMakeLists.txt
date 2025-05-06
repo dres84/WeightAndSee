@@ -29,6 +29,7 @@ qt_add_qml_module(appgymWeights
         qml/NewExerciseDialog.qml
         qml/EditExerciseDialog.qml
         qml/ConfirmDeleteDialog.qml
+        qml/HistoryDialog.qml
         qml/ExerciseGraph.qml
         qml/Tooltip.qml
         qml/HistoryDelegate.qml

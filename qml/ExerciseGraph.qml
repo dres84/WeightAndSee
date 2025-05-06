@@ -277,7 +277,7 @@ Item {
             top: summaryGrid.bottom
             left: parent.left
             right: parent.right
-            bottom: deleteEntry.top
+            bottom: centerButtons.top
         }
 
         // Contenedor del eje Y (izquierda)
@@ -783,41 +783,36 @@ Item {
 
     /* -------------------------- BOTONES INFERIORES -------------------------- */
 
-    // Botón para borrar registro seleccionado
-    FloatButton {
-        id: deleteEntry
+    Row {
+        id: centerButtons
+        spacing: 20
         anchors {
             bottom: parent.bottom
-            left: parent.left
-            bottomMargin: 15
-            leftMargin: 15
+            horizontalCenter: parent.horizontalCenter
+            bottomMargin: Style.smallMargin
         }
-        height: 50
-        buttonColor: Style.buttonNegative
-        fontPixelSize: Style.caption
-        buttonText: "Borrar registro"
-        onClicked: historyDialog.open()
-    }
 
-    // Botón para añadir nuevo registro
-    FloatButton {
-        id: addEntry
-        anchors {
-            bottom: parent.bottom
-            right: parent.right
-            bottomMargin: 15
-            rightMargin: 15
+        FloatButton {
+            id: deleteEntry
+            height: 50
+            buttonColor: Style.buttonNegative
+            fontPixelSize: Style.caption
+            buttonText: "Borrar registro"
+            onClicked: historyDialog.open()
         }
-        height: 50
-        buttonColor: Style.buttonPositive
-        buttonText: "Añadir registro"
-        fontPixelSize: Style.caption
-        onClicked: {
-            editDialog.exerciseName = exerciseName
-            editDialog.open()
+
+        FloatButton {
+            id: addEntry
+            height: 50
+            buttonColor: Style.buttonPositive
+            buttonText: "Añadir registro"
+            fontPixelSize: Style.caption
+            onClicked: {
+                editDialog.exerciseName = exerciseName
+                editDialog.open()
+            }
         }
     }
-
     /* -------------------------- TOOLTIP DE PUNTO -------------------------- */
 
     // Tooltip que muestra detalles del punto seleccionado
@@ -879,93 +874,7 @@ Item {
     }
 
     // Diálogo de historial completo (para borrar registros)
-    Dialog {
+    HistoryDialog {
         id: historyDialog
-        anchors.centerIn: Overlay.overlay
-        width: parent.width * 0.9
-        height: parent.height * 0.7
-        modal: true
-        dim: true
-        closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
-
-        background: Rectangle {
-            color: Style.background
-            radius: 5
-            border.color: Style.divider
-            border.width: 1
-        }
-
-        ColumnLayout {
-            anchors.fill: parent
-            anchors.margins: 10
-            spacing: 10
-
-            // Título
-            Label {
-                text: "Historial de " + exerciseName
-                font.pixelSize: Style.heading1
-                color: Style.muscleColor(muscleGroup)
-                Layout.alignment: Qt.AlignHCenter
-            }
-
-            // Instrucciones
-            Label {
-                text: "Pulsa o desliza hacia la izquierda para borrar"
-                font.pixelSize: Style.caption
-                color: Style.textSecondary
-                Layout.alignment: Qt.AlignHCenter
-            }
-
-            // Lista de registros
-            ListView {
-                id: historyListView
-                Layout.fillWidth: true
-                Layout.fillHeight: true
-                clip: true
-                model: filteredModel
-                spacing: 2
-
-                delegate: HistoryDelegate {
-
-                    width: historyListView.width
-                    onCloseAllHistory: {
-                        historyListView.closeAll()
-                    }
-                    Component.onCompleted: {
-                        console.log("Elemento " + index)
-                        console.log("date: " + date + " - weight: " + weight + " - unit: " + unit )
-                        console.log("reps: " + reps + " - sets: " + sets)
-                    }
-                }
-
-                // Cerrar todos los ítems deslizables
-                function closeAll() {
-                    for (let i = 0; i < contentItem.children.length; ++i) {
-                        let item = contentItem.children[i];
-                        if (item && item.index !== undefined) {
-                            if (typeof item.close === "function") {
-                                item.close();
-                            }
-                        }
-                    }
-                }
-
-                ScrollBar.vertical: ScrollBar {
-                    policy: ScrollBar.AsNeeded
-                }
-            }
-
-            // Botón de cerrar
-            Button {
-                text: "Cerrar"
-                Layout.alignment: Qt.AlignHCenter
-                onClicked: historyDialog.close()
-
-                background: Rectangle {
-                    color: Style.buttonNeutral
-                    radius: 5
-                }
-            }
-        }
     }
 }

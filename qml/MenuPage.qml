@@ -24,9 +24,9 @@ Page {
 
     ColumnLayout {
         anchors.top: parent.top
-        anchors.bottom: addButton.top
+        anchors.bottom: centerButtons.top
         anchors.topMargin: 20
-        anchors.bottomMargin: 10
+        anchors.bottomMargin: Style.mediumMargin
         anchors.horizontalCenter: parent.horizontalCenter
         width: parent.width - Style.bigSpace * 2
         spacing: 5
@@ -162,20 +162,19 @@ Page {
     }
 
     // Botón de eliminar alineado a la izquierda
-    FloatButton {
-        id: deleteButton
-        visible: showDeleteButton
+    FloatButton {     
+        id: reloadButton
         anchors {
             bottom: parent.bottom
             left: parent.left
-            bottomMargin: 15
-            leftMargin: 15
+            bottomMargin: Style.smallMargin
+            leftMargin: Style.mediumMargin
         }
         height: 50
-        buttonColor: Style.buttonNegative
-        fontPixelSize: Style.caption
-        buttonText: allOpened ? "Cancelar borrado" : "Borrar ejercicio"
-        onClicked: allOpened ? listView.closeAll() : listView.openAll()
+        width: 35
+        buttonColor: Style.buttonNeutral
+        buttonText: "\u21BB" // Reload symbol
+        onClicked: dataCenter.reloadDefaultData()
     }
 
     // Botones centrales (recargar y borrar archivo)
@@ -186,42 +185,44 @@ Page {
         anchors {
             bottom: parent.bottom
             horizontalCenter: parent.horizontalCenter
-            bottomMargin: 15
+            bottomMargin: Style.smallMargin
         }
 
         FloatButton {
-            id: reloadButton
+            id: deleteButton
+            visible: showDeleteButton
             height: 50
-            width: 30
-            buttonColor: Style.buttonNeutral
-            buttonText: "\u21BB" // Reload symbol
-            onClicked: dataCenter.reloadDefaultData()
+            buttonColor: Style.buttonNegative
+            fontPixelSize: Style.caption
+            buttonText: allOpened ? "Cancelar borrado" : "Borrar ejercicio"
+            onClicked: allOpened ? listView.closeAll() : listView.openAll()
+
         }
 
         FloatButton {
-            id: deleteFileButton
+            id: addButton
             height: 50
-            width: 30
-            buttonColor: Style.buttonNeutral
-            buttonText: "\u232B"
-            onClicked: dataCenter.deleteAllExercises()
+            buttonColor: Style.buttonPositive
+            buttonText: "Nuevo ejercicio"
+            fontPixelSize: Style.caption
+            onClicked: addDialog.open()
         }
     }
 
     // Botón de añadir ejercicio alineado a la derecha
     FloatButton {
-        id: addButton
+        id: deleteFileButton
         anchors {
             bottom: parent.bottom
             right: parent.right
-            bottomMargin: 15
-            rightMargin: 15
+            bottomMargin: Style.smallMargin
+            rightMargin: Style.mediumMargin
         }
         height: 50
-        buttonColor: Style.buttonPositive
-        buttonText: "Nuevo ejercicio"
-        fontPixelSize: Style.caption
-        onClicked: addDialog.open()
+        width: 35
+        buttonColor: Style.buttonNeutral
+        buttonText: "\u232B"
+        onClicked: dataCenter.deleteAllExercises()
     }
 
     // Dialog
@@ -240,7 +241,7 @@ Page {
 
         function reload() {
             active = false
-            Qt.callLater(function() {
+            Qt.callLater(function() {c
                 active = true
             })
         }

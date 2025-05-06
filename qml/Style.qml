@@ -47,6 +47,10 @@ QtObject {
     readonly property int largeRadius: 12
     readonly property int extraLargeRadius: 24
 
+    // Margenes
+    readonly property int smallMargin: 15
+    readonly property int mediumMargin: 30
+
     // Opacidad de iconos
     readonly property real iconOpacity: 0.4
 

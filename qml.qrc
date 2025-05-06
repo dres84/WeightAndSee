@@ -30,6 +30,7 @@
         <file>qml/Tooltip.qml</file>
         <file>qml/HistoryDelegate.qml</file>
         <file>qml/ConfirmDeleteDialog.qml</file>
+        <file>qml/HistoryDialog.qml</file>
     </qresource>
     <qresource prefix="/fonts">
         <file>fonts/Inter-Medium.ttf</file>

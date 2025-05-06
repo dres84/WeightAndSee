@@ -7,7 +7,7 @@ Dialog {
     id: confirmDeleteDialog
     modal: true
     anchors.centerIn: Overlay.overlay
-    width: Math.min(parent.width * 0.8, 400)
+    width: Math.min(500, parent.width * 0.9)
     padding: 20
     closePolicy: Popup.CloseOnEscape
 
@@ -19,6 +19,7 @@ Dialog {
     property int reps: 0
     property int sets: 0
     property int entryIndex: -1
+    property string muscleGroup: dataCenter.getMuscleGroup(exerciseName)
 
     signal confirmed(int index)
 
@@ -27,17 +28,10 @@ Dialog {
         color: Qt.rgba(0, 0, 0, 0.7)
     }
 
-    // Fondo del diálogo
-    background: Rectangle {
-        color: Style.surface
-        radius: Style.mediumRadius
-        border.color: Style.divider
-        border.width: 1
-    }
 
     ColumnLayout {
         width: parent.width
-        spacing: Style.mediumSpace
+        spacing: Style.smallSpace
 
         // Título
         Label {
@@ -46,7 +40,6 @@ Dialog {
             font.pixelSize: Style.heading2
             font.bold: true
             font.family: Style.interFont.name
-            color: Style.text
             horizontalAlignment: Text.AlignHCenter
             bottomPadding: Style.smallSpace
         }
@@ -58,34 +51,56 @@ Dialog {
             color: Style.divider
         }
 
-        // Nombre del ejercicio
-        Label {
+        // Fila con icono y nombre + grupo muscular
+        RowLayout {
+            spacing: 15
             Layout.fillWidth: true
             Layout.topMargin: Style.mediumSpace
-            text: exerciseName
-            font.pixelSize: Style.body
-            font.bold: true
-            font.family: Style.interFont.name
-            color: Style.text
-            horizontalAlignment: Text.AlignHCenter
-            wrapMode: Text.Wrap
-        }
 
-        // Grupo muscular
-        Label {
-            Layout.fillWidth: true
-            text: dataCenter.getMuscleGroup(exerciseName)
-            font.pixelSize: Style.semi
-            font.bold: true
-            font.family: Style.interFont.name
-            color: Style.muscleColor(dataCenter.getMuscleGroup(exerciseName))
-            horizontalAlignment: Text.AlignHCenter
+            // Icono del grupo muscular
+            Image {
+                id: muscleIcon
+                source: Style.muscleGroupIcon(muscleGroup)
+                sourceSize.width: 45
+                sourceSize.height: 45
+                fillMode: Image.PreserveAspectFit
+                Layout.alignment: Qt.AlignVCenter
+
+                Rectangle {
+                    anchors.fill: parent
+                    color: Style.muscleColor(muscleGroup)
+                    opacity: Style.iconOpacity
+                }
+            }
+
+            // Columna con nombre y grupo muscular
+            ColumnLayout {
+                Layout.fillWidth: true
+
+                // Nombre del ejercicio
+                Label {
+                    text: exerciseName
+                    font.pixelSize: Style.heading2
+                    font.bold: true
+                    elide: Text.ElideRight
+                    Layout.fillWidth: true
+                }
+
+                // Grupo muscular
+                Label {
+                    text: muscleGroup
+                    font.pixelSize: Style.semi
+                    font.bold: true
+                    color: Style.muscleColor(muscleGroup)
+                    Layout.fillWidth: true
+                }
+            }
         }
 
         // Grid con los detalles
         GridLayout {
             Layout.fillWidth: true
-            Layout.topMargin: Style.bigSpace
+            Layout.topMargin: Style.mediumSpace
             columns: 2
             columnSpacing: Style.mediumSpace
             rowSpacing: Style.smallSpace
@@ -95,7 +110,7 @@ Dialog {
                 text: "Fecha:"
                 font.pixelSize: Style.body
                 font.family: Style.interFont.name
-                color: Style.textSecondary
+                color: Style.textDisabled
             }
             Label {
                 text: {
@@ -104,7 +119,7 @@ Dialog {
                 }
                 font.pixelSize: Style.body
                 font.family: Style.interFont.name
-                color: Style.text
+                font.bold: true
                 Layout.fillWidth: true
             }
 
@@ -113,7 +128,7 @@ Dialog {
                 text: "Hora:"
                 font.pixelSize: Style.body
                 font.family: Style.interFont.name
-                color: Style.textSecondary
+                color: Style.textDisabled
             }
             Label {
                 text: {
@@ -122,22 +137,22 @@ Dialog {
                 }
                 font.pixelSize: Style.body
                 font.family: Style.interFont.name
-                color: Style.text
+                font.bold: true
                 Layout.fillWidth: true
             }
 
             // Peso o Reps
             Label {
-                text: unit === "-" ? "Repeticiones:" : "Peso:"
+                text: unit === "-" ? "Reps:" : "Peso:"
                 font.pixelSize: Style.body
                 font.family: Style.interFont.name
-                color: Style.textSecondary
+                color: Style.textDisabled
             }
             Label {
                 text: unit === "-" ? reps : weight + " " + unit
                 font.pixelSize: Style.body
                 font.family: Style.interFont.name
-                color: Style.text
+                font.bold: true
                 Layout.fillWidth: true
             }
 
@@ -146,13 +161,13 @@ Dialog {
                 text: "Series:"
                 font.pixelSize: Style.body
                 font.family: Style.interFont.name
-                color: Style.textSecondary
+                color: Style.textDisabled
             }
             Label {
                 text: sets + " x " + reps + (unit === "-" ? "" : " reps")
                 font.pixelSize: Style.body
                 font.family: Style.interFont.name
-                color: Style.text
+                font.bold: true
                 Layout.fillWidth: true
             }
         }
