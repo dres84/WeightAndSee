@@ -561,12 +561,13 @@ Item {
                             ctx.fillText(dateText, textX, height - mb + 10)
                             ctx.restore()
                         } else {
+                            var previousDay = 0
                             // Mostrar días clave (1, 3, 6, 9, etc.) si hay espacio
                             for (var i = 0; i < filteredModel.count; i++) {
                                 var date = new Date(filteredModel.get(i).date)
                                 var day = date.getDate()
-                                var showDay = (day === 1 || day % 3 === 0) // Mostrar día 1 y cada 3 días
-
+                                var showDay = previousDay !== day
+                                previousDay = day
                                 if (showDay) {
                                     var x = xPositions[i]
                                     // Verificar que haya espacio para mostrar este día

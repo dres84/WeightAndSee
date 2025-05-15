@@ -2,6 +2,7 @@ import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
 import gymWeights 1.0
+import QtCore
 
 Page {
     id: root
@@ -14,8 +15,15 @@ Page {
     property bool showTestButtons: true
     property bool allOpened: false
     property var groupsSelected: groupFilter.selectedGroups
-    property var noneSelected: groupFilter.noneSelected
+    property bool noneSelected: groupFilter.noneSelected
 
+    Settings {
+        id: appSettings
+        category: "AppSettings"
+
+        property string language: "es"
+        property string defaultUnit: "kg"
+    }
 
     Rectangle {
         anchors.fill: parent
@@ -55,7 +63,7 @@ Page {
 
                 TapHandler {
                     onTapped: {
-                        console.log("Settings tapped")
+                        settingsLoader.active = true
                     }
                 }
             }
@@ -252,6 +260,30 @@ Page {
                 exerciseName: graphLoader.exerciseNameToLoad
                 onGoBack: graphLoader.active = false
                 onRequestReload: graphLoader.reload()
+            }
+        }
+    }
+
+    // Loader para Settings
+    Loader {
+        id: settingsLoader
+        anchors.fill: parent
+        visible: settingsLoader.active
+        sourceComponent: settingsComponent
+        active: false
+
+        function reload() {
+            active = false
+            Qt.callLater(function() {
+                active = true
+            })
+        }
+
+        Component {
+            id: settingsComponent
+            SettingsPage {
+                onGoBack: settingsLoader.active = false
+                onRequestReload: settingsLoader.reload()
             }
         }
     }

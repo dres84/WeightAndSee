@@ -31,6 +31,7 @@ qt_add_qml_module(appgymWeights
         qml/ConfirmDeleteDialog.qml
         qml/HistoryDialog.qml
         qml/ExerciseGraph.qml
+        qml/SettingsPage.qml
         qml/Tooltip.qml
         qml/HistoryDelegate.qml
         qml/SummaryItem.qml
@@ -65,6 +66,8 @@ qt_add_resources(appgymWeights "icons"
         icons/shoulders.svg
         icons/legs.svg
         icons/settings.png
+        icons/uk.png
+        icons/spain.png
 )
 
 qt_add_resources(appgymWeights "fonts"

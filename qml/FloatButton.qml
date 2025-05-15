@@ -1,17 +1,17 @@
 import QtQuick
 import QtQuick.Controls
-import QtQuick.Effects
+import QtQuick.Layouts
 
 Button {
     id: root
 
     // Propiedades personalizables
-    property alias buttonText: contentItem.text  // Texto del botón
+    property alias buttonText: label.text  // Texto del botón
     property color buttonColor: Style.buttonPositive // Color base (verde por defecto)
     property color textColor: Style.buttonTextNegative // Color del texto
-    property int shadowOffset: 2                 // Desplazamiento sombra
-    property real shadowBlur: 0.5               // Difuminado sombra
     property int fontPixelSize: 24
+    property string leftIcon: "" // Icono a mostrar a la izquierda del texto
+    property int iconSize: 24 // Tamaño del icono
 
     height: 60
     property int radius: 10  // Círculo perfecto
@@ -25,27 +25,32 @@ Button {
     background: Rectangle {
         radius: parent.radius
         color: root.down ? Qt.darker(root.buttonColor, 1.2) : root.buttonColor
-
-        MultiEffect {
-            source: parent
-            anchors.fill: parent
-            shadowEnabled: true
-            shadowColor: "#80000000"
-            shadowBlur: root.shadowBlur
-            shadowHorizontalOffset: 0
-            shadowVerticalOffset: root.shadowOffset
-            shadowScale: 1.2
-        }
     }
 
-    // Contenido (texto)
-    contentItem: Text {
-        id: contentItem
-        font: root.font
-        color: root.textColor
+    // Contenido (icono + texto)
+    contentItem: RowLayout {
+        spacing: root.leftIcon ? Style.smallSpace : 0
         anchors.centerIn: parent
-        horizontalAlignment: Text.AlignHCenter
-        verticalAlignment: Text.AlignVCenter
+
+        // Icono (solo visible si se especifica)
+        Image {
+            id: icon
+            source: root.leftIcon
+            visible: root.leftIcon !== ""
+            sourceSize.width: root.iconSize
+            sourceSize.height: root.iconSize
+            Layout.alignment: Qt.AlignVCenter
+        }
+
+        // Texto
+        Text {
+            id: label
+            font: root.font
+            color: root.textColor
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
+            Layout.alignment: Qt.AlignVCenter
+        }
     }
 
     // Animación al presionar

@@ -8,6 +8,11 @@ int main(int argc, char *argv[])
 {
     QGuiApplication app(argc, argv);
 
+    // Configura los nombres de organización necesarios para QSettings
+    app.setOrganizationName("dreSoft");
+    app.setOrganizationDomain("");
+    app.setApplicationName("Weight and See");
+
     // Registra los tipos para poder crearlos desde QML
     qmlRegisterType<ExerciseModel>("gymWeights", 1, 0, "ExerciseModel");
     qmlRegisterType<DataCenter>("gymWeights", 1, 0, "DataCenter");
