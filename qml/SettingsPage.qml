@@ -39,7 +39,7 @@ Item {
 
         // Nombre del ejercicio
         Text {
-            text: "Settings"
+            text: settings.language === "es" ? "Configuración" : "Settings"
             anchors.centerIn: parent
             color: Style.text
             font.pixelSize: 20
@@ -61,22 +61,27 @@ Item {
         model: ListModel {
             ListElement {
                 name: "Idioma"
+                englishName: "Language"
                 type: "language"
             }
             ListElement {
                 name: "Unidad por defecto"
+                englishName: "Default unit"
                 type: "unit"
             }
             ListElement {
                 name: "Borrar todos los datos"
+                englishName: "Delete all data"
                 type: "delete"
             }
             ListElement {
                 name: "Descargar archivo de datos"
+                englishName: "Download data file"
                 type: "export"
             }
             ListElement {
                 name: "Cargar archivo de datos"
+                englishName: "Load data file"
                 type: "import"
             }
         }
@@ -104,6 +109,19 @@ Item {
                 }
             }
 
+            Behavior on opacity {
+                SequentialAnimation {
+                    PropertyAnimation {
+                        duration: Style.animationTime * 0.7
+                        easing.type: Easing.OutQuad
+                    }
+                    PropertyAnimation {
+                        duration: Style.animationTime * 0.3
+                        easing.type: Easing.OutBounce
+                    }
+                }
+            }
+
             Rectangle {
                 id: settingItem
                 width: parent.width
@@ -118,7 +136,7 @@ Item {
                     spacing: Style.mediumSpace
 
                     Label {
-                        text: name
+                        text: settings.language === "es" ? name : englishName
                         font.family: Style.interFont.name
                         font.pixelSize: Style.body
                         color: Style.text
@@ -127,23 +145,30 @@ Item {
                     }
 
                     Label {
-                        text: {
-                            switch(type) {
-                            case "language": return appSettings.language === "es" ? "Español" : "English";
-                            case "unit": return appSettings.defaultUnit;
-                            default: return "";
-                            }
-                        }
+                        text: settings.defaultUnit;
+                        visible: type === "unit"
                         font.family: Style.interFont.name
-                        font.pixelSize: Style.caption
-                        color: Style.textSecondary
+                        font.pixelSize: Style.body
+                        font.bold: true
+                        color: Style.text
+                        Layout.alignment: Qt.AlignVCenter
+                        Layout.rightMargin: 10
+                    }
+
+                    Image {
+                        visible: type === "language"
+                        source: settings.language === "es"
+                                ? "qrc:/icons/spain.png"
+                                : "qrc:/icons/uk.png"
+                        Layout.preferredHeight: 30
+                        Layout.preferredWidth: 36
                         Layout.alignment: Qt.AlignVCenter
                         Layout.rightMargin: 10
                     }
 
                     Label {
                         text: delegateItem.expanded ? "▲" : "▼"
-                        font.pixelSize: Style.body
+                        font.pixelSize: Style.caption - 2
                         color: Style.textSecondary
                         Layout.alignment: Qt.AlignVCenter
                     }
@@ -230,6 +255,8 @@ Item {
     }
 
     // Componentes para cada tipo de configuración
+
+    // Selector de idioma
     Component {
         id: languageSelector
 
@@ -245,8 +272,8 @@ Item {
 
                 RadioButton {
                     id: spanishOption
-                    checked: appSettings.language === "es"
-                    onClicked: appSettings.language = "es"
+                    checked: settings.language === "es"
+                    onClicked: settings.language = "es"
 
                     // Personalización del RadioButton
                     indicator: Rectangle {
@@ -288,8 +315,8 @@ Item {
 
                 RadioButton {
                     id: englishOption
-                    checked: appSettings.language === "en"
-                    onClicked: appSettings.language = "en"
+                    checked: settings.language === "en"
+                    onClicked: settings.language = "en"
 
                     // Personalización del RadioButton
                     indicator: Rectangle {
@@ -332,6 +359,7 @@ Item {
         }
     }
 
+    // Seleccionar unidad por defecto
     Component {
         id: unitSelector
 
@@ -347,8 +375,8 @@ Item {
 
                 RadioButton {
                     id: kgOption
-                    checked: appSettings.defaultUnit === "kg"
-                    onClicked: appSettings.defaultUnit = "kg"
+                    checked: settings.defaultUnit === "kg"
+                    onClicked: settings.defaultUnit = "kg"
 
                     // Personalización del RadioButton
                     indicator: Rectangle {
@@ -380,8 +408,8 @@ Item {
 
                 RadioButton {
                     id: lbOption
-                    checked: appSettings.defaultUnit === "lb"
-                    onClicked: appSettings.defaultUnit = "lb"
+                    checked: settings.defaultUnit === "lb"
+                    onClicked: settings.defaultUnit = "lb"
 
                     // Personalización del RadioButton
                     indicator: Rectangle {
@@ -414,6 +442,7 @@ Item {
         }
     }
 
+    // Borrar todos los datos de los ejercicios
     Component {
         id: deleteData
 
@@ -422,25 +451,32 @@ Item {
             spacing: Style.smallSpace
 
             Label {
-                text: qsTr("Esta acción borrará todos tus datos de ejercicios y no se puede deshacer.")
+                text: settings.language === "es"
+                      ? "Esta acción borrará todos tus datos de ejercicios y no se puede deshacer."
+                      : "This action will erase all your exercise data and cannot be undone."
                 font.family: Style.interFont.name
                 font.pixelSize: Style.semi
                 color: Style.textSecondary
                 wrapMode: Text.WordWrap
                 Layout.fillWidth: true
+                Layout.leftMargin: Style.smallMargin
+                Layout.topMargin: Style.smallMargin
             }
 
             FloatButton {
                 Layout.alignment: Qt.AlignHCenter
                 Layout.topMargin: Style.smallSpace
-                height: 50
+                Layout.bottomMargin: Style.smallSpace
+                Layout.preferredHeight: 50
                 buttonColor: Style.buttonNegative
-                buttonText: qsTr("Borrar todos los datos")
+                font.pixelSize: Style.body
+                buttonText: settings.language === "es" ? "🗑️ Borrar todo" : "🗑️ Delete all"
                 onClicked: confirmDeleteDialog.open()
             }
         }
     }
 
+    // Descargar datos a dispositivo
     Component {
         id: exportData
 
@@ -449,26 +485,35 @@ Item {
             spacing: Style.smallSpace
 
             Label {
-                text: qsTr("Descarga un archivo con todos tus datos de ejercicios para hacer una copia de seguridad.")
+                text: settings.language === "es"
+                      ? "Descarga un archivo con todos tus datos de ejercicios para hacer una copia de seguridad."
+                      : "Download a file with all your exercise data for backup."
                 font.family: Style.interFont.name
                 font.pixelSize: Style.semi
                 color: Style.textSecondary
                 wrapMode: Text.WordWrap
                 Layout.fillWidth: true
+                Layout.leftMargin: Style.smallMargin
+                Layout.topMargin: Style.smallMargin
             }
 
             FloatButton {
                 Layout.alignment: Qt.AlignHCenter
                 Layout.topMargin: Style.smallSpace
-                height: 50
+                Layout.bottomMargin: Style.smallSpace
+                Layout.preferredHeight: 50
                 buttonColor: Style.buttonNeutral
-                buttonText: qsTr("Descargar archivo")
-                leftIcon: "📁"
-                onClicked: dataCenter.exportData()
+                font.pixelSize: Style.body
+                buttonText: settings.language === "es" ? "⬇️ Descargar archivo" : "⬇️ Download file"
+                onClicked: {
+                    fileDialog.setExportDataValues()
+                    fileDialog.open()
+                }
             }
         }
     }
 
+    // Importar Datos desde archivo
     Component {
         id: importData
 
@@ -477,22 +522,29 @@ Item {
             spacing: Style.smallSpace
 
             Label {
-                text: qsTr("Importa datos de ejercicios desde un archivo previamente exportado.")
+                text: settings.language === "es"
+                      ? "Importa datos de ejercicios desde un archivo previamente exportado."
+                      : "Imports exercise data from a previously exported file."
                 font.family: Style.interFont.name
                 font.pixelSize: Style.semi
                 color: Style.textSecondary
                 wrapMode: Text.WordWrap
                 Layout.fillWidth: true
+                Layout.leftMargin: Style.smallMargin
+                Layout.topMargin: Style.smallMargin
             }
 
             FloatButton {
                 Layout.alignment: Qt.AlignHCenter
                 Layout.topMargin: Style.smallSpace
-                height: 50
+                Layout.preferredHeight: 50
                 buttonColor: Style.buttonNeutral
-                buttonText: qsTr("Seleccionar archivo")
-                leftIcon: "📂"
-                onClicked: fileDialog.open()
+                font.pixelSize: Style.body
+                buttonText: settings.language === "es" ? "📂 Seleccionar archivo" : "📂 Select file"
+                onClicked: {
+                    fileDialog.setImportaDataValues()
+                    fileDialog.open()
+                }
             }
         }
     }
@@ -501,7 +553,7 @@ Item {
     Popup {
         id: confirmDeleteDialog
         width: parent.width * 0.8
-        height: confirmContent.height
+        height: confirmContent.height * 1.1
         anchors.centerIn: parent
         modal: true
         closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
@@ -533,8 +585,11 @@ Item {
             width: parent.width
             spacing: Style.mediumSpace
 
+
             Label {
-                text: qsTr("¿Estás seguro de que quieres borrar todos los datos? Esta acción no se puede deshacer.")
+                text: settings.language === "es"
+                      ? "¿Estás seguro de que quieres borrar todos los datos? Esta acción no se puede deshacer."
+                      : "Are you sure you want to delete all data? This action cannot be undone."
                 wrapMode: Text.WordWrap
                 width: parent.width
                 font.family: Style.interFont.name
@@ -545,21 +600,46 @@ Item {
             Row {
                 spacing: Style.mediumSpace
                 anchors.right: parent.right
+                anchors.bottomMargin: Style.smallMargin
 
                 Button {
-                    text: qsTr("Cancelar")
                     flat: true
-                    font.family: Style.interFont.name
                     onClicked: confirmDeleteDialog.close()
+
+                    background: Rectangle {
+                        color: Style.buttonNeutral
+                        radius: Style.smallRadius
+                    }
+
+                    contentItem: Text {
+                        text: settings.language === "es" ? "Cancelar" : "Cancel"
+                        color: Style.text
+                        font.pixelSize: Style.caption
+                        font.family: Style.interFont.name
+                        horizontalAlignment: Text.AlignHCenter
+                        verticalAlignment: Text.AlignVCenter
+                    }
                 }
 
                 Button {
-                    text: qsTr("Borrar")
                     flat: true
-                    font.family: Style.interFont.name
                     onClicked: {
                         dataCenter.deleteAllExercises()
                         confirmDeleteDialog.close()
+                    }
+
+                    background: Rectangle {
+                        color: Style.buttonNegative
+                        radius: Style.smallRadius
+                    }
+
+                    contentItem: Text {
+                        text: settings.language === "es" ? "Borrar" : "Delete"
+                        color: Style.text
+                        font.pixelSize: Style.caption
+                        font.family: Style.interFont.name
+                        horizontalAlignment: Text.AlignHCenter
+                        verticalAlignment: Text.AlignVCenter
                     }
                 }
             }
@@ -569,14 +649,38 @@ Item {
     // Diálogo para seleccionar archivo
     FileDialog {
         id: fileDialog
-        title: qsTr("Selecciona un archivo para importar")
-        nameFilters: ["JSON files (*.json)"]
+        title: settings.language === "es"
+               ? espText
+               : engText
         fileMode: FileDialog.OpenFile
         currentFolder: StandardPaths.writableLocation(StandardPaths.DocumentsLocation)
 
+        property string espText
+        property string engText
+
         onAccepted: {
             var filePath = selectedFile.toString().replace("file://", "")
-            dataCenter.importData(filePath)
+            if (fileMode === FileDialog.OpenFile)
+                dataCenter.exportData(filePath) //export Data
+            else
+                dataCenter.importData(filePath)
         }
+
+        function setImportaDataValues() {
+            fileDialog.fileMode = FileDialog.OpenFile
+            fileDialog.nameFilters = ["JSON files (*.json)"]
+            fileDialog.espText = "Selecciona un archivo desde el que importar los datos."
+            fileDialog.engText = "Select a file to import data from."
+        }
+
+        function setExportDataValues() {
+            fileDialog.fileMode = FileDialog.SaveFile
+            fileDialog.nameFilters = []
+            fileDialog.espText = "Selecciona una localización para guardar los datos en disco."
+            fileDialog.engText = "Select a location to save the data on disk."
+        }
+
     }
+
+
 }

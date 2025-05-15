@@ -34,8 +34,13 @@ public:
     // Para las gráficas
     Q_INVOKABLE QVariantList getExerciseHistoryDetailed(const QString& exerciseName) const;
 
+    // Para importar y exportar datos
+    Q_INVOKABLE void exportData(const QString& filePath);
+    Q_INVOKABLE void importData(const QUrl &fileUrl);
+
 signals:
     void dataChanged();
+    void showMessage(QString title, QString message, QString messageType = "info");
 
 private:
     QString getFilePath() const;

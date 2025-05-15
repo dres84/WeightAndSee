@@ -31,12 +31,13 @@ qt_add_qml_module(appgymWeights
         qml/ConfirmDeleteDialog.qml
         qml/HistoryDialog.qml
         qml/ExerciseGraph.qml
-        qml/SettingsPage.qml
         qml/Tooltip.qml
         qml/HistoryDelegate.qml
         qml/SummaryItem.qml
         qml/SummaryGrid.qml
         qml/NumericTextField.qml
+        qml/SettingsPage.qml
+        qml/MessagePopup.qml
         qml/FloatButton.qml
         qml/Style.qml
     RESOURCES

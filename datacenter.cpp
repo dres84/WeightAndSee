@@ -776,3 +776,35 @@ QVariantList DataCenter::getExerciseHistoryDetailed(const QString &exerciseName)
 
     return historyList;
 }
+
+void DataCenter::exportData(const QString& filePath) {
+    QFile file(filePath);
+    if (file.open(QIODevice::WriteOnly)) {
+        file.write(QJsonDocument(m_data).toJson());
+        file.close();
+        qDebug() << "Datos exportados a:" << filePath;
+        emit showMessage(tr("Datos exportados"), tr("Los datos se han guardado en:") + "\n" + filePath);
+    } else {
+        qWarning() << "No se pudo exportar los datos";
+        emit showMessage(tr("Error"), tr("No se pudo guardar el archivo"));
+    }
+}
+
+void DataCenter::importData(const QUrl &fileUrl) {
+    QFile file(fileUrl.toLocalFile());
+    if (file.open(QIODevice::ReadOnly)) {
+        QJsonDocument doc = QJsonDocument::fromJson(file.readAll());
+        file.close();
+
+        if (!doc.isNull() && doc.isObject()) {
+            m_data = doc.object();
+            save();
+            emit dataChanged();
+            emit showMessage(tr("Datos importados"), tr("Los datos se han importado correctamente"));
+        } else {
+            emit showMessage(tr("Error"), tr("El archivo no contiene datos válidos"));
+        }
+    } else {
+        emit showMessage(tr("Error"), tr("No se pudo leer el archivo"));
+    }
+}

@@ -20,6 +20,18 @@ ApplicationWindow {
         id: exerciseModel
     }
 
+    MessagePopup {
+        id: globalMessage
+        anchors.centerIn: Overlay.overlay
+    }
+
+    Connections {
+        target: dataCenter
+        function onShowMessage(title, message, messageType) {
+            globalMessage.show(title, message, messageType)
+        }
+    }
+
     // 2. Carga inicial
     Component.onCompleted: {
         exerciseModel.loadFromJson(dataCenter.data)

@@ -32,6 +32,7 @@
         <file>qml/ConfirmDeleteDialog.qml</file>
         <file>qml/HistoryDialog.qml</file>
         <file>qml/SettingsPage.qml</file>
+        <file>qml/MessagePopup.qml</file>
     </qresource>
     <qresource prefix="/fonts">
         <file>fonts/Inter-Medium.ttf</file>

@@ -18,7 +18,7 @@ Page {
     property bool noneSelected: groupFilter.noneSelected
 
     Settings {
-        id: appSettings
+        id: settings
         category: "AppSettings"
 
         property string language: "es"
