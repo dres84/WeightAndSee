@@ -30,7 +30,7 @@ Item {
             anchors.leftMargin: 10
             anchors.verticalCenter: parent.verticalCenter
             buttonColor: parent.color
-            buttonText: "\u003C Volver"
+            buttonText: "\u003C " + (settings.language === "es" ? "Volver" : "Go back")
             textColor: pressed ? Style.textSecondary : Style.text
             fontPixelSize: Style.caption
             radius: 0
@@ -659,11 +659,14 @@ Item {
         property string engText
 
         onAccepted: {
-            var filePath = selectedFile.toString().replace("file://", "")
-            if (fileMode === FileDialog.OpenFile)
+            console.log("Intentamos con file: " + file)
+            if (fileMode === FileDialog.OpenFile) {  //open for import
+                dataCenter.importData(file)
+            } else {
+                var filePath = file.toString().replace("file://", "")
+                console.log("Intentamos exportar con filePath: " + filePath)
                 dataCenter.exportData(filePath) //export Data
-            else
-                dataCenter.importData(filePath)
+            }
         }
 
         function setImportaDataValues() {

@@ -23,7 +23,9 @@ Item {
     property int minPointSpacing: 35
     property point tooltipPos: Qt.point(0, 0)
 
-    property var monthNames: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"]
+    property var monthNames: settings.language === "es" ? spanishMonthNames : englishMonthNames
+    property var spanishMonthNames: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"]
+    property var englishMonthNames: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
     property bool isWeightGraph: unit !== "Reps"
     property string unit: "Kg"
 
@@ -188,7 +190,7 @@ Item {
             anchors.leftMargin: 10
             anchors.verticalCenter: parent.verticalCenter
             buttonColor: parent.color
-            buttonText: "\u003C Volver"
+            buttonText: "\u003C " + (settings.language === "es" ? "Volver" : "Go back")
             textColor: pressed ? Style.textSecondary : Style.text
             fontPixelSize: Style.caption
             radius: 0
@@ -216,17 +218,17 @@ Item {
 
         Repeater {
             model: [
-                { text: "1M", months: 1 },
-                { text: "3M", months: 3 },
-                { text: "6M", months: 6 },
-                { text: "1A", months: 12 },
-                { text: "Todo", months: 0 }
+                { text: "1M", textEng: "1M", months: 1 },
+                { text: "3M", textEng: "3M", months: 3 },
+                { text: "6M", textEng: "6M", months: 6 },
+                { text: "1A", textEng: "1Y", months: 12 },
+                { text: "Todo", textEng: "All", months: 0 }
             ]
 
             delegate: Button {
                 width: (periodButtons.width - (periodButtons.spacing * 4)) / 5
                 height: periodButtons.height
-                text: modelData.text
+                text: settings.language === "es" ? modelData.text : modelData.textEng
                 enabled: hasDataForPeriod(modelData.months) // Deshabilitar si no hay datos
                 opacity: enabled ? 1.0 : 0.4
 

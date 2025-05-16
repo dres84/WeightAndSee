@@ -93,7 +93,9 @@ Item {
         columnSpacing: 10
 
         SummaryItem {
-            title: isWeight ? "Inicial" : "Iniciales"
+            title: settings.languaje === "es"
+                   ? (isWeight ? "Inicial" : "Iniciales")
+                   : "Initial"
             value: initialValue.value.toFixed(isWeight ? 1 : 0)
             unitValue: unitText
             muscleGroupText: muscleGroup
@@ -102,7 +104,7 @@ Item {
         }
 
         SummaryItem {
-            title: "Récord"
+            title: settings.languaje === "es" ? "Récord" : "Best"
             value: recordValue.value.toFixed(isWeight ? 1 : 0)
             unitValue: unitText
             muscleGroupText: muscleGroup
@@ -112,13 +114,13 @@ Item {
         }
 
         SummaryItem {
-            title: "Evolución"
+            title: settings.languaje === "es" ? "Evolución" : "Evolution"
             value: (evolution.value > 0 ? "+" : "") + evolution.value.toFixed(isWeight ? 1 : 0)
             unitValue: unitText
             muscleGroupText: muscleGroup
             icon: evolution.value >= 0 ? "trend-up" : "trend-down"
             iconColor: evolution.value >= 0 ? "#4CAF50" : "#F44336"
-            dateText: "Desde " + formatShortDate(evolution.startDate)
+            dateText: (settings.languaje === "es" ? "Desde " : "Since ") + formatShortDate(evolution.startDate)
             valueColor: evolution.value >= 0 ? "#4CAF50" : "#F44336"
             sinceDate: true
         }

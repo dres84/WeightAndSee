@@ -71,7 +71,7 @@ Page {
 
 
         Label {
-            text: "o filtra por grupo muscular:"
+            text: settings.language === "es" ? "o filtra por grupo muscular:" : "or filter by muscle group:"
             font.family: Style.interFont.name
             font.pixelSize: Style.semi
             topPadding: 5
@@ -202,7 +202,9 @@ Page {
             height: 50
             buttonColor: Style.buttonNegative
             fontPixelSize: Style.caption
-            buttonText: allOpened ? "Cancelar borrado" : "Borrar ejercicio"
+            buttonText: settings.language === "es"
+                        ? (allOpened ? "Cancelar borrado" : "Borrar ejercicio")
+                        : (allOpened ? "Cancel deletion" : "Delete exercise")
             onClicked: allOpened ? listView.closeAll() : listView.openAll()
 
         }
@@ -211,7 +213,7 @@ Page {
             id: addButton
             height: 50
             buttonColor: Style.buttonPositive
-            buttonText: "Nuevo ejercicio"
+            buttonText: settings.language === "es" ? "Nuevo ejercicio" : "New exercise"
             fontPixelSize: Style.caption
             onClicked: addDialog.open()
         }
