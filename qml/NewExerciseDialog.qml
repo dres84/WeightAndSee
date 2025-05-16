@@ -192,12 +192,13 @@ Dialog {
                 RadioButton {
                     id: kgRadio
                     text: "kg"
-                    checked: true
+                    checked: settings.defaultUnit === "kg"
                 }
 
                 RadioButton {
                     id: lbRadio
                     text: "lb"
+                    checked: settings.defaultUnit === "lb"
                 }
             }
         }

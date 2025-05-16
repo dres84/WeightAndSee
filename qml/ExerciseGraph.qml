@@ -29,10 +29,13 @@ Item {
     property bool isWeightGraph: unit !== "Reps"
     property string unit: "Kg"
 
-    Keys.onBackPressed: {
-        event.accepted = true // Previene el comportamiento por defecto
-        console.log("Back en ExerciseGraph");
-        goBack()
+    Shortcut {
+        sequence: "Back"
+        onActivated: {
+            event.accepted = true // Previene el comportamiento por defecto
+            console.log("Back en ExerciseGraph");
+            goBack()
+        }
     }
 
     ListModel {
@@ -806,7 +809,7 @@ Item {
         }
 
         property int buttonHeight: 55
-        property int buttonPixelSize: Style.semi
+        property int buttonPixelSize: Style.body
 
         FloatButton {
             id: deleteEntry

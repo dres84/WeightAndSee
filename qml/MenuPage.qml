@@ -60,6 +60,7 @@ Page {
             SearchBox {
                 id: searchBox
                 Layout.fillWidth: true
+                Layout.rightMargin: Style.smallMargin * 0.5
                 onTextChanged: {
                     if (text !== "") {
                         groupFilter.enabled = false
@@ -74,15 +75,17 @@ Page {
                 Layout.preferredWidth: 40
                 source: "qrc:/icons/settings.png"
                 Layout.alignment: Qt.AlignRight
+                opacity: tapHandler.pressed ? 0.5 : 1.0
 
                 TapHandler {
+                    id: tapHandler
                     onTapped: {
                         settingsLoader.active = true
+
                     }
                 }
             }
         }
-
 
         Label {
             text: settings.language === "es" ? "o filtra por grupo muscular:" : "or filter by muscle group:"
@@ -136,7 +139,7 @@ Page {
                     graphLoader.active = true
                 }
             }
-            spacing: 1
+            spacing: 0
 
             ScrollBar.vertical: ScrollBar {
                 policy: ScrollBar.AlwaysOff
@@ -195,7 +198,7 @@ Page {
         }
 
         property int buttonHeight: 55
-        property int buttonPixelSize: Style.semi
+        property int buttonPixelSize: Style.body
 
         FloatButton {
             id: deleteButton
@@ -209,7 +212,6 @@ Page {
                         ? (allOpened ? "Cancelar borrado" : "Borrar ejercicio")
                         : (allOpened ? "Cancel deletion" : "Delete exercise")
             onClicked: allOpened ? listView.closeAll() : listView.openAll()
-
         }
 
         FloatButton {

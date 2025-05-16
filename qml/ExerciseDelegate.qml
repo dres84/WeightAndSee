@@ -42,7 +42,8 @@ Item {
     Rectangle {
         id: contentItem
         width: parent.width
-        height: parent.height
+        height: parent.height - 1
+        anchors.top: parent.top
         radius: 5
         color: Style.surface
 
@@ -200,7 +201,7 @@ Item {
             anchors.left: contentItem.right
             anchors.top: parent.top
             width: 60
-            height: parent.height
+            height: contentItem.height
             color: "red"
 
             Image {

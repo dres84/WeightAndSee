@@ -15,10 +15,13 @@ Item {
         color: Style.background
     }
 
-    Keys.onBackPressed: {
-        event.accepted = true // Previene el comportamiento por defecto
-        console.log("Back en Settings");
-        goBack()
+    Shortcut {
+        sequence: "Back"
+        onActivated: {
+            event.accepted = true // Previene el comportamiento por defecto
+            console.log("Back en Settings");
+            goBack()
+        }
     }
 
     // Cabecera con botón de volver y nombre del ejercicio
