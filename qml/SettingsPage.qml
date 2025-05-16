@@ -51,7 +51,7 @@ Item {
             text: settings.language === "es" ? "Configuración" : "Settings"
             anchors.centerIn: parent
             color: Style.text
-            font.pixelSize: 20
+            font.pixelSize: Style.heading1
             font.bold: true
         }
     }

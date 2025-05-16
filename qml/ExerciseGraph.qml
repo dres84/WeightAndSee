@@ -15,8 +15,8 @@ Item {
     property int highlightedIndex: -1
     property int selectedPeriod: 0
 
-    property int marginLeft: 50
-    property int marginRight: 50
+    property int marginLeft: 42
+    property int marginRight: 42
     property int marginTop: 25
     property int marginBottom: 35
     property int innerMargin: 20
@@ -211,7 +211,7 @@ Item {
             text: exerciseName
             anchors.centerIn: parent
             color: Style.muscleColor(muscleGroup) // Color según grupo muscular
-            font.pixelSize: 20
+            font.pixelSize: Style.heading1
             font.bold: true
         }
     }
