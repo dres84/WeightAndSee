@@ -29,6 +29,14 @@ Item {
     property bool isWeightGraph: unit !== "Reps"
     property string unit: "Kg"
 
+    Shortcut {
+        sequence: "Back"
+        onActivated: {
+            console.log("Back en ExerciseGraph");
+            goBack()
+        }
+    }
+
     ListModel {
         id: filteredModel
     }

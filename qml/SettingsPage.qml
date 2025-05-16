@@ -15,6 +15,14 @@ Item {
         color: Style.background
     }
 
+    Shortcut {
+        sequence: "Back"
+        onActivated: {
+            console.log("Back en Settings");
+            goBack()
+        }
+    }
+
     // Cabecera con botón de volver y nombre del ejercicio
     Rectangle {
         id: header
@@ -194,7 +202,7 @@ Item {
                     id: waitTime
                     repeat: false
                     running: false
-                    interval: Style.animationTime - 0.2 * Style.animationTime
+                    interval: Style.animationTime * 0.5
                     onTriggered: delegateItem.expanded = !delegateItem.expanded
                 }
             }

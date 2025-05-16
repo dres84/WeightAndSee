@@ -2,7 +2,6 @@ import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
 import gymWeights 1.0
-import QtCore
 
 Page {
     id: root
@@ -17,12 +16,12 @@ Page {
     property var groupsSelected: groupFilter.selectedGroups
     property bool noneSelected: groupFilter.noneSelected
 
-    Settings {
-        id: settings
-        category: "AppSettings"
-
-        property string language: "es"
-        property string defaultUnit: "kg"
+    Shortcut {
+        sequence: "Back"
+        onActivated: {
+            console.log("Back en MenuPage");
+            goBack()
+        }
     }
 
     Rectangle {
@@ -251,7 +250,7 @@ Page {
 
         function reload() {
             active = false
-            Qt.callLater(function() {c
+            Qt.callLater(function() {
                 active = true
             })
         }

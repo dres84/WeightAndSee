@@ -15,6 +15,7 @@ Rectangle {
         id: searchField
         width: parent.width
         Layout.fillWidth: true
+        Layout.rightMargin: Style.smallMargin
         rightPadding: clearButton.width + 10
         maximumLength: 22
         font.family: Style.interFont.name

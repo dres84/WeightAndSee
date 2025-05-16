@@ -7,7 +7,7 @@ Dialog {
     id: historyDialog
     anchors.centerIn: Overlay.overlay
     width: parent.width * 0.9
-    height: parent.height * 0.7
+    height: parent.height * 0.8
     modal: true
     dim: true
     closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
@@ -18,13 +18,13 @@ Dialog {
     }
 
     Overlay.modal: Rectangle {
-        color: Qt.rgba(0, 0, 0, 0.9)
+        color: Style.soft
     }
 
     ColumnLayout {
         anchors.fill: parent
         anchors.margins: 10
-        spacing: 10
+        spacing: 20
 
         // Título
         Label {
@@ -34,6 +34,9 @@ Dialog {
             font.pixelSize: Style.heading1
             color: Style.muscleColor(muscleGroup)
             Layout.alignment: Qt.AlignHCenter
+            Layout.maximumWidth: parent.width * 0.95
+            wrapMode: Text.Wrap  // Permite salto de línea
+            horizontalAlignment: Text.AlignHCenter  // Centra el texto dentro del Label
         }
 
         // Instrucciones
@@ -54,6 +57,7 @@ Dialog {
             clip: true
             model: filteredModel
             spacing: 2
+            interactive: contentHeight > height
 
             delegate: HistoryDelegate {
 
@@ -65,6 +69,12 @@ Dialog {
                     console.log("Elemento " + index)
                     console.log("date: " + date + " - weight: " + weight + " - unit: " + unit )
                     console.log("reps: " + reps + " - sets: " + sets)
+                }
+            }
+
+            Component.onCompleted: {
+                if (historyListView.count > 0) {
+                    historyListView.positionViewAtEnd()
                 }
             }
 
@@ -86,15 +96,15 @@ Dialog {
         }
 
         // Botón de cerrar
-        Button {
-            text: settings.language === "es" ? "Cerrar" : "Close"
+        FloatButton {
+            buttonText: settings.language === "es" ? "Cerrar" : "Close"
             Layout.alignment: Qt.AlignHCenter
             onClicked: historyDialog.close()
-
-            background: Rectangle {
-                color: Style.buttonNeutral
-                radius: 5
-            }
+            textColor: Style.text
+            buttonColor: Style.buttonNeutral
+            fontPixelSize: Style.semi
+            height: 40
+            radius: 6
         }
     }
 }

@@ -2,6 +2,7 @@ import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Window 2.15
 import gymWeights 1.0
+import QtCore
 
 ApplicationWindow {
     id: root
@@ -9,6 +10,14 @@ ApplicationWindow {
     height: Screen.height
     visible: true
     title: "Gym Tracker"
+
+    Settings {
+        id: settings
+        category: "AppSettings"
+
+        property string language: "es"
+        property string defaultUnit: "kg"
+    }
 
     // 1. Instancia los objetos directamente en QML
     DataCenter {
