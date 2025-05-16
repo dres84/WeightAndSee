@@ -7,7 +7,7 @@ import gymWeights 1.0
 Dialog {
     id: root
     modal: true
-    title: "Añadir nuevo ejercicio"
+    title: settings.language === "es" ? "Añadir nuevo ejercicio" : "Add new exercise"
     anchors.centerIn: Overlay.overlay
     width: Math.min(parent.width * 0.9, 400)
 
@@ -44,7 +44,7 @@ Dialog {
         TextField {
             id: nameField
             Layout.fillWidth: true
-            placeholderText: "Nombre del ejercicio*"
+            placeholderText: settings.language === "es" ? "Nombre del ejercicio*" : "Exercise name*"
             font.pixelSize: Style.body
             rightPadding: clearButton.width + 10
             maximumLength: 22
@@ -181,7 +181,7 @@ Dialog {
                 id: weightField
                 Layout.fillWidth: true
                 Layout.preferredWidth: parent.width * 0.5
-                placeholderText: "Peso (opcional)"
+                placeholderText: settings.language === "es" ? "Peso (opcional)" : "Weight (optional)"
                 maximumLength: 4
             }
 
@@ -209,7 +209,7 @@ Dialog {
             NumericTextField {
                 id: setsField
                 Layout.fillWidth: true
-                placeholderText: "Series (opcional)"
+                placeholderText: settings.language === "es" ? "Series (opcional)" : "Sets (optional)"
                 validator: IntValidator { bottom: 0 }
                 allowDecimals: false
                 maximumLength: 3
@@ -219,7 +219,7 @@ Dialog {
             NumericTextField {
                 id: repsField
                 Layout.fillWidth: true
-                placeholderText: "Repeticiones (opcional)"
+                placeholderText: settings.language === "es" ? "Repeticiones (opcional)" : "Repetitions (optional)"
                 validator: IntValidator { bottom: 0 }
                 allowDecimals: false
                 maximumLength: 4
@@ -227,7 +227,7 @@ Dialog {
         }
 
         Label {
-            text: "* Campos obligatorios"
+            text: settings.language === "es" ? "* Campos obligatorios" : "* Required fields"
             font.italic: true
             font.pixelSize: Style.caption
             color: Style.textSecondary
@@ -239,7 +239,7 @@ Dialog {
             Button {
                 id: cancelButton
                 Layout.fillWidth: true
-                text: "Cancelar"
+                text: settings.language === "es" ? "Cancelar" : "Cancel"
                 flat: true
 
                 background: Rectangle {
@@ -263,7 +263,7 @@ Dialog {
             Button {
                 id: saveButton
                 Layout.fillWidth: true
-                text: "Guardar"
+                text: settings.language === "es" ? "Guardar" : "Save"
                 enabled: nameField.text !== "" && newExerciseGroupFilter.anySelected
 
                 background: Rectangle {

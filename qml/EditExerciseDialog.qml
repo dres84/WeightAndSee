@@ -6,7 +6,7 @@ import gymWeights 1.0
 Dialog {
     id: root
     modal: true
-    title: "Añadir nuevo registro"
+    title: settings.language === "es" ? "Añadir nuevo registro" : "Add new record"
     //standardButtons: Dialog.Save | Dialog.Cancel
     anchors.centerIn: Overlay.overlay
     width: Math.min(parent.width * 0.8, 400)
@@ -98,7 +98,7 @@ Dialog {
 
                 // Grupo muscular
                 Label {
-                    text: muscleGroup
+                    text: settings.language === "es" ? Style.toSpanish(muscleGroup) : muscleGroup
                     font.pixelSize: Style.caption
                     font.bold: true
                     color: Style.muscleColor(muscleGroup)
@@ -118,7 +118,9 @@ Dialog {
                 Layout.fillWidth: true
                 maximumLength: 4
                 Layout.preferredWidth: parent.width * 0.6
-                placeholderText: currentValue > 0 ? "Peso*" : "Peso (opcional)"
+                placeholderText: settings.language === "es"
+                                 ? (currentValue > 0 ? "Peso*" : "Peso (opcional)")
+                                 : (currentValue > 0 ? "Weight*" : "Weight (optional)")
             }
 
             // Selector de unidades
@@ -152,7 +154,9 @@ Dialog {
                 Layout.fillWidth: true
                 allowDecimals: false
                 maximumLength: 3
-                placeholderText: sets > 0 ? "Series*" : "Series (opcional)"
+                placeholderText: settings.language === "es"
+                                 ? (sets > 0 ? "Series*" : "Series (opcional)")
+                                 : (sets > 0 ? "Sets*" : "Sets (optional)")
                 onTextChanged: console.log("Sets field text changed to " + text)
             }
 
@@ -167,7 +171,7 @@ Dialog {
         }
 
         Label {
-            text: "* Campos obligatorios"
+            text: settings.language === "es" ? "* Campos obligatorios" : "* Required fields"
             font.italic: true
             font.pixelSize: Style.caption
             color: Style.textSecondary
@@ -181,7 +185,7 @@ Dialog {
             Button {
                 id: cancelButton
                 Layout.fillWidth: true
-                text: "Cancelar"
+                text: settings.language === "es" ? "Cancelar" : "Cancel"
                 flat: true
 
                 background: Rectangle {
@@ -205,7 +209,7 @@ Dialog {
             Button {
                 id: saveButton
                 Layout.fillWidth: true
-                text: "Guardar Cambios"
+                text: settings.language === "es" ? "Guardar" : "Save"
                 enabled: saveButtonEnabled
 
                 background: Rectangle {

@@ -17,12 +17,12 @@ Item {
 
     ListModel {
         id: groupModel
-        ListElement { name: "Hombros"; selected: false }
-        ListElement { name: "Brazos"; selected: false }
-        ListElement { name: "Pecho"; selected: false }
-        ListElement { name: "Espalda"; selected: false }
-        ListElement { name: "Core"; selected: false }
-        ListElement { name: "Piernas"; selected: false }
+        ListElement { name: "Shouders"; spanishName: "Hombros"; selected: false }
+        ListElement { name: "Arms";     spanishName: "Brazos";  selected: false }
+        ListElement { name: "Chest";    spanishName: "Pecho";   selected: false }
+        ListElement { name: "Back";     spanishName: "Espalda"; selected: false }
+        ListElement { name: "Core";     spanishName: "Core";    selected: false }
+        ListElement { name: "Legs";     spanishName: "Piernas"; selected: false }
     }
 
     Rectangle {
@@ -113,7 +113,7 @@ Item {
 
                 Text {
                     id: textItem
-                    text: model.name
+                    text: settings.language === "es" ? model.spanishName : model.name
                     width: parent.width
                     anchors.top: imageContainer.bottom
                     anchors.topMargin: 3

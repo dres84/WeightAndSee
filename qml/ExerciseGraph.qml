@@ -800,7 +800,7 @@ Item {
             height: 50
             buttonColor: Style.buttonNegative
             fontPixelSize: Style.caption
-            buttonText: "Borrar registro"
+            buttonText: settings.language === "es" ? "Borrar registro" : "Delete record"
             onClicked: historyDialog.open()
         }
 
@@ -808,7 +808,7 @@ Item {
             id: addEntry
             height: 50
             buttonColor: Style.buttonPositive
-            buttonText: "Añadir registro"
+            buttonText: settings.language === "es" ? "Añadir registro" : "Add record"
             fontPixelSize: Style.caption
             onClicked: {
                 editDialog.exerciseName = exerciseName

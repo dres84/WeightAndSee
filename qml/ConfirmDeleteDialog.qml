@@ -36,7 +36,7 @@ Dialog {
         // Título
         Label {
             Layout.fillWidth: true
-            text: "¿Confirmar borrado?"
+            text: settings.language === "es" ? "¿Confirmar borrado?" : "Confirm delete?"
             font.pixelSize: Style.heading2
             font.bold: true
             font.family: Style.interFont.name
@@ -107,7 +107,7 @@ Dialog {
 
             // Fecha
             Label {
-                text: "Fecha:"
+                text: settings.language === "es" ? "Fecha:" : "Date:"
                 font.pixelSize: Style.body
                 font.family: Style.interFont.name
                 color: Style.textDisabled
@@ -125,7 +125,7 @@ Dialog {
 
             // Hora
             Label {
-                text: "Hora:"
+                text: settings.language === "es" ? "Hora:" : "Hour:"
                 font.pixelSize: Style.body
                 font.family: Style.interFont.name
                 color: Style.textDisabled
@@ -143,7 +143,7 @@ Dialog {
 
             // Peso o Reps
             Label {
-                text: unit === "-" ? "Reps:" : "Peso:"
+                text: unit === "-" ? "Reps:" : (settings.language === "es" ? "Peso:" : "Weight")
                 font.pixelSize: Style.body
                 font.family: Style.interFont.name
                 color: Style.textDisabled
@@ -158,7 +158,7 @@ Dialog {
 
             // Series
             Label {
-                text: "Series:"
+                text: settings.language === "es" ? "Series:" : "Sets:"
                 font.pixelSize: Style.body
                 font.family: Style.interFont.name
                 color: Style.textDisabled
@@ -186,7 +186,7 @@ Dialog {
             Button {
                 id: cancelButton
                 Layout.fillWidth: true
-                text: "Cancelar"
+                text: settings.language === "es" ? "Cancelar" : "Cancel"
                 flat: true
 
                 background: Rectangle {
@@ -212,7 +212,7 @@ Dialog {
             Button {
                 id: confirmButton
                 Layout.fillWidth: true
-                text: "Borrar"
+                text: settings.language === "es" ? "Borrar" : "Delete"
                 flat: true
 
                 background: Rectangle {

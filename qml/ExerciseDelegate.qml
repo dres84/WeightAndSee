@@ -107,7 +107,7 @@ Item {
                 }
 
                 Text {
-                    text: root.muscleGroup
+                    text: settings.language === "es" ? Style.toSpanish(root.muscleGroup) : root.muscleGroup
                     width: parent.width
                     font {
                         family: Style.interFont.name

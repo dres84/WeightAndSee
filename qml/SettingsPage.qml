@@ -90,7 +90,7 @@ Item {
             id: delegateItem
             width: settingsList.width * 0.9
             anchors.horizontalCenter: parent.horizontalCenter
-            height: settingItem.height + (expandedContent.active ? expandedContent.height + Style.smallSpace : 0)
+            implicitHeight: settingItem.height + (expandedContent.active ? expandedContent.height + Style.smallSpace : 0)
 
             property bool expanded: false
             property string currentType: type
@@ -467,7 +467,7 @@ Item {
                 Layout.alignment: Qt.AlignHCenter
                 Layout.topMargin: Style.smallSpace
                 Layout.bottomMargin: Style.smallSpace
-                Layout.preferredHeight: 50
+                Layout.preferredHeight: implicitHeight
                 buttonColor: Style.buttonNegative
                 font.pixelSize: Style.body
                 buttonText: settings.language === "es" ? "🗑️ Borrar todo" : "🗑️ Delete all"
@@ -501,7 +501,7 @@ Item {
                 Layout.alignment: Qt.AlignHCenter
                 Layout.topMargin: Style.smallSpace
                 Layout.bottomMargin: Style.smallSpace
-                Layout.preferredHeight: 50
+                Layout.preferredHeight: implicitHeight
                 buttonColor: Style.buttonNeutral
                 font.pixelSize: Style.body
                 buttonText: settings.language === "es" ? "⬇️ Descargar archivo" : "⬇️ Download file"
@@ -537,7 +537,7 @@ Item {
             FloatButton {
                 Layout.alignment: Qt.AlignHCenter
                 Layout.topMargin: Style.smallSpace
-                Layout.preferredHeight: 50
+                Layout.preferredHeight: implicitHeight
                 buttonColor: Style.buttonNeutral
                 font.pixelSize: Style.body
                 buttonText: settings.language === "es" ? "📂 Seleccionar archivo" : "📂 Select file"

@@ -28,7 +28,9 @@ Dialog {
 
         // Título
         Label {
-            text: "Historial de " + exerciseName
+            text: settings.language === "es"
+                  ? ("Historial de " + exerciseName)
+                  : (exerciseName + " history")
             font.pixelSize: Style.heading1
             color: Style.muscleColor(muscleGroup)
             Layout.alignment: Qt.AlignHCenter
@@ -36,7 +38,9 @@ Dialog {
 
         // Instrucciones
         Label {
-            text: "Pulsa o desliza hacia la izquierda para borrar"
+            text: settings.language === "es"
+                  ? "Pulsa o desliza hacia la izquierda para borrar"
+                  : "Tap or swipe left to delete"
             font.pixelSize: Style.caption
             color: Style.textSecondary
             Layout.alignment: Qt.AlignHCenter
@@ -83,7 +87,7 @@ Dialog {
 
         // Botón de cerrar
         Button {
-            text: "Cerrar"
+            text: settings.language === "es" ? "Cerrar" : "Close"
             Layout.alignment: Qt.AlignHCenter
             onClicked: historyDialog.close()
 

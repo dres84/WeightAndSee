@@ -271,7 +271,7 @@ void DataCenter::loadDefaultData() {
 
     // PECHO (Ejercicios con peso)
     exercises["Bench Press"] = QJsonObject{
-        {"muscleGroup", "Pecho"},
+        {"muscleGroup", "Chest"},
         {"currentValue", 75.0},
         {"unit", "lb"},
         {"repetitions", 8},
@@ -303,7 +303,7 @@ void DataCenter::loadDefaultData() {
     };
 
     exercises["Incline Bench Press"] = QJsonObject{
-        {"muscleGroup", "Pecho"},
+        {"muscleGroup", "Chest"},
         {"currentValue", 65.0},
         {"unit", "kg"},
         {"repetitions", 10},
@@ -343,7 +343,7 @@ void DataCenter::loadDefaultData() {
 
     // PIERNAS (Ejercicios con peso)
     exercises["Squat"] = QJsonObject{
-        {"muscleGroup", "Piernas"},
+        {"muscleGroup", "Legs"},
         {"currentValue", 110.0},
         {"unit", "kg"},
         {"repetitions", 5},
@@ -361,7 +361,7 @@ void DataCenter::loadDefaultData() {
     };
 
     exercises["Lunges"] = QJsonObject{
-        {"muscleGroup", "Piernas"},
+        {"muscleGroup", "Legs"},
         {"currentValue", 50.0},
         {"unit", "kg"},
         {"repetitions", 12},
@@ -403,7 +403,7 @@ void DataCenter::loadDefaultData() {
 
     // ESPALDA (Ejercicios con peso o repeticiones)
     exercises["Deadlift"] = QJsonObject{
-        {"muscleGroup", "Espalda"},
+        {"muscleGroup", "Back"},
         {"currentValue", 139.0},
         {"unit", "kg"},
         {"repetitions", 5},
@@ -414,7 +414,7 @@ void DataCenter::loadDefaultData() {
 
     // Pull-up es ejercicio basado en repeticiones (sin peso)
     exercises["Pull-up"] = QJsonObject{
-        {"muscleGroup", "Espalda"},
+        {"muscleGroup", "Back"},
         {"currentValue", 0},
         {"unit", "-"},
         {"repetitions", 3},
@@ -453,7 +453,7 @@ void DataCenter::loadDefaultData() {
     };
 
     exercises["Bent-over Row"] = QJsonObject{
-        {"muscleGroup", "Espalda"},
+        {"muscleGroup", "Back"},
         {"currentValue", 70.0},
         {"unit", "lb"},
         {"repetitions", 8},
@@ -479,7 +479,7 @@ void DataCenter::loadDefaultData() {
 
     // HOMBROS (Ejercicios con peso)
     exercises["Overhead Press"] = QJsonObject{
-        {"muscleGroup", "Hombros"},
+        {"muscleGroup", "Shouders"},
         {"currentValue", 50.0},
         {"unit", "kg"},
         {"repetitions", 6},
@@ -518,7 +518,7 @@ void DataCenter::loadDefaultData() {
     };
 
     exercises["Lateral Raise"] = QJsonObject{
-        {"muscleGroup", "Hombros"},
+        {"muscleGroup", "Shouders"},
         {"currentValue", 15.0},
         {"unit", "kg"},
         {"repetitions", 12},
@@ -544,7 +544,7 @@ void DataCenter::loadDefaultData() {
 
     // BRAZOS (Ejercicios con peso)
     exercises["Bicep Curl"] = QJsonObject{
-        {"muscleGroup", "Brazos"},
+        {"muscleGroup", "Arms"},
         {"currentValue", 12.0},
         {"unit", "kg"},
         {"repetitions", 10},
@@ -583,7 +583,7 @@ void DataCenter::loadDefaultData() {
     };
 
     exercises["Tricep Extension"] = QJsonObject{
-        {"muscleGroup", "Brazos"},
+        {"muscleGroup", "Arms"},
         {"currentValue", 20.0},
         {"unit", "kg"},
         {"repetitions", 10},

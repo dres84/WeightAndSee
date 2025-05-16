@@ -65,24 +65,36 @@ QtObject {
     // Colores para grupos musculares (ligeramente más vibrantes)
     function muscleColor(group) {
         switch(group) {
-            case "Pecho":   return "#FF2D62";  // Rosa eléctrico
-            case "Espalda": return "#00B4FF";  // Azul cian brillante
-            case "Hombros": return "#8B4513";  // Marrón cuero premium
-            case "Brazos":  return "#50C878";  // Verde esmeralda suave
+            case "Chest":   return "#FF2D62";  // Rosa eléctrico
+            case "Back": return "#00B4FF";  // Azul cian brillante
+            case "Shouders": return "#8B4513";  // Marrón cuero premium
+            case "Arms":  return "#50C878";  // Verde esmeralda suave
             case "Core":    return "#D4AF37";  // Dorado metálico
-            case "Piernas": return "#CC66FF";  // Púrpura lavanda
+            case "Legs": return "#CC66FF";  // Púrpura lavanda
             default: return "#F5F5F5";  // Gris claro
         }
     }
 
     function muscleGroupIcon(muscleGroup) {
         switch(muscleGroup) {
-            case "Pecho": return "qrc:/icons/chest.svg"
-            case "Espalda": return "qrc:/icons/back.svg"
-            case "Hombros": return "qrc:/icons/shoulders.svg"
-            case "Brazos": return "qrc:/icons/arms.svg"
+            case "Chest": return "qrc:/icons/chest.svg"
+            case "Back": return "qrc:/icons/back.svg"
+            case "Shouders": return "qrc:/icons/shoulders.svg"
+            case "Arms": return "qrc:/icons/arms.svg"
             case "Core": return "qrc:/icons/core.svg"
-            case "Piernas": return "qrc:/icons/legs.svg"
+            case "Legs": return "qrc:/icons/legs.svg"
+            default: return ""
+        }
+    }
+
+    function toSpanish(muscleGroup) {
+        switch(muscleGroup) {
+            case "Chest": return "Pecho"
+            case "Back": return "Espalda"
+            case "Shouders": return "Hombros"
+            case "Arms": return "Brazos"
+            case "Core": return "Core"
+            case "Legs": return "Piernas"
             default: return ""
         }
     }
