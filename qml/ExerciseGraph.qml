@@ -29,12 +29,10 @@ Item {
     property bool isWeightGraph: unit !== "Reps"
     property string unit: "Kg"
 
-    Shortcut {
-        sequence: "Back"
-        onActivated: {
-            console.log("Back en ExerciseGraph");
-            goBack()
-        }
+    Keys.onBackPressed: {
+        event.accepted = true // Previene el comportamiento por defecto
+        console.log("Back en ExerciseGraph");
+        goBack()
     }
 
     ListModel {
@@ -797,30 +795,38 @@ Item {
 
     /* -------------------------- BOTONES INFERIORES -------------------------- */
 
-    Row {
+    RowLayout {
         id: centerButtons
-        spacing: 20
+        spacing:10
+        width: parent.width * 0.9
         anchors {
             bottom: parent.bottom
             horizontalCenter: parent.horizontalCenter
             bottomMargin: Style.smallMargin
         }
 
+        property int buttonHeight: 55
+        property int buttonPixelSize: Style.semi
+
         FloatButton {
             id: deleteEntry
-            height: 50
+            Layout.preferredHeight: centerButtons.buttonHeight
+            Layout.fillWidth: true
+            Layout.alignment: Qt.AlignLeft | Qt.AlignVCenter
             buttonColor: Style.buttonNegative
-            fontPixelSize: Style.caption
+            fontPixelSize: centerButtons.buttonPixelSize
             buttonText: settings.language === "es" ? "Borrar registro" : "Delete record"
             onClicked: historyDialog.open()
         }
 
         FloatButton {
             id: addEntry
-            height: 50
+            Layout.preferredHeight: centerButtons.buttonHeight
+            Layout.fillWidth: true
+            Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
             buttonColor: Style.buttonPositive
             buttonText: settings.language === "es" ? "Añadir registro" : "Add record"
-            fontPixelSize: Style.caption
+            fontPixelSize: centerButtons.buttonPixelSize
             onClicked: {
                 editDialog.exerciseName = exerciseName
                 editDialog.open()

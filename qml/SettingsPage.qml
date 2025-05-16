@@ -15,12 +15,10 @@ Item {
         color: Style.background
     }
 
-    Shortcut {
-        sequence: "Back"
-        onActivated: {
-            console.log("Back en Settings");
-            goBack()
-        }
+    Keys.onBackPressed: {
+        event.accepted = true // Previene el comportamiento por defecto
+        console.log("Back en Settings");
+        goBack()
     }
 
     // Cabecera con botón de volver y nombre del ejercicio
@@ -91,6 +89,11 @@ Item {
                 name: "Cargar archivo de datos"
                 englishName: "Load data file"
                 type: "import"
+            }
+            ListElement {
+                name: "Cargar datos de prueba"
+                englishName: "Load test data"
+                type: "test"
             }
         }
 
@@ -251,6 +254,7 @@ Item {
                         case "delete": return deleteData;
                         case "export": return exportData;
                         case "import": return importData;
+                        case "test": return testData;
                         default: return null;
                         }
                     }
@@ -552,6 +556,41 @@ Item {
                 onClicked: {
                     fileDialog.setImportaDataValues()
                     fileDialog.open()
+                }
+            }
+        }
+    }
+
+    // Importar Datos desde archivo
+    Component {
+        id: testData
+
+        ColumnLayout {
+            width: parent.width
+            spacing: Style.smallSpace
+
+            Label {
+                text: settings.language === "es"
+                      ? "Carga datos de ejercicios de prueba."
+                      : "Load test exercise data."
+                font.family: Style.interFont.name
+                font.pixelSize: Style.semi
+                color: Style.textSecondary
+                wrapMode: Text.WordWrap
+                Layout.fillWidth: true
+                Layout.leftMargin: Style.smallMargin
+                Layout.topMargin: Style.smallMargin
+            }
+
+            FloatButton {
+                Layout.alignment: Qt.AlignHCenter
+                Layout.topMargin: Style.smallSpace
+                Layout.preferredHeight: implicitHeight
+                buttonColor: Style.buttonNeutral
+                font.pixelSize: Style.body
+                buttonText: settings.language === "es" ? "🧪 Cargar datos de prueba" : "🧪 Load test data"
+                onClicked: {
+                    dataCenter.reloadDefaultData()
                 }
             }
         }

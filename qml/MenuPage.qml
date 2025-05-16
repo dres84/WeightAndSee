@@ -11,7 +11,6 @@ Page {
     required property DataCenter dataCenter
     property string searchQuery: searchBox.text
     property bool showDeleteButton: true
-    property bool showTestButtons: true
     property bool allOpened: false
     property var groupsSelected: groupFilter.selectedGroups
     property bool noneSelected: groupFilter.noneSelected
@@ -49,7 +48,7 @@ Page {
         anchors.top: parent.top
         anchors.bottom: centerButtons.top
         anchors.topMargin: 20
-        anchors.bottomMargin: Style.mediumMargin
+        anchors.bottomMargin: Style.smallMargin
         anchors.horizontalCenter: parent.horizontalCenter
         width: parent.width - Style.bigSpace * 2
         spacing: 5
@@ -184,39 +183,28 @@ Page {
         }
     }
 
-    // Botón de eliminar alineado a la izquierda
-    FloatButton {     
-        id: reloadButton
-        anchors {
-            bottom: parent.bottom
-            left: parent.left
-            bottomMargin: Style.smallMargin
-            leftMargin: Style.mediumMargin
-        }
-        height: 50
-        width: 35
-        buttonColor: Style.buttonNeutral
-        buttonText: "\u21BB" // Reload symbol
-        onClicked: dataCenter.reloadDefaultData()
-    }
-
     // Botones centrales (recargar y borrar archivo)
-    Row {
+    RowLayout {
         id: centerButtons
-        visible: showTestButtons
-        spacing: 20
+        spacing: 10
+        width: parent.width * 0.9
         anchors {
             bottom: parent.bottom
             horizontalCenter: parent.horizontalCenter
             bottomMargin: Style.smallMargin
         }
 
+        property int buttonHeight: 55
+        property int buttonPixelSize: Style.semi
+
         FloatButton {
             id: deleteButton
             visible: showDeleteButton
-            height: 50
+            Layout.preferredHeight: centerButtons.buttonHeight
+            Layout.fillWidth: true
+            Layout.alignment: Qt.AlignLeft | Qt.AlignVCenter
             buttonColor: Style.buttonNegative
-            fontPixelSize: Style.caption
+            fontPixelSize: centerButtons.buttonPixelSize
             buttonText: settings.language === "es"
                         ? (allOpened ? "Cancelar borrado" : "Borrar ejercicio")
                         : (allOpened ? "Cancel deletion" : "Delete exercise")
@@ -226,28 +214,14 @@ Page {
 
         FloatButton {
             id: addButton
-            height: 50
+            Layout.preferredHeight: centerButtons.buttonHeight
+            Layout.fillWidth: true
+            Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
             buttonColor: Style.buttonPositive
             buttonText: settings.language === "es" ? "Nuevo ejercicio" : "New exercise"
-            fontPixelSize: Style.caption
+            fontPixelSize: centerButtons.buttonPixelSize
             onClicked: addDialog.open()
         }
-    }
-
-    // Botón de añadir ejercicio alineado a la derecha
-    FloatButton {
-        id: deleteFileButton
-        anchors {
-            bottom: parent.bottom
-            right: parent.right
-            bottomMargin: Style.smallMargin
-            rightMargin: Style.mediumMargin
-        }
-        height: 50
-        width: 35
-        buttonColor: Style.buttonNeutral
-        buttonText: "\u232B"
-        onClicked: dataCenter.deleteAllExercises()
     }
 
     // Dialog
