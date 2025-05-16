@@ -188,7 +188,7 @@ Item {
         id: header
         anchors.top: parent.top
         width: parent.width
-        height: 55
+        height: 65
         color: "transparent"
 
         // Botón para volver atrás
@@ -221,7 +221,7 @@ Item {
         anchors.top: header.bottom
         width: parent.width - Style.bigSpace * 2
         anchors.horizontalCenter: parent.horizontalCenter
-        height: 45
+        height: 50
         spacing: 5
 
         Repeater {
@@ -249,7 +249,8 @@ Item {
 
                 contentItem: Text {
                     text: parent.text
-                    font.pixelSize: Style.semi ? Style.semi : 14
+                    font.pixelSize: Style.body
+                    font.bold: true
                     color: parent.enabled ? Style.text : Style.textDisabled
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter
@@ -285,6 +286,7 @@ Item {
         id: chartContainer
         anchors {
             top: summaryGrid.bottom
+            topMargin: Style.smallMargin
             left: parent.left
             right: parent.right
             bottom: centerButtons.top
@@ -334,24 +336,25 @@ Item {
                     ctx.stroke()
 
                     // Dibujar marcas y valores del eje Y
-                    var numYTicks = 5
+                    var numYTicks = 8
                     ctx.font = Style.caption + "px " + Style.interFont.name
                     ctx.fillStyle = Style.textSecondary
 
-                    for (var i = 0; i <= numYTicks; i++) {
+                    for (var i = 0; i <= numYTicks - 1; i++) {
                         var v = minVal + (i/numYTicks) * (maxVal - minVal)
                         var y = (height - mb) - (i/numYTicks) * plotHeight
 
                         // Marca pequeña
-                        ctx.beginPath()
+                        /*ctx.beginPath()
                         ctx.moveTo(width - 5, y)
                         ctx.lineTo(width, y)
-                        ctx.stroke()
+                        ctx.stroke()*/
 
                         // Texto del valor
                         ctx.textAlign = "right"
                         ctx.textBaseline = "middle"
-                        ctx.fillText(v.toFixed(isWeightGraph ? 1 : 0), width - 10, y)
+                        ctx.fillText(Math.round(v), width - 10, y);
+                        //ctx.fillText(v.toFixed(isWeightGraph ? 1 : 0), width - 10, y)
                     }
                 }
             }

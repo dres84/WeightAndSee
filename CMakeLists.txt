@@ -22,7 +22,6 @@ qt_add_qml_module(appgymWeights
     QML_FILES
         Main.qml
         qml/MenuPage.qml
-        qml/NavigationHeader.qml
         qml/ExerciseDelegate.qml
         qml/SearchBox.qml
         qml/MuscleGroupFilter.qml

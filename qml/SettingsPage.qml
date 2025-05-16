@@ -28,7 +28,7 @@ Item {
         id: header
         anchors.top: parent.top
         width: parent.width
-        height: 55
+        height: 65
         color: "transparent"
 
         // Botón para volver atrás

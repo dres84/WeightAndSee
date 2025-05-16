@@ -16,11 +16,27 @@ Page {
     property var groupsSelected: groupFilter.selectedGroups
     property bool noneSelected: groupFilter.noneSelected
 
+    property bool backPressedOnce: false
+    property int backPressInterval: 2000
+
+    Timer {
+        id: backPressTimer
+        interval: backPressInterval
+        onTriggered: backPressedOnce = false
+    }
+
     Shortcut {
         sequence: "Back"
         onActivated: {
-            console.log("Back en MenuPage");
-            goBack()
+            if (!backPressedOnce) {
+                backPressedOnce = true;
+                backPressTimer.start();
+                showToast(settings.language === "es"
+                    ? "Presiona de nuevo para salir"
+                    : "Press back again to exit");
+            } else {
+                Qt.quit();
+            }
         }
     }
 
@@ -287,6 +303,49 @@ Page {
                 onRequestReload: settingsLoader.reload()
             }
         }
+    }
+
+    // Toast para controlar las pulsaciones "Back"
+    // Componente Toast
+    Rectangle {
+        id: toast
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 100
+        width: parent.width * 0.8
+        height: 50
+        radius: 25
+        color: "#CC333333"
+        opacity: 0
+        visible: opacity > 0
+
+        Label {
+            anchors.centerIn: parent
+            text: ""
+            color: "white"
+            font.pixelSize: Style.semi
+            font.family: Style.interFont.name
+        }
+
+        Behavior on opacity {
+            NumberAnimation { duration: 300 }
+        }
+
+        Timer {
+            id: toastTimer
+            interval: 2000
+            onTriggered: toast.opacity = 0
+        }
+
+        function show(message) {
+            children[0].text = message;
+            opacity = 1;
+            toastTimer.start();
+        }
+    }
+
+    function showToast(message) {
+        toast.show(message);
     }
 
     Component.onCompleted: {
