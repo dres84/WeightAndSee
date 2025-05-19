@@ -153,7 +153,7 @@ Page {
 
     // Al cargar el componente, cargar los datos iniciales
     Component.onCompleted: {
-        console.log("Cargamos datos en ExerciseGraph para " + exerciseName)
+        console.log("Cargamos datos en GraphPage.qml para " + exerciseName)
         loadData()
     }
 

@@ -47,21 +47,15 @@ ApplicationWindow {
         anchors.fill: parent
         background: Rectangle { color: "transparent" }  // Elimina cualquier fondo por defecto
 
+        property int timeDuration: 450
+
         pushEnter: Transition {
-            ParallelAnimation {
-                NumberAnimation {
-                    property: "x"
-                    from: stackView.width
-                    to: 0
-                    duration: 350
-                    easing.type: Easing.OutQuad
-                }
-                NumberAnimation {
-                    property: "opacity"
-                    from: 0.5
-                    to: 1
-                    duration: 350
-                }
+            NumberAnimation {
+                property: "x"
+                from: stackView.width
+                to: 0
+                duration: stackView.timeDuration
+                easing.type: Easing.OutQuad
             }
         }
 
@@ -70,7 +64,7 @@ ApplicationWindow {
                 property: "opacity"
                 from: 1
                 to: 0.7
-                duration: 350
+                duration: stackView.timeDuration
             }
         }
 
@@ -79,25 +73,17 @@ ApplicationWindow {
                 property: "opacity"
                 from: 0.7
                 to: 1
-                duration: 350
+                duration: stackView.timeDuration
             }
         }
 
         popExit: Transition {
-            ParallelAnimation {
-                NumberAnimation {
-                    property: "x"
-                    from: 0
-                    to: stackView.width
-                    duration: 350
-                    easing.type: Easing.InQuad
-                }
-                NumberAnimation {
-                    property: "opacity"
-                    from: 1
-                    to: 0.5
-                    duration: 350
-                }
+            NumberAnimation {
+                property: "x"
+                from: 0
+                to: stackView.width
+                duration: stackView.timeDuration
+                easing.type: Easing.InQuad
             }
         }
 
@@ -115,12 +101,6 @@ ApplicationWindow {
         }
     }
 
-    Component {
-        id: graphPageComponent
-        ExerciseGraph {
-            // propiedades...
-        }
-    }
 
     Connections {
         target: stackView.currentItem // Conectar señales de la página actual
@@ -128,7 +108,7 @@ ApplicationWindow {
             stackView.push(settingsPageComponent)
         }
         function onGoToGraph(exerciseName) {
-            stackView.push("qml/ExerciseGraph.qml", {
+            stackView.push("qml/GraphPage.qml", {
                 exerciseName: exerciseName,
                 exerciseModel: root.exerciseModel
             })
