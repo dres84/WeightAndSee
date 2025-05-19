@@ -1,147 +1,138 @@
-// MessagePopup.qml
-import QtQuick
-import QtQuick.Controls
-import QtQuick.Layouts
+import QtQuick 2.15
+import QtQuick.Controls 2.15
+import QtQuick.Layouts 1.15
 
 Popup {
     id: root
-    width: Math.min(400, parent.width * 0.9)
-    height: contentCol.implicitHeight + 40
+    width: Math.min(parent.width * 0.9, 400)
+    implicitHeight: contentColumn.implicitHeight + Style.mediumMargin * 2
     x: (parent.width - width) / 2
-    y: (parent.height - height) / 3 // Aparece en el tercio superior
+    y: (parent.height - height) / 2
     modal: true
-    dim: true
+    focus: true
     closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
-    padding: 0
+    padding: Style.mediumMargin
 
-    // Propiedades públicas
-    property string messageType: "info" // "info", "warning", "error", "success"
     property string title: ""
     property string message: ""
-    property int autoCloseDelay: 3000 // 0 para desactivar auto-cierre
+    property string messageType: "info" // "info", "warning", "error", "success"
 
-    // Colores según tipo de mensaje
-    readonly property var colors: ({
-        "info": { bg: "#e3f2fd", border: "#90caf9", text: "#0d47a1", icon: "ℹ️" },
-        "success": { bg: "#e8f5e9", border: "#a5d6a7", text: "#2e7d32", icon: "✓" },
-        "warning": { bg: "#fff8e1", border: "#ffcc80", text: "#f57f17", icon: "⚠️" },
-        "error": { bg: "#ffebee", border: "#ef9a9a", text: "#c62828", icon: "❌" }
-    })
-
-    // Animación de entrada
-    enter: Transition {
-        ParallelAnimation {
-            NumberAnimation {
-                property: "opacity";
-                from: 0;
-                to: 1;
-                duration: 250
-            }
-            NumberAnimation {
-                property: "y";
-                from: root.parent.height * 0.1;
-                to: root.parent.height / 3;
-                duration: 350;
-                easing.type: Easing.OutBack
-            }
+    // Colores basados en Style.qml
+    readonly property color typeColor: {
+        switch(messageType) {
+            case "warning": return "#FFC107";
+            case "error": return Style.buttonNegative;
+            case "success": return Style.buttonPositive;
+            default: return Style.buttonNeutral;
         }
     }
 
-    // Animación de salida
-    exit: Transition {
-        ParallelAnimation {
-            NumberAnimation {
-                property: "opacity";
-                to: 0;
-                duration: 200
-            }
-            NumberAnimation {
-                property: "scale";
-                to: 0.9;
-                duration: 200;
-            }
-        }
-    }
-
-    background: Rectangle {
-        color: root.colors[root.messageType].bg
-        border {
-            width: 2
-            color: root.colors[root.messageType].border
-        }
-        radius: 12
-        layer.enabled: true
-    }
-
-    ColumnLayout {
-        id: contentCol
-        width: parent.width - 30
-        anchors.centerIn: parent
-        spacing: 15
-
-        RowLayout {
-            spacing: 10
-            Layout.fillWidth: true
-
-            Text {
-                text: root.colors[root.messageType].icon
-                font.pixelSize: 28
-                Layout.alignment: Qt.AlignTop
-            }
-
-            ColumnLayout {
-                spacing: 5
-                Layout.fillWidth: true
-
-                Text {
-                    text: root.title
-                    Layout.fillWidth: true
-                    wrapMode: Text.Wrap
-                    font {
-                        bold: true
-                        pixelSize: 16
-                    }
-                    color: root.colors[root.messageType].text
-                }
-
-                Text {
-                    text: root.message
-                    Layout.fillWidth: true
-                    wrapMode: Text.Wrap
-                    font.pixelSize: 14
-                    color: Qt.darker(root.colors[root.messageType].text, 1.2)
-                }
-            }
-        }
-
-        Button {
-            text: qsTr("OK")
-            Layout.alignment: Qt.AlignHCenter
-            Layout.topMargin: 5
-            flat: true
-            onClicked: root.close()
-
-            background: Rectangle {
-                radius: 5
-                color: parent.down ? Qt.darker(root.colors[root.messageType].border, 1.1) : "transparent"
-            }
-        }
-    }
-
-    Timer {
-        id: autoCloseTimer
-        interval: root.autoCloseDelay
-        onTriggered: if(root.opened) root.close()
-    }
-
-    function show(title, message, type = "info", autoClose = true) {
+    function show(title, message, type = "info") {
         root.title = title
         root.message = message
         root.messageType = type
-        root.autoCloseDelay = autoClose ? 3000 : 0
-        root.open()
-        if(autoClose) autoCloseTimer.restart()
+        open()
     }
 
-    onOpened: if(autoCloseDelay > 0) autoCloseTimer.restart()
+    background: Rectangle {
+        color: Style.surface
+        radius: Style.mediumRadius
+        border.color: Style.divider
+        border.width: 1
+    }
+
+    contentItem: ColumnLayout {
+        id: contentColumn
+        spacing: Style.mediumSpace
+
+        // Header con título e icono
+        RowLayout {
+            spacing: Style.mediumSpace
+            Layout.fillWidth: true
+
+            Rectangle {
+                width: 24
+                height: 24
+                radius: width / 2
+                color: typeColor
+                opacity: 0.2
+
+                Text {
+                    anchors.centerIn: parent
+                    text: {
+                        switch(messageType) {
+                            case "warning": return "⚠";
+                            case "error": return "✕";
+                            case "success": return "✓";
+                            default: return "i";
+                        }
+                    }
+                    font.pixelSize: 14
+                    color: typeColor
+                }
+            }
+
+            Label {
+                text: title
+                font.pixelSize: Style.heading2
+                font.bold: true
+                color: Style.text
+                Layout.fillWidth: true
+                elide: Text.ElideRight
+            }
+        }
+
+        // Separador
+        Rectangle {
+            Layout.fillWidth: true
+            Layout.preferredHeight: 1
+            color: Style.divider
+            opacity: 0.5
+        }
+
+        // Mensaje
+        Label {
+            text: message
+            font.pixelSize: Style.body
+            color: Style.textSecondary
+            wrapMode: Text.Wrap
+            Layout.fillWidth: true
+            Layout.topMargin: Style.smallSpace
+            Layout.bottomMargin: Style.mediumSpace
+        }
+
+        // Botón de acción
+        Button {
+            id: actionButton
+            text: qsTr("Aceptar")
+            font.pixelSize: Style.semi
+            font.family: Style.interFont.name
+            Layout.alignment: Qt.AlignRight
+            Layout.preferredWidth: 120
+
+            background: Rectangle {
+                color: typeColor
+                radius: Style.smallRadius
+                opacity: parent.down ? 0.8 : 1
+            }
+
+            contentItem: Text {
+                text: actionButton.text
+                font: actionButton.font
+                color: Style.buttonText
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+            }
+
+            onClicked: root.close()
+        }
+    }
+
+    enter: Transition {
+        NumberAnimation { property: "opacity"; from: 0; to: 1; duration: Style.animationTime }
+    }
+
+    exit: Transition {
+        NumberAnimation { property: "opacity"; from: 1; to: 0; duration: Style.animationTime }
+    }
 }

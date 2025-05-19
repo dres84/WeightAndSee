@@ -42,7 +42,6 @@ qt_add_qml_module(appgymWeights
     RESOURCES
         android/AndroidManifest.xml
         android/build.gradle
-        qml.qrc
     SOURCES
         datacenter.h datacenter.cpp
         exercisemodel.h exercisemodel.cpp

@@ -18,6 +18,10 @@ Page {
     property bool backPressedOnce: false
     property int backPressInterval: 2000
 
+    signal goToGraph(string exerciseName)
+    signal goToSettings
+    signal goBack
+
     Timer {
         id: backPressTimer
         interval: backPressInterval
@@ -80,8 +84,7 @@ Page {
                 TapHandler {
                     id: tapHandler
                     onTapped: {
-                        settingsLoader.active = true
-
+                        goToSettings()
                     }
                 }
             }
@@ -135,8 +138,7 @@ Page {
                 }
                 onCloseOthers: listView.closeAll()
                 onEditExercise: {
-                    graphLoader.exerciseNameToLoad = name
-                    graphLoader.active = true
+                    goToGraph(name)
                 }
             }
             spacing: 0
@@ -184,6 +186,14 @@ Page {
                 }
             }
         }
+
+        // Separador
+        Rectangle {
+            Layout.fillWidth: true
+            height: 1
+            radius: 5
+            color: "white"
+        }
     }
 
     // Botones centrales (recargar y borrar archivo)
@@ -229,56 +239,6 @@ Page {
     // Dialog
     NewExerciseDialog {
         id: addDialog
-    }
-
-    // Loader para gráficos
-    Loader {
-        id: graphLoader
-        anchors.fill: parent
-        visible: graphLoader.active
-        sourceComponent: graphComponent
-        active: false
-        property string exerciseNameToLoad: ""
-
-        function reload() {
-            active = false
-            Qt.callLater(function() {
-                active = true
-            })
-        }
-
-        Component {
-            id: graphComponent
-            ExerciseGraph {
-                exerciseName: graphLoader.exerciseNameToLoad
-                onGoBack: graphLoader.active = false
-                onRequestReload: graphLoader.reload()
-            }
-        }
-    }
-
-    // Loader para Settings
-    Loader {
-        id: settingsLoader
-        anchors.fill: parent
-        visible: settingsLoader.active
-        sourceComponent: settingsComponent
-        active: false
-
-        function reload() {
-            active = false
-            Qt.callLater(function() {
-                active = true
-            })
-        }
-
-        Component {
-            id: settingsComponent
-            SettingsPage {
-                onGoBack: settingsLoader.active = false
-                onRequestReload: settingsLoader.reload()
-            }
-        }
     }
 
     // Toast para controlar las pulsaciones "Back"
@@ -328,4 +288,5 @@ Page {
         console.log("Model count:", exerciseModel.count)
         console.log("DataCenter data:", JSON.stringify(dataCenter.data))
     }
+
 }

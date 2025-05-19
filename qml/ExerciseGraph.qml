@@ -2,12 +2,13 @@ import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
 
-Item {
+Page {
     id: graph
-    anchors.fill: parent
 
-    signal goBack()
-    signal requestReload()
+    signal requestReload
+    signal goBack
+    signal goToGraph(string exerciseName)
+    signal goToSettings
 
     property string exerciseName: ""
     property string muscleGroup: ""

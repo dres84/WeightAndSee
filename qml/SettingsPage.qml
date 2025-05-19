@@ -4,15 +4,18 @@ import QtQuick.Layouts 1.15
 import QtQuick.Dialogs
 import QtCore
 
-Item {
+Page {
     id: root
 
-    signal requestReload()
-    signal goBack()
+    signal requestReload
+    signal goBack
+    signal goToGraph(string exerciseName)
+    signal goToSettings
 
     Rectangle {
         anchors.fill: parent
         color: Style.background
+        z: -1
     }
 
     Shortcut {
@@ -79,24 +82,24 @@ Item {
                 type: "unit"
             }
             ListElement {
-                name: "Borrar todos los datos"
-                englishName: "Delete all data"
-                type: "delete"
-            }
-            ListElement {
-                name: "Descargar archivo de datos"
-                englishName: "Download data file"
+                name: "Exportar archivo de datos"
+                englishName: "Export data file"
                 type: "export"
             }
             ListElement {
-                name: "Cargar archivo de datos"
-                englishName: "Load data file"
+                name: "Importar archivo de datos"
+                englishName: "Import data file"
                 type: "import"
             }
             ListElement {
-                name: "Cargar datos de prueba"
-                englishName: "Load test data"
+                name: "Cargar datos de ejemplo"
+                englishName: "Load example data"
                 type: "test"
+            }
+            ListElement {
+                name: "Borrar todos los datos"
+                englishName: "Delete all data"
+                type: "delete"
             }
         }
 
@@ -736,4 +739,7 @@ Item {
     }
 
 
+    Component.onCompleted: {
+        console.log("📘 SettingsPage is now visible!")
+    }
 }
