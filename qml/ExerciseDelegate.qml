@@ -22,6 +22,7 @@ Item {
 
     signal closeOthers
     signal editExercise
+    signal confirmDelete
 
     Behavior on height {
         NumberAnimation { duration: Style.animationTime }
@@ -214,8 +215,7 @@ Item {
             TapHandler {
                 onTapped: {
                     console.log("Intentamos eliminar el elemento " + name)
-                    dataCenter.removeExercise(name)
-                    contentItem.x = 0;
+                    confirmDelete()
                 }
             }
     }

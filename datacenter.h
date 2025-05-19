@@ -45,7 +45,7 @@ signals:
 private:
     QString getFilePath() const;
     QJsonObject m_data;
-    void ensureHistoriesExist();
+    void loadData();
     void loadDefaultData();
 };
 

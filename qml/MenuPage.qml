@@ -21,6 +21,7 @@ Page {
     signal goToGraph(string exerciseName)
     signal goToSettings
     signal goBack
+    signal showConfirmDialog(string name)
 
     Timer {
         id: backPressTimer
@@ -140,11 +141,32 @@ Page {
                 onEditExercise: {
                     goToGraph(name)
                 }
+                onConfirmDelete: {
+                    root.showConfirmDialog(name)
+                }
             }
             spacing: 0
 
             ScrollBar.vertical: ScrollBar {
                 policy: ScrollBar.AlwaysOff
+            }
+
+            Label {
+                anchors.centerIn: parent
+                visible: listView.count === 0
+                width: parent.width * 0.6
+                text: settings.language === "es"
+                      ? "Agrega ejercicios pulsando el botón 'Nuevo Ejercicio'."
+                      : "Add exercises by clicking the 'New Exercise' button"
+                color: "white"
+                font.family: Style.interFont.name
+                font.pixelSize: Style.body
+                horizontalAlignment: Text.AlignHCenter  // Centrado horizontal
+                verticalAlignment: Text.AlignVCenter    // Centrado vertical
+                wrapMode: Text.Wrap
+                opacity: 1
+                background: null // fondo transparente explícito (puede omitirse si no hay fondo por defecto)
+
             }
 
             function closeOthers(exceptIndex) {
@@ -239,6 +261,20 @@ Page {
     // Dialog
     NewExerciseDialog {
         id: addDialog
+    }
+
+    onShowConfirmDialog: function(name) {
+        console.log("Mostramos dialogo para confirmar borrado para " + name)
+        confirmDeleteDialog.showExercise(name)
+    }
+
+    // Diálogo de confirmación para borrar registro
+    ConfirmDeleteDialog {
+        id: confirmDeleteDialog
+        onlyExercise: true
+        onConfirmedExercise: function(name) {
+            dataCenter.removeExercise(name)
+        }
     }
 
     // Toast para controlar las pulsaciones "Back"

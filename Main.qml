@@ -109,8 +109,7 @@ ApplicationWindow {
         }
         function onGoToGraph(exerciseName) {
             stackView.push("qml/GraphPage.qml", {
-                exerciseName: exerciseName,
-                exerciseModel: root.exerciseModel
+                exerciseName: exerciseName
             })
         }
         function onGoBack() {

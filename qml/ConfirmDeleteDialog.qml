@@ -7,12 +7,13 @@ Dialog {
     id: confirmDeleteDialog
     modal: true
     anchors.centerIn: Overlay.overlay
-    width: Math.min(500, parent.width * 0.9)
+    width: Math.min(500, onlyExercise ? parent.width * 0.8 : parent.width)
     padding: 20
     closePolicy: Popup.CloseOnEscape
 
     // Propiedades
     property string exerciseName: ""
+    property bool onlyExercise: false
     property string entryDate: ""
     property double weight: 0
     property string unit: ""
@@ -22,6 +23,7 @@ Dialog {
     property string muscleGroup: dataCenter.getMuscleGroup(exerciseName)
 
     signal confirmed(int index)
+    signal confirmedExercise(string name)
 
     // Fondo oscuro exterior
     Overlay.modal: Rectangle {
@@ -99,6 +101,7 @@ Dialog {
 
         // Grid con los detalles
         GridLayout {
+            visible: !onlyExercise
             Layout.fillWidth: true
             Layout.topMargin: Style.mediumSpace
             columns: 2
@@ -234,7 +237,10 @@ Dialog {
                 }
 
                 onClicked: {
-                    confirmed(entryIndex)
+                    if (onlyExercise)
+                        confirmedExercise(exerciseName)
+                    else
+                        confirmed(entryIndex)
                     confirmDeleteDialog.close()
                 }
             }
@@ -249,6 +255,11 @@ Dialog {
         unit = unitValue
         reps = repsValue
         sets = setsValue
+        open()
+    }
+
+    function showExercise(name) {
+        exerciseName = name
         open()
     }
 }

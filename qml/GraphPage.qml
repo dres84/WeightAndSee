@@ -13,6 +13,7 @@ Page {
     property string exerciseName: ""
     property string muscleGroup: ""
     property var exerciseData: []
+    property bool noData: exerciseData.length === 0
     property int highlightedIndex: -1
     property int selectedPeriod: 0
 
@@ -29,6 +30,8 @@ Page {
     property var englishMonthNames: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
     property bool isWeightGraph: unit !== "Reps"
     property string unit: "Kg"
+
+    property string addEntryTextButton: settings.language === "es" ? "Añadir registro" : "Add record"
 
     Shortcut {
         sequence: "Back"
@@ -64,6 +67,7 @@ Page {
             console.log("Primer elemento:", JSON.stringify(filteredModel.get(0)));
         } else {
             console.log("filteredModel.count es 0");
+            historyDialog.close()
         }
     }
 
@@ -794,7 +798,26 @@ Page {
             font.bold: true
             font.pixelSize: Style.semi
             color: Style.textSecondary
+            visible: filteredModel.count > 0
         }
+
+        Label {
+            id: noDataLabel
+            anchors.centerIn: parent
+            width: parent.width * 0.6
+            text: settings.language === "es"
+                  ? (noData ? "No hay registros de este ejericio. Puede añadir pulsando sobre '" + addEntryTextButton + "'" : "No hay registros para el periodo de tiempo seleccionado")
+                  : (noData ? "There are no records for this exercise. You can add one by tapping '" + addEntryTextButton + "'" : "There are no records for the selected time period")
+
+            font.bold: true
+            font.pixelSize: Style.body
+            color: Style.text
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
+            visible: filteredModel.count === 0
+            wrapMode: Text.Wrap
+        }
+
     }
 
     /* -------------------------- BOTONES INFERIORES -------------------------- */
@@ -817,10 +840,11 @@ Page {
             Layout.preferredHeight: centerButtons.buttonHeight
             Layout.fillWidth: true
             Layout.alignment: Qt.AlignLeft | Qt.AlignVCenter
-            buttonColor: Style.buttonNegative
+            buttonColor: enabled ? Style.buttonNegative : Style.buttonNegativeDisabled
             fontPixelSize: centerButtons.buttonPixelSize
             buttonText: settings.language === "es" ? "Borrar registro" : "Delete record"
             onClicked: historyDialog.open()
+            enabled: filteredModel.count > 0
         }
 
         FloatButton {
@@ -829,7 +853,7 @@ Page {
             Layout.fillWidth: true
             Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
             buttonColor: Style.buttonPositive
-            buttonText: settings.language === "es" ? "Añadir registro" : "Add record"
+            buttonText: addEntryTextButton
             fontPixelSize: centerButtons.buttonPixelSize
             onClicked: {
                 editDialog.exerciseName = exerciseName
