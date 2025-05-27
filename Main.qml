@@ -17,6 +17,8 @@ ApplicationWindow {
 
         property string language: "es"
         property string defaultUnit: "kg"
+        property int defaultSets: 3
+        property int defaultReps: 10
     }
 
     // 1. Instancia los objetos directamente en QML

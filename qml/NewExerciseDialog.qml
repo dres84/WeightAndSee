@@ -214,7 +214,7 @@ Dialog {
                 validator: IntValidator { bottom: 0 }
                 allowDecimals: false
                 maximumLength: 3
-                text: "3"
+                text: settings.defaultSets
             }
 
             NumericTextField {
@@ -224,6 +224,7 @@ Dialog {
                 validator: IntValidator { bottom: 0 }
                 allowDecimals: false
                 maximumLength: 4
+                text: settings.defaultReps
             }
         }
 

@@ -11,7 +11,7 @@ int main(int argc, char *argv[])
     // Configura los nombres de organización necesarios para QSettings
     app.setOrganizationName("dreSoft");
     app.setOrganizationDomain("");
-    app.setApplicationName("Weight and See");
+    app.setApplicationName("Weight & See");
 
     // Registra los tipos para poder crearlos desde QML
     qmlRegisterType<ExerciseModel>("gymWeights", 1, 0, "ExerciseModel");

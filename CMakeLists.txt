@@ -21,7 +21,7 @@ if(ANDROID)
     )
 
     set(ANDROID_PACKAGE_NAME "com.dreSoft.weightAndSee")
-    set(ANDROID_APP_NAME "Weight and See")
+    set(ANDROID_APP_NAME "Weight&See")
 
     set_property(TARGET appgymWeights PROPERTY QT_ANDROID_APPLICATION_CLASS "org.qtproject.qt.android.bindings.QtApplication")
     set_property(TARGET appgymWeights PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR "${CMAKE_SOURCE_DIR}/android/src/main")
@@ -55,6 +55,7 @@ qt_add_qml_module(appgymWeights
         qml/FloatButton.qml
         qml/Style.qml
         qml/Splash.qml
+        qml/NumberSpinner.qml
     SOURCES
         datacenter.h datacenter.cpp
         exercisemodel.h exercisemodel.cpp

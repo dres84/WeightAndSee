@@ -82,6 +82,16 @@ Page {
                 type: "unit"
             }
             ListElement {
+                name: "Series por defecto"
+                englishName: "Default sets"
+                type: "defaultSets"
+            }
+            ListElement {
+                name: "Repeticiones por defecto"
+                englishName: "Default reps"
+                type: "defaultReps"
+            }
+            ListElement {
                 name: "Exportar archivo de datos"
                 englishName: "Export data file"
                 type: "export"
@@ -172,6 +182,28 @@ Page {
                         Layout.rightMargin: 10
                     }
 
+                    Label {
+                        text: settings.defaultSets;
+                        visible: type === "defaultSets"
+                        font.family: Style.interFont.name
+                        font.pixelSize: Style.body
+                        font.bold: false
+                        color: Style.text
+                        Layout.alignment: Qt.AlignVCenter
+                        Layout.rightMargin: 10
+                    }
+
+                    Label {
+                        text: settings.defaultReps;
+                        visible: type === "defaultReps"
+                        font.family: Style.interFont.name
+                        font.pixelSize: Style.body
+                        font.bold: false
+                        color: Style.text
+                        Layout.alignment: Qt.AlignVCenter
+                        Layout.rightMargin: 10
+                    }
+
                     Image {
                         visible: type === "language"
                         source: settings.language === "es"
@@ -257,6 +289,8 @@ Page {
                         switch(type) {
                         case "language": return languageSelector;
                         case "unit": return unitSelector;
+                        case "defaultSets": return defaultSetsSelector;
+                        case "defaultReps": return defaultRepsSelector;
                         case "delete": return deleteData;
                         case "export": return exportData;
                         case "import": return importData;
@@ -457,6 +491,82 @@ Page {
                     }
                 }
             }
+        }
+    }
+
+    // Selector de series por defecto
+    Component {
+        id: defaultSetsSelector
+
+        ColumnLayout {
+            spacing: Style.mediumSpace
+            width: parent.width
+
+            Label {
+                text: settings.language === "es"
+                      ? "Número de series que se crearán por defecto al añadir un nuevo ejercicio"
+                      : "Default number of sets that will be created when adding a new exercise"
+                font.family: Style.interFont.name
+                font.pixelSize: Style.semi
+                color: Style.textSecondary
+                wrapMode: Text.WordWrap
+                Layout.fillWidth: true
+                Layout.leftMargin: Style.smallMargin
+                Layout.topMargin: Style.smallMargin
+            }
+
+            NumberSpinner {
+                value: settings.defaultSets
+                minValue: 1
+                maxValue: 100
+                Layout.preferredWidth: parent.width * 0.5
+                Layout.alignment: Qt.AlignHCenter
+
+                onValueChanged: {
+                    if (value !== settings.defaultSets) {
+                        settings.defaultSets = value
+                    }
+                }
+            }
+
+        }
+    }
+
+    // Selector de repeticiones por defecto
+    Component {
+        id: defaultRepsSelector
+
+        ColumnLayout {
+            spacing: Style.mediumSpace
+            width: parent.width
+
+            Label {
+                text: settings.language === "es"
+                      ? "Número de repeticiones que se crearán por defecto al añadir un nuevo ejercicio"
+                      : "Default number of reps that will be created when adding a new exercise"
+                font.family: Style.interFont.name
+                font.pixelSize: Style.semi
+                color: Style.textSecondary
+                wrapMode: Text.WordWrap
+                Layout.fillWidth: true
+                Layout.leftMargin: Style.smallMargin
+                Layout.topMargin: Style.smallMargin
+            }
+
+            NumberSpinner {
+                value: settings.defaultReps
+                Layout.preferredWidth: parent.width * 0.5
+                Layout.alignment: Qt.AlignHCenter
+                minValue: 1
+                maxValue: 100
+
+                onValueChanged: {
+                    if (value !== settings.defaultReps) {
+                        settings.defaultReps = value
+                    }
+                }
+            }
+
         }
     }
 
