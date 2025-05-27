@@ -20,7 +20,7 @@ Rectangle {
     // Timer para la duración
     Timer {
         id: splashTimer
-        interval: 2000  // 2 segundos de visualización
+        interval: 1000  // 2 segundos de visualización
         running: true
         onTriggered: fadeOutAnimation.start()
     }
