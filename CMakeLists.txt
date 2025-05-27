@@ -25,8 +25,6 @@ if(ANDROID)
 
     set_property(TARGET appgymWeights PROPERTY QT_ANDROID_APPLICATION_CLASS "org.qtproject.qt.android.bindings.QtApplication")
     set_property(TARGET appgymWeights PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR "${CMAKE_SOURCE_DIR}/android/src/main")
-
-    add_compile_definitions(QT_ANDROID_SPLASH_SCREEN_DURATION=2000)
 endif()
 
 set_source_files_properties(qml/Style.qml
@@ -56,6 +54,7 @@ qt_add_qml_module(appgymWeights
         qml/MessagePopup.qml
         qml/FloatButton.qml
         qml/Style.qml
+        qml/Splash.qml
     SOURCES
         datacenter.h datacenter.cpp
         exercisemodel.h exercisemodel.cpp
@@ -78,6 +77,7 @@ qt_add_resources(appgymWeights "icons"
         icons/settings.png
         icons/uk.png
         icons/spain.png
+        icons/appSplash.png
 )
 
 qt_add_resources(appgymWeights "fonts"

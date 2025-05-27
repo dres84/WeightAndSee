@@ -125,5 +125,9 @@ ApplicationWindow {
         // Inicializar la primera página con propiedades
         stackView.initialize()
     }
+
+    Splash {
+        id: splash
+    }
 }
 
