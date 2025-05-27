@@ -10,14 +10,14 @@ Item {
     property color textColor: Style.text
     property bool anySelected: false
     property bool allSelected: selectedGroups.length === groupModel.count
-    property bool noneSelected: (singleSelection && selectedGroup === "") || (!singleSelection && selectedGroups.length === 0)
+    property bool noneSelected: (singleSelection && selectedGroup === "") || (!singleSelection && selectedGroups.length === 0)
     property bool singleSelection: false
     property string selectedGroup: "" // solo con singleSelection = true
     property var selectedGroups: []   // solo con singleSelection = false
 
     ListModel {
         id: groupModel
-        ListElement { name: "Shouders"; spanishName: "Hombros"; selected: false }
+        ListElement { name: "Shoulders"; spanishName: "Hombros"; selected: false }
         ListElement { name: "Arms";     spanishName: "Brazos";  selected: false }
         ListElement { name: "Chest";    spanishName: "Pecho";   selected: false }
         ListElement { name: "Back";     spanishName: "Espalda"; selected: false }

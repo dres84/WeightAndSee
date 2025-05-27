@@ -66,7 +66,6 @@ qt_add_resources(appgymWeights "icons"
     FILES
         icons/core.png
         icons/trash.png
-        icons/search.png
         icons/arms.svg
         icons/back.svg
         icons/chest.svg

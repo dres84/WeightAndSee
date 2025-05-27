@@ -17,7 +17,7 @@ Rectangle {
         Layout.fillWidth: true
         Layout.rightMargin: Style.smallMargin
         rightPadding: clearButton.width + 10
-        maximumLength: 22
+        maximumLength: Style.maxCharacters
         font.family: Style.interFont.name
         font.pixelSize: Style.body
         color: Style.text

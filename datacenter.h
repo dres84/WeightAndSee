@@ -46,6 +46,7 @@ private:
     QString getFilePath() const;
     QJsonObject m_data;
     void loadData();
+    void loadTestData();
     void loadDefaultData();
 };
 

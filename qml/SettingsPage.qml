@@ -91,7 +91,7 @@ Page {
                 englishName: "Default reps"
                 type: "defaultReps"
             }
-            ListElement {
+            /*ListElement {
                 name: "Exportar archivo de datos"
                 englishName: "Export data file"
                 type: "export"
@@ -100,7 +100,7 @@ Page {
                 name: "Importar archivo de datos"
                 englishName: "Import data file"
                 type: "import"
-            }
+            }*/
             ListElement {
                 name: "Cargar datos de ejemplo"
                 englishName: "Load example data"
@@ -704,7 +704,7 @@ Page {
                 Layout.preferredHeight: implicitHeight
                 buttonColor: Style.buttonNeutral
                 font.pixelSize: Style.body
-                buttonText: settings.language === "es" ? "🧪 Cargar datos de prueba" : "🧪 Load test data"
+                buttonText: settings.language === "es" ? "🧪 Cargar ejercicios de ejemplo" : "🧪 Load sample exercises"
                 onClicked: {
                     dataCenter.reloadDefaultData()
                 }

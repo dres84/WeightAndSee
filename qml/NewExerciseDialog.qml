@@ -47,8 +47,7 @@ Dialog {
             placeholderText: settings.language === "es" ? "Nombre del ejercicio*" : "Exercise name*"
             font.pixelSize: Style.body
             rightPadding: clearButton.width + 10
-            maximumLength: 22
-
+            maximumLength: Style.maxCharacters
             onFocusChanged: {
                 if (focus && text.length > 0 && filteredExercises.length > 0) {
                     filteredExercisesPopup.open()
@@ -297,7 +296,6 @@ Dialog {
                         repsField.text ? parseInt(repsField.text) : 0
                     )
                     root.close()
-                    resetForm()
                 }
             }
         }
@@ -306,9 +304,10 @@ Dialog {
     function resetForm() {
         nameField.text = ""
         weightField.text = ""
-        repsField.text = ""
-        setsField.text = "3"
-        kgRadio.checked = true
+        repsField.text = settings.defaultReps
+        setsField.text = settings.defaultSets
+        kgRadio.checked = settings.defaultUnit === "kg"
+        lbRadio.checked = settings.defaultUnit === "lb"
         newExerciseGroupFilter.deselectAll()
         filteredExercisesPopup.close()
     }
@@ -364,8 +363,10 @@ Dialog {
         weightField.focus = false
         setsField.focus = false
         repsField.focus = false
+        resetForm()
     }
 
+    onOpened: resetForm()
 
     Component.onCompleted: {
         if (exerciseProvider) {

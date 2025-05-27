@@ -12,7 +12,6 @@ Rectangle {
         id: splashImage
         source: "qrc:/icons/appSplash.png"
         anchors.fill: parent
-        fillMode: Image.PreserveAspectFit
         //anchors.centerIn: parent
         //width: Math.min(parent.width, parent.height) * 0.8  // Escala adaptable
         //height: width * (sourceSize.height/sourceSize.width)  // Mantiene aspect ratio

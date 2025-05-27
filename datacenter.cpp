@@ -346,383 +346,149 @@ QString DataCenter::getFilePath() const {
     return QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + "/exercises.json";
 }
 
-void DataCenter::loadDefaultData() {
+void DataCenter::loadTestData() {
     QDateTime now = QDateTime::currentDateTime();
-    QDateTime yesterday = now.addDays(-1);
-    QDateTime lastWeek = now.addDays(-7);
-    QDateTime lastMonth = now.addMonths(-1);
-    QDateTime sixMonthAgo = now.addMonths(-6);
-    QDateTime oneYearAgo = now.addYears(-1);
-    QDateTime threeYearsAgo = now.addYears(-3);
+
+    // Estructura para organizar los ejercicios por grupo muscular
+    QMap<QString, QList<QString>> muscleGroups = {
+        {"Chest", {"Bench Press", "Incline Bench Press"}},
+        {"Legs", {"Squat", "Lunges"}},
+        {"Back", {"Deadlift", "Pull-up", "Bent-over Row"}},
+        {"Shoulders", {"Overhead Press", "Lateral Raise"}},
+        {"Arms", {"Bicep Curl", "Tricep Extension"}},
+        {"Core", {"Plank", "Russian Twist", "Crunch", "Leg Raise"}}
+    };
+
+    // Configuración base para cada tipo de ejercicio
+    QMap<QString, QMap<QString, QVariant>> exerciseConfigs = {
+        {"Bench Press", {{"unit", "lb"}, {"initial", 55.0}, {"increment", 5.0}}},
+        {"Incline Bench Press", {{"unit", "kg"}, {"initial", 50.0}, {"increment", 5.0}}},
+        {"Squat", {{"unit", "kg"}, {"initial", 100.0}, {"increment", 2.5}}},
+        {"Lunges", {{"unit", "kg"}, {"initial", 45.0}, {"increment", 1.0}}},
+        {"Deadlift", {{"unit", "kg"}, {"initial", 80.0}, {"increment", 1.0}}},
+        {"Pull-up", {{"unit", "-"}, {"initial", 0.0}, {"increment", 0.0}}},
+        {"Bent-over Row", {{"unit", "lb"}, {"initial", 60.0}, {"increment", 5.0}}},
+        {"Overhead Press", {{"unit", "kg"}, {"initial", 40.0}, {"increment", 2.0}}},
+        {"Lateral Raise", {{"unit", "kg"}, {"initial", 13.0}, {"increment", 1.0}}},
+        {"Bicep Curl", {{"unit", "kg"}, {"initial", 9.0}, {"increment", 1.0}}},
+        {"Tricep Extension", {{"unit", "kg"}, {"initial", 16.0}, {"increment", 2.0}}},
+        {"Plank", {{"unit", "-"}, {"initial", 0.0}, {"increment", 0.0}}},
+        {"Russian Twist", {{"unit", "-"}, {"initial", 0.0}, {"increment", 0.0}}},
+        {"Crunch", {{"unit", "-"}, {"initial", 0.0}, {"increment", 0.0}}},
+        {"Leg Raise", {{"unit", "-"}, {"initial", 0.0}, {"increment", 0.0}}}
+    };
 
     QJsonObject exercises;
 
-    // Función auxiliar para crear y ordenar el historial
-    auto createAndSortHistory = [](std::initializer_list<QJsonObject> records) -> QJsonArray {
-        QList<QJsonObject> historyList;
-        for (const auto& record : records) {
-            historyList.append(record);
+    // Función para generar historial de progresión
+    auto generateHistory = [&](const QString& name, int daysBack, int entryCount) {
+        QJsonArray history;
+        QMap<QString, QVariant> config = exerciseConfigs[name];
+        double currentValue = config["initial"].toDouble();
+        double increment = config["increment"].toDouble();
+
+        for (int i = 0; i < entryCount; ++i) {
+            QDateTime timestamp = now.addDays(-(daysBack - i));
+
+            QJsonObject record{
+                {"timestamp", timestamp.toString(Qt::ISODate)},
+                {"value", currentValue},
+                {"unit", config["unit"].toString()},
+                {"repetitions", (name.contains("Press") || name == "Deadlift") ? 6 :
+                                    (name == "Pull-up") ? 5 :
+                                    (name == "Plank") ? 1 : 12},
+                {"sets", 3}
+            };
+
+            history.append(record);
+
+            // Solo incrementar si no es un ejercicio sin peso
+            if (increment > 0) {
+                currentValue += increment;
+
+                // Ajustar incremento para los últimos registros
+                if (i > entryCount - 5) {
+                    currentValue += (increment * 0.5);
+                }
+            }
         }
 
-        // Ordenar de más antiguo a más reciente
-        std::sort(historyList.begin(), historyList.end(), [](const QJsonObject &a, const QJsonObject &b) {
-            QDateTime dateA = QDateTime::fromString(a["timestamp"].toString(), Qt::ISODate);
-            QDateTime dateB = QDateTime::fromString(b["timestamp"].toString(), Qt::ISODate);
-            return dateA < dateB;
-        });
-
-        QJsonArray sortedHistory;
-        for (const auto& record : historyList) {
-            sortedHistory.append(record);
-        }
-        return sortedHistory;
+        return history;
     };
 
-    // Función auxiliar para crear un ejercicio
-    auto createExercise = [](const QString& muscleGroup, const QJsonArray& history) -> QJsonObject {
-        QJsonObject exercise;
-        exercise["muscleGroup"] = muscleGroup;
+    // Generar todos los ejercicios
+    for (const QString& muscleGroup : muscleGroups.keys()) {
+        for (const QString& exerciseName : muscleGroups[muscleGroup]) {
+            int daysBack = (exerciseName == "Deadlift") ? 60 :
+                               (exerciseName.contains("Press")) ? 180 : 30;
+            int entryCount = (exerciseName == "Deadlift") ? 60 :
+                                 (exerciseName.contains("Press")) ? 12 : 6;
 
-        if (history.isEmpty()) {
-            exercise["currentValue"] = 0;
-            exercise["repetitions"] = 0;
-            exercise["sets"] = 0;
-            exercise["lastUpdated"] = "";
-            exercise["unit"] = "-";
-        } else {
-            QJsonObject lastRecord = history.last().toObject();
-            exercise["currentValue"] = lastRecord["value"].toDouble();
-            exercise["unit"] = lastRecord["unit"].toString();
-            exercise["repetitions"] = lastRecord["repetitions"].toInt();
-            exercise["sets"] = lastRecord["sets"].toInt();
-            exercise["lastUpdated"] = lastRecord["timestamp"].toString();
+            QJsonArray history = generateHistory(exerciseName, daysBack, entryCount);
+
+            // Crear objeto de ejercicio
+            QJsonObject exercise;
+            exercise["muscleGroup"] = muscleGroup;
+
+            if (!history.isEmpty()) {
+                QJsonObject lastRecord = history.last().toObject();
+                exercise["currentValue"] = lastRecord["value"].toDouble();
+                exercise["unit"] = lastRecord["unit"].toString();
+                exercise["repetitions"] = lastRecord["repetitions"].toInt();
+                exercise["sets"] = lastRecord["sets"].toInt();
+                exercise["lastUpdated"] = lastRecord["timestamp"].toString();
+            } else {
+                exercise["currentValue"] = 0;
+                exercise["unit"] = "-";
+                exercise["repetitions"] = 0;
+                exercise["sets"] = 0;
+                exercise["lastUpdated"] = "";
+            }
+
+            exercise["history"] = history;
+            exercises[exerciseName] = exercise;
         }
-
-        exercise["history"] = history;
-        return exercise;
-    };
-
-    // PECHO (Ejercicios con peso)
-    exercises["Bench Press"] = createExercise("Chest", createAndSortHistory({
-                                                           {
-                                                               {"timestamp", sixMonthAgo.toString(Qt::ISODate)},
-                                                               {"value", 55.0},
-                                                               {"unit", "lb"},
-                                                               {"repetitions", 10},
-                                                               {"sets", 3}
-                                                           },
-                                                           {
-                                                               {"timestamp", lastWeek.toString(Qt::ISODate)},
-                                                               {"value", 65.0},
-                                                               {"unit", "lb"},
-                                                               {"repetitions", 10},
-                                                               {"sets", 3}
-                                                           },
-                                                           {
-                                                               {"timestamp", yesterday.toString(Qt::ISODate)},
-                                                               {"value", 70.0},
-                                                               {"unit", "lb"},
-                                                               {"repetitions", 8},
-                                                               {"sets", 3}
-                                                           }
-                                                       }));
-
-    exercises["Incline Bench Press"] = createExercise("Chest", createAndSortHistory({
-                                                                   {
-                                                                       {"timestamp", threeYearsAgo.toString(Qt::ISODate)},
-                                                                       {"value", 50.0},
-                                                                       {"unit", "kg"},
-                                                                       {"repetitions", 10},
-                                                                       {"sets", 3}
-                                                                   },
-                                                                   {
-                                                                       {"timestamp", oneYearAgo.toString(Qt::ISODate)},
-                                                                       {"value", 40.0},
-                                                                       {"unit", "kg"},
-                                                                       {"repetitions", 10},
-                                                                       {"sets", 3}
-                                                                   },
-                                                                   {
-                                                                       {"timestamp", lastWeek.toString(Qt::ISODate)},
-                                                                       {"value", 55.0},
-                                                                       {"unit", "kg"},
-                                                                       {"repetitions", 10},
-                                                                       {"sets", 3}
-                                                                   },
-                                                                   {
-                                                                       {"timestamp", yesterday.toString(Qt::ISODate)},
-                                                                       {"value", 60.0},
-                                                                       {"unit", "kg"},
-                                                                       {"repetitions", 10},
-                                                                       {"sets", 3}
-                                                                   }
-                                                               }));
-
-    // PIERNAS (Ejercicios con peso)
-    exercises["Squat"] = createExercise("Legs", createAndSortHistory({
-                                                    {
-                                                        {"timestamp", yesterday.toString(Qt::ISODate)},
-                                                        {"value", 100.0},
-                                                        {"unit", "kg"},
-                                                        {"repetitions", 6},
-                                                        {"sets", 3}
-                                                    }
-                                                }));
-
-    exercises["Lunges"] = createExercise("Legs", createAndSortHistory({
-                                                     {
-                                                         {"timestamp", lastWeek.toString(Qt::ISODate)},
-                                                         {"value", 45.0},
-                                                         {"unit", "kg"},
-                                                         {"repetitions", 15},
-                                                         {"sets", 3}
-                                                     },
-                                                     {
-                                                         {"timestamp", yesterday.toString(Qt::ISODate)},
-                                                         {"value", 48.0},
-                                                         {"unit", "kg"},
-                                                         {"repetitions", 12},
-                                                         {"sets", 3}
-                                                     }
-                                                 }));
-
-    // ESPALDA (Ejercicios con peso o repeticiones)
-    QJsonArray deadliftHistory;
-    for (int i = 0; i <= 59; ++i) { // Nota: Ahora en orden cronológico
-        QDateTime entryTime = now.addDays(-(59 - i)); // Más antiguo primero
-        double value = 80 + i; // Comienza en 80 kg y aumenta
-        int repetitions = (i >= 55) ? 6 : 5; // Últimos 5 registros con 6 reps
-        int sets = 3;
-
-        deadliftHistory.append(QJsonObject{
-            {"timestamp", entryTime.toString(Qt::ISODate)},
-            {"value", value},
-            {"unit", "kg"},
-            {"repetitions", repetitions},
-            {"sets", sets}
-        });
     }
-    exercises["Deadlift"] = createExercise("Back", deadliftHistory);
-
-    // Pull-up es ejercicio basado en repeticiones (sin peso)
-    exercises["Pull-up"] = createExercise("Back", createAndSortHistory({
-                                                      {
-                                                          {"timestamp", lastMonth.toString(Qt::ISODate)},
-                                                          {"value", 0},
-                                                          {"unit", "-"},
-                                                          {"repetitions", 6},
-                                                          {"sets", 3}
-                                                      },
-                                                      {
-                                                          {"timestamp", lastWeek.toString(Qt::ISODate)},
-                                                          {"value", 0},
-                                                          {"unit", "-"},
-                                                          {"repetitions", 5},
-                                                          {"sets", 3}
-                                                      },
-                                                      {
-                                                          {"timestamp", yesterday.toString(Qt::ISODate)},
-                                                          {"value", 0},
-                                                          {"unit", "-"},
-                                                          {"repetitions", 4},
-                                                          {"sets", 3}
-                                                      },
-                                                      {
-                                                          {"timestamp", now.toString(Qt::ISODate)},
-                                                          {"value", 0},
-                                                          {"unit", "-"},
-                                                          {"repetitions", 3},
-                                                          {"sets", 3}
-                                                      }
-                                                  }));
-
-    exercises["Bent-over Row"] = createExercise("Back", createAndSortHistory({
-                                                            {
-                                                                {"timestamp", lastWeek.toString(Qt::ISODate)},
-                                                                {"value", 60.0},
-                                                                {"unit", "lb"},
-                                                                {"repetitions", 10},
-                                                                {"sets", 3}
-                                                            },
-                                                            {
-                                                                {"timestamp", yesterday.toString(Qt::ISODate)},
-                                                                {"value", 65.0},
-                                                                {"unit", "lb"},
-                                                                {"repetitions", 8},
-                                                                {"sets", 3}
-                                                            }
-                                                        }));
-
-    // HOMBROS (Ejercicios con peso)
-    exercises["Overhead Press"] = createExercise("Shouders", createAndSortHistory({
-                                                                 {
-                                                                     {"timestamp", lastMonth.toString(Qt::ISODate)},
-                                                                     {"value", 40.0},
-                                                                     {"unit", "kg"},
-                                                                     {"repetitions", 8},
-                                                                     {"sets", 3}
-                                                                 },
-                                                                 {
-                                                                     {"timestamp", lastWeek.toString(Qt::ISODate)},
-                                                                     {"value", 45.0},
-                                                                     {"unit", "kg"},
-                                                                     {"repetitions", 7},
-                                                                     {"sets", 3}
-                                                                 },
-                                                                 {
-                                                                     {"timestamp", yesterday.toString(Qt::ISODate)},
-                                                                     {"value", 48.0},
-                                                                     {"unit", "kg"},
-                                                                     {"repetitions", 6},
-                                                                     {"sets", 3}
-                                                                 },
-                                                                 {
-                                                                     {"timestamp", now.toString(Qt::ISODate)},
-                                                                     {"value", 50.0},
-                                                                     {"unit", "kg"},
-                                                                     {"repetitions", 6},
-                                                                     {"sets", 3}
-                                                                 }
-                                                             }));
-
-    exercises["Lateral Raise"] = createExercise("Shouders", createAndSortHistory({
-                                                                {
-                                                                    {"timestamp", lastWeek.toString(Qt::ISODate)},
-                                                                    {"value", 13.0},
-                                                                    {"unit", "kg"},
-                                                                    {"repetitions", 12},
-                                                                    {"sets", 3}
-                                                                },
-                                                                {
-                                                                    {"timestamp", yesterday.toString(Qt::ISODate)},
-                                                                    {"value", 14.0},
-                                                                    {"unit", "kg"},
-                                                                    {"repetitions", 12},
-                                                                    {"sets", 3}
-                                                                }
-                                                            }));
-
-    // BRAZOS (Ejercicios con peso)
-    exercises["Bicep Curl"] = createExercise("Arms", createAndSortHistory({
-                                                         {
-                                                             {"timestamp", lastMonth.toString(Qt::ISODate)},
-                                                             {"value", 9.0},
-                                                             {"unit", "kg"},
-                                                             {"repetitions", 15},
-                                                             {"sets", 3}
-                                                         },
-                                                         {
-                                                             {"timestamp", lastWeek.toString(Qt::ISODate)},
-                                                             {"value", 10.0},
-                                                             {"unit", "kg"},
-                                                             {"repetitions", 15},
-                                                             {"sets", 3}
-                                                         },
-                                                         {
-                                                             {"timestamp", yesterday.toString(Qt::ISODate)},
-                                                             {"value", 11.0},
-                                                             {"unit", "kg"},
-                                                             {"repetitions", 12},
-                                                             {"sets", 3}
-                                                         },
-                                                         {
-                                                             {"timestamp", now.toString(Qt::ISODate)},
-                                                             {"value", 12.0},
-                                                             {"unit", "kg"},
-                                                             {"repetitions", 10},
-                                                             {"sets", 3}
-                                                         }
-                                                     }));
-
-    exercises["Tricep Extension"] = createExercise("Arms", createAndSortHistory({
-                                                               {
-                                                                   {"timestamp", lastWeek.toString(Qt::ISODate)},
-                                                                   {"value", 16.0},
-                                                                   {"unit", "kg"},
-                                                                   {"repetitions", 10},
-                                                                   {"sets", 3}
-                                                               },
-                                                               {
-                                                                   {"timestamp", yesterday.toString(Qt::ISODate)},
-                                                                   {"value", 18.0},
-                                                                   {"unit", "kg"},
-                                                                   {"repetitions", 12},
-                                                                   {"sets", 3}
-                                                               }
-                                                           }));
-
-    // CORE (Ejercicios basados en repeticiones: peso 0, unidad "-")
-    exercises["Plank"] = createExercise("Core", createAndSortHistory({
-                                                    {
-                                                        {"timestamp", lastWeek.toString(Qt::ISODate)},
-                                                        {"value", 0},
-                                                        {"unit", "-"},
-                                                        {"repetitions", 1},
-                                                        {"sets", 3}
-                                                    },
-                                                    {
-                                                        {"timestamp", yesterday.toString(Qt::ISODate)},
-                                                        {"value", 0},
-                                                        {"unit", "-"},
-                                                        {"repetitions", 1},
-                                                        {"sets", 3}
-                                                    }
-                                                }));
-
-    exercises["Russian Twist"] = createExercise("Core", createAndSortHistory({
-                                                            {
-                                                                {"timestamp", lastWeek.toString(Qt::ISODate)},
-                                                                {"value", 0},
-                                                                {"unit", "-"},
-                                                                {"repetitions", 15},
-                                                                {"sets", 3}
-                                                            },
-                                                            {
-                                                                {"timestamp", yesterday.toString(Qt::ISODate)},
-                                                                {"value", 0},
-                                                                {"unit", "-"},
-                                                                {"repetitions", 12},
-                                                                {"sets", 3}
-                                                            }
-                                                        }));
-
-    exercises["Crunch"] = createExercise("Core", createAndSortHistory({
-                                                     {
-                                                         {"timestamp", lastWeek.toString(Qt::ISODate)},
-                                                         {"value", 0},
-                                                         {"unit", "-"},
-                                                         {"repetitions", 25},
-                                                         {"sets", 3}
-                                                     },
-                                                     {
-                                                         {"timestamp", yesterday.toString(Qt::ISODate)},
-                                                         {"value", 0},
-                                                         {"unit", "-"},
-                                                         {"repetitions", 20},
-                                                         {"sets", 3}
-                                                     }
-                                                 }));
-
-    exercises["Leg Raise"] = createExercise("Core", createAndSortHistory({
-                                                        {
-                                                            {"timestamp", lastWeek.toString(Qt::ISODate)},
-                                                            {"value", 0},
-                                                            {"unit", "-"},
-                                                            {"repetitions", 16},
-                                                            {"sets", 3}
-                                                        },
-                                                        {
-                                                            {"timestamp", yesterday.toString(Qt::ISODate)},
-                                                            {"value", 0},
-                                                            {"unit", "-"},
-                                                            {"repetitions", 15},
-                                                            {"sets", 3}
-                                                        }
-                                                    }));
 
     m_data = QJsonObject{{"exercises", exercises}};
 }
 
+void DataCenter::loadDefaultData() {
+    // Lista organizada de ejercicios por grupo muscular
+    QMap<QString, QList<QString>> muscleGroups = {
+        {"Chest", {"Bench Press", "Incline Bench Press", "Chest Fly"}},
+        {"Legs", {"Squat", "Lunges", "Leg Press", "Deadlift"}},
+        {"Back", {"Lat Pulldown", "Bent-over Row", "Seated Row", "Pull-up"}},
+        {"Shoulders", {"Overhead Press", "Lateral Raise", "Front Raise"}},
+        {"Arms", {"Bicep Curl", "Tricep Extension", "Hammer Curl"}},
+        {"Core", {"Plank", "Russian Twist", "Crunch", "Leg Raise", "Hanging Knee Raise"}}
+    };
+
+    QJsonObject exercises;
+
+    // Crear cada ejercicio con estructura vacía
+    for (const QString& muscleGroup : muscleGroups.keys()) {
+        for (const QString& exerciseName : muscleGroups[muscleGroup]) {
+            QJsonObject exercise;
+            exercise["muscleGroup"] = muscleGroup;
+            exercise["currentValue"] = 0;         // Valor inicial 0
+            exercise["unit"] = "-";               // Unidad no especificada
+            exercise["sets"] = 0;                 // 0 series por defecto
+            exercise["repetitions"] = 0;          // 0 repeticiones por defecto
+            exercise["lastUpdated"] = "";         // Fecha vacía
+            exercise["history"] = QJsonArray();   // Array de historial vacío
+
+            exercises[exerciseName] = exercise;
+        }
+    }
+
+    // Crear la estructura principal de datos
+    m_data = QJsonObject{
+        {"exercises", exercises},
+        {"lastSync", QDateTime::currentDateTime().toString(Qt::ISODate)},
+        {"appVersion", "1.0.0"}
+    };
+}
 
 QString DataCenter::getMuscleGroup(const QString& exerciseName) const
 {

@@ -59,6 +59,9 @@ QtObject {
         source: "qrc:/fonts/Inter-Medium.ttf"
     }
 
+    // Maximo caracteres
+    readonly property int maxCharacters: 23
+
     // Tiempos
     readonly property int animationTime: 200
 
@@ -67,7 +70,7 @@ QtObject {
         switch(group) {
             case "Chest":   return "#FF2D62";  // Rosa eléctrico
             case "Back": return "#00B4FF";  // Azul cian brillante
-            case "Shouders": return "#8B4513";  // Marrón cuero premium
+            case "Shoulders": return "#8B4513";  // Marrón cuero premium
             case "Arms":  return "#50C878";  // Verde esmeralda suave
             case "Core":    return "#D4AF37";  // Dorado metálico
             case "Legs": return "#CC66FF";  // Púrpura lavanda
@@ -79,7 +82,7 @@ QtObject {
         switch(muscleGroup) {
             case "Chest": return "qrc:/icons/chest.svg"
             case "Back": return "qrc:/icons/back.svg"
-            case "Shouders": return "qrc:/icons/shoulders.svg"
+            case "Shoulders": return "qrc:/icons/shoulders.svg"
             case "Arms": return "qrc:/icons/arms.svg"
             case "Core": return "qrc:/icons/core.svg"
             case "Legs": return "qrc:/icons/legs.svg"
@@ -91,7 +94,7 @@ QtObject {
         switch(muscleGroup) {
             case "Chest": return "Pecho"
             case "Back": return "Espalda"
-            case "Shouders": return "Hombros"
+            case "Shoulders": return "Hombros"
             case "Arms": return "Brazos"
             case "Core": return "Core"
             case "Legs": return "Piernas"
