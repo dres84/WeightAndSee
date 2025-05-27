@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.16)
+cmake_minimum_required(VERSION 3.21)
 
 project(gymWeights VERSION 0.1 LANGUAGES CXX)
 
@@ -11,6 +11,23 @@ qt_standard_project_setup(REQUIRES 6.5)
 qt_add_executable(appgymWeights
     main.cpp
 )
+
+if(ANDROID)
+    # Usar tu manifiesto directamente
+    configure_file(
+        ${CMAKE_SOURCE_DIR}/android/src/main/AndroidManifest.xml
+        ${CMAKE_BINARY_DIR}/android-build/AndroidManifest.xml
+        COPYONLY
+    )
+
+    set(ANDROID_PACKAGE_NAME "com.dreSoft.weightAndSee")
+    set(ANDROID_APP_NAME "Weight and See")
+
+    set_property(TARGET appgymWeights PROPERTY QT_ANDROID_APPLICATION_CLASS "org.qtproject.qt.android.bindings.QtApplication")
+    set_property(TARGET appgymWeights PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR "${CMAKE_SOURCE_DIR}/android/src/main")
+
+    add_compile_definitions(QT_ANDROID_SPLASH_SCREEN_DURATION=2000)
+endif()
 
 set_source_files_properties(qml/Style.qml
     PROPERTIES QT_QML_SINGLETON_TYPE TRUE
@@ -39,19 +56,13 @@ qt_add_qml_module(appgymWeights
         qml/MessagePopup.qml
         qml/FloatButton.qml
         qml/Style.qml
-    RESOURCES
-        android/AndroidManifest.xml
-        android/build.gradle
     SOURCES
         datacenter.h datacenter.cpp
         exercisemodel.h exercisemodel.cpp
         exerciseprovider.h exerciseprovider.cpp
-
-#    RESOURCES icons/core.png icons/tren_inferior.png icons/tren_superior.png
 )
 
 qt_add_resources(appgymWeights "icons"
-#    PREFIX "/icons"
     FILES
         icons/core.png
         icons/tren_inferior.png
@@ -70,22 +81,16 @@ qt_add_resources(appgymWeights "icons"
 )
 
 qt_add_resources(appgymWeights "fonts"
-#    PREFIX "/fonts"
     FILES
         fonts/Inter-Medium.ttf
 )
 
 qt_add_resources(appgymWeights "data"
-#    PREFIX "/data"
     FILES
         data/exerciseList.txt
 )
 
-# Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
-# If you are developing for iOS or macOS you should consider setting an
-# explicit, fixed bundle identifier manually though.
 set_target_properties(appgymWeights PROPERTIES
-#    MACOSX_BUNDLE_GUI_IDENTIFIER com.example.appgymWeights
     MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
     MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
     MACOSX_BUNDLE TRUE
@@ -103,5 +108,4 @@ install(TARGETS appgymWeights
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
 
-# Limita la búsqueda de QtCreator a solo los archivos fuente
 set(CMAKE_SKIP_BUILD_RPATH TRUE)
