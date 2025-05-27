@@ -96,7 +96,7 @@ Page {
             font.family: Style.interFont.name
             font.pixelSize: Style.semi
             topPadding: 5
-            color: Style.textSecondary
+            color: Style.text
         }
 
         // Filtros de grupos musculares

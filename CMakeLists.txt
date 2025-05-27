@@ -65,8 +65,6 @@ qt_add_qml_module(appgymWeights
 qt_add_resources(appgymWeights "icons"
     FILES
         icons/core.png
-        icons/tren_inferior.png
-        icons/tren_superior.png
         icons/trash.png
         icons/search.png
         icons/arms.svg

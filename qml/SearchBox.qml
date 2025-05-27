@@ -22,7 +22,7 @@ Rectangle {
         font.pixelSize: Style.body
         color: Style.text
         placeholderText: settings.language === "es" ? "🔍 Busca un ejercicio..." : "🔍 Find an exercise..."
-        placeholderTextColor: Style.textSecondary
+        placeholderTextColor: Style.text
         background: Item {}
 
         MouseArea {

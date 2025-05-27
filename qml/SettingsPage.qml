@@ -187,7 +187,7 @@ Page {
                         visible: type === "defaultSets"
                         font.family: Style.interFont.name
                         font.pixelSize: Style.body
-                        font.bold: false
+                        font.bold: true
                         color: Style.text
                         Layout.alignment: Qt.AlignVCenter
                         Layout.rightMargin: 10
@@ -198,7 +198,7 @@ Page {
                         visible: type === "defaultReps"
                         font.family: Style.interFont.name
                         font.pixelSize: Style.body
-                        font.bold: false
+                        font.bold: true
                         color: Style.text
                         Layout.alignment: Qt.AlignVCenter
                         Layout.rightMargin: 10
