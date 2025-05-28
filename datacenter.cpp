@@ -26,15 +26,15 @@ void DataCenter::load() {
             m_data = doc.object();
 
             if (!m_data.contains("exercises") || !m_data["exercises"].isObject()) {
-                loadDefaultData();
+                loadEmptyData();
             } else {
                 loadData();
             }
         } else {
-            loadDefaultData();
+            loadEmptyData();
         }
     } else {
-        loadDefaultData();
+        loadEmptyData();
     }
 
     save(); // Guardar por si hubo correcciones
@@ -307,18 +307,17 @@ void DataCenter::removeHistoryEntry(const QString &exerciseName, int index) {
     emit dataChanged();
 }
 
-void DataCenter::reloadDefaultData() {
+void DataCenter::reloadSampleData() {
+    qDebug() << "reloadSampleData()";
     QFile file(getFilePath());
     if (file.exists()) {
         if (file.remove()) {
-            qDebug("Archivo eliminado correctamente, cargamos el valor por defecto");
-            load();
-        } else {
-            qWarning("No se pudo eliminar el archivo");
+            qDebug("Archivo eliminado correctamente, inicializando estructura vacía...");
         }
-    } else {
-        qWarning("El archivo no existe");
     }
+    loadSampleData();
+    save();
+    emit dataChanged();
 }
 
 void DataCenter::deleteAllExercises() {
@@ -332,14 +331,7 @@ void DataCenter::deleteAllExercises() {
         }
     }
 
-    // Crear estructura vacía
-    m_data = QJsonObject{
-        {"exercises", QJsonObject{}}
-    };
-
-    save();
-    emit dataChanged();
-    qDebug() << "Estructura vacía lista para ingresar ejercicios manualmente.";
+    loadEmptyData();
 }
 
 QString DataCenter::getFilePath() const {
@@ -453,7 +445,18 @@ void DataCenter::loadTestData() {
     m_data = QJsonObject{{"exercises", exercises}};
 }
 
-void DataCenter::loadDefaultData() {
+void DataCenter::loadEmptyData() {
+    // Crear estructura vacía
+    m_data = QJsonObject{
+        {"exercises", QJsonObject{}}
+    };
+
+    save();
+    emit dataChanged();
+    qDebug() << "Estructura vacía lista para ingresar ejercicios manualmente.";
+}
+
+void DataCenter::loadSampleData() {
     // Lista organizada de ejercicios por grupo muscular
     QMap<QString, QList<QString>> muscleGroups = {
         {"Chest", {"Bench Press", "Incline Bench Press", "Chest Fly"}},

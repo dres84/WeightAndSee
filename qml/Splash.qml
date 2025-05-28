@@ -10,18 +10,16 @@ Rectangle {
 
     Image {
         id: splashImage
-        source: "qrc:/icons/appSplash.png"
-        anchors.fill: parent
-        //anchors.centerIn: parent
-        //width: Math.min(parent.width, parent.height) * 0.8  // Escala adaptable
-        //height: width * (sourceSize.height/sourceSize.width)  // Mantiene aspect ratio
-        //opacity: 1.0
+        source: "qrc:/icons/logoDresoft.png"
+        anchors.centerIn: parent
+        width: parent.width * 0.8
+        fillMode: Image.PreserveAspectFit
     }
 
     // Timer para la duración
     Timer {
         id: splashTimer
-        interval: 1500  // 2 segundos de visualización
+        interval: 2000  // 2 segundos de visualización
         running: true
         onTriggered: fadeOutAnimation.start()
     }

@@ -102,8 +102,8 @@ Page {
                 type: "import"
             }*/
             ListElement {
-                name: "Cargar datos de ejemplo"
-                englishName: "Load example data"
+                name: "Cargar ejercicios de ejemplo"
+                englishName: "Load sample exercises"
                 type: "test"
             }
             ListElement {
@@ -706,7 +706,7 @@ Page {
                 font.pixelSize: Style.body
                 buttonText: settings.language === "es" ? "🧪 Cargar ejercicios de ejemplo" : "🧪 Load sample exercises"
                 onClicked: {
-                    dataCenter.reloadDefaultData()
+                    dataCenter.reloadSampleData()
                 }
             }
         }
@@ -848,6 +848,16 @@ Page {
 
     }
 
+    Image {
+        id: logoDresoft
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 20
+        width: parent.width / 2
+        height: width / 2
+        source: "qrc:/icons/logoDresoft.png"
+        fillMode: Image.PreserveAspectFit
+    }
 
     Component.onCompleted: {
         console.log("📘 SettingsPage is now visible!")
