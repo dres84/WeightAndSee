@@ -55,6 +55,7 @@ qt_add_qml_module(appgymWeights
         qml/FloatButton.qml
         qml/Style.qml
         qml/Splash.qml
+        qml/ExitSplash.qml
         qml/NumberSpinner.qml
     SOURCES
         datacenter.h datacenter.cpp

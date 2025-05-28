@@ -39,9 +39,14 @@ Page {
                     ? "Presiona de nuevo para salir"
                     : "Press back again to exit");
             } else {
-                Qt.quit();
+                exitSplash.running = true
             }
         }
+    }
+
+    ExitSplash {
+        id: exitSplash
+        z: 9999
     }
 
     Rectangle {

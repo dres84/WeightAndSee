@@ -14,17 +14,30 @@ Rectangle {
         anchors.centerIn: parent
         width: parent.width * 0.8
         fillMode: Image.PreserveAspectFit
+        opacity: 0  // Inicialmente transparente
     }
 
-    // Timer para la duración
+    // Animación de entrada (fade-in)
+    NumberAnimation {
+        id: fadeInAnimation
+        target: splashImage
+        property: "opacity"
+        from: 0.0
+        to: 1.0
+        duration: 400  // Medio segundo para el fade-in
+        easing.type: Easing.InOutQuad
+        running: true  // Se ejecuta automáticamente al crearse
+    }
+
+    // Timer para la duración (se inicia después del fade-in)
     Timer {
         id: splashTimer
-        interval: 2000  // 2 segundos de visualización
-        running: true
+        interval: 1500  // 2 segundos de visualización
+        running: fadeInAnimation.running ? false : true  // Espera a que termine el fade-in
         onTriggered: fadeOutAnimation.start()
     }
 
-    // Animación de desvanecimiento
+    // Animación de salida (fade-out)
     SequentialAnimation {
         id: fadeOutAnimation
 
@@ -33,7 +46,7 @@ Rectangle {
             property: "opacity"
             from: 1.0
             to: 0.0
-            duration: 500  // Medio segundo para el fade
+            duration: 500  // Medio segundo para el fade-out
             easing.type: Easing.InOutQuad
         }
 
