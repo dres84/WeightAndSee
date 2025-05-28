@@ -5,6 +5,7 @@ import gymWeights 1.0
 
 Page {
     id: root
+    objectName: "menuPage"
 
     // Propiedades requeridas
     required property ExerciseModel exerciseModel
@@ -31,7 +32,9 @@ Page {
 
     Shortcut {
         sequence: "Back"
+        enabled: stackView.currentItem.objectName === "menuPage"
         onActivated: {
+            console.log("KeyLeft pulsada en MenuPage.qml")
             if (!backPressedOnce) {
                 backPressedOnce = true;
                 backPressTimer.start();

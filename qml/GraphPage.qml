@@ -4,6 +4,7 @@ import QtQuick.Layouts 1.15
 
 Page {
     id: graph
+    objectName: "graphPage"
 
     signal requestReload
     signal goBack
@@ -35,9 +36,9 @@ Page {
 
     Shortcut {
         sequence: "Back"
+        enabled: stackView.currentItem.objectName === "graphPage"
         onActivated: {
-            event.accepted = true // Previene el comportamiento por defecto
-            console.log("Back en ExerciseGraph");
+            console.log("KeyLeft pulsada en GraphPage.qml")
             goBack()
         }
     }

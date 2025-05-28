@@ -6,7 +6,7 @@ import QtCore
 
 Page {
     id: root
-
+    objectName: "settingsPage"
     signal requestReload
     signal goBack
     signal goToGraph(string exerciseName)
@@ -20,9 +20,9 @@ Page {
 
     Shortcut {
         sequence: "Back"
+        enabled: stackView.currentItem.objectName === "settingsPage"
         onActivated: {
-            event.accepted = true // Previene el comportamiento por defecto
-            console.log("Back en Settings");
+            console.log("KeyLeft pulsada en settingsPage.qml")
             goBack()
         }
     }

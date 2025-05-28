@@ -107,14 +107,17 @@ ApplicationWindow {
     Connections {
         target: stackView.currentItem // Conectar señales de la página actual
         function onGoToSettings() {
+            console.log("Main.qml onGoToSettings")
             stackView.push(settingsPageComponent)
         }
         function onGoToGraph(exerciseName) {
+            console.log("Main.qml onGoToGraph " + exerciseName)
             stackView.push("qml/GraphPage.qml", {
                 exerciseName: exerciseName
             })
         }
         function onGoBack() {
+            console.log("Main.qml onGoBack")
             stackView.pop()
         }
     }
