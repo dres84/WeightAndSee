@@ -18,7 +18,6 @@ Behind Neck Press | Shoulders
 Press máquina hombros | Shoulders
 Machine Shoulder Press | Shoulders
 Elev. laterales máquina | Shoulders
-Machine Lateral Raise | Shoulders
 Pájaros mancuernas | Shoulders
 Bent-over Lateral Raise | Shoulders
 Remo al cuello | Shoulders
@@ -38,7 +37,39 @@ Kettlebell Shoulder Press | Shoulders
 Handstand Push-up | Shoulders
 Z Press | Shoulders
 Log Press | Shoulders
-
+Dumbbell Shrug | Shoulders
+Plate Front Raise | Shoulders
+Seated DB Clean | Shoulders
+Elev. deltoides post. | Shoulders
+Arnold con giro | Shoulders
+Elevación Y mancuerna | Shoulders
+Elevación en "W" | Shoulders
+Cable cruzado frontal | Shoulders
+Plancha hombros | Shoulders
+Deltoide post máq. | Shoulders
+Rear Delt Machine | Shoulders
+Deltoide lat máq. | Shoulders
+Lateral Raise Machine | Shoulders
+Deltoide ant máq. | Shoulders
+Front Delt Machine | Shoulders
+Deltoide rev fly | Shoulders
+Reverse Pec Deck | Shoulders
+Deltoide fly máq. | Shoulders
+Delt Fly Machine | Shoulders
+Elev. lat polea | Shoulders
+Cable Lateral Raise | Shoulders
+Elev. front polea | Shoulders
+Cable Front Raise | Shoulders
+Pájaros en máquina | Shoulders
+Reverse Fly Machine | Shoulders
+Pájaros en polea | Shoulders
+Cable Rear Delt | Shoulders
+Press deltoide iso | Shoulders
+Iso Shoulder Press | Shoulders
+Press deltoide conv. | Shoulders
+Converging Press | Shoulders
+Press deltoide palanca | Shoulders
+Lever Shoulder Press | Shoulders
 Curl con barra | Arms
 Barbell Curl | Arms
 Curl barra Z | Arms
@@ -99,7 +130,12 @@ JM Press | Arms
 French Press | Arms
 Lying Triceps Ext. | Arms
 Reverse Grip Pushdown | Arms
-
+Curl barra inverso | Arms
+Curl predicador Z | Arms
+Curl martillo polea | Arms
+Curl cruzado polea | Arms
+Pushdown inverso | Arms
+Tríceps cuerda atrás | Arms
 Press de banca | Chest
 Bench Press | Chest
 Press inclinado | Chest
@@ -144,7 +180,14 @@ Plyometric Push-up | Chest
 Spoto Press | Chest
 Floor Press | Chest
 Reverse Grip Bench Press | Chest
-
+Incline Cable Fly | Chest
+Floor Dumbbell Press | Chest
+Cable Decline Press | Chest
+Squeeze Press | Chest
+Guillotine Push-up | Chest
+Pec Deck Unilateral | Chest
+Incline Push Machine | Chest
+Rev. Cable Crossover | Chest
 Dominadas | Back
 Pull-ups | Back
 Chin-ups | Back
@@ -191,7 +234,10 @@ Kroc Row | Back
 Batwing Row | Back
 Rev Grip Bent-over Row | Back
 Chest-supported Row | Back
-
+Pull-over polea | Back
+One-arm Lat Pulldown | Back
+Incline Bench Row | Back
+Machine Pulldown | Back
 Crunch | Core
 Crunch máquina | Core
 Machine Crunch | Core
@@ -233,7 +279,17 @@ Hollow Body Hold | Core
 Arch Body Hold | Core
 Turkish Get-up | Core
 Landmine 180 | Core
-
+L-Sit Pull-up | Core
+Extensión lumbar | Core
+Dragon Push-up | Core
+Hollow Rock | Core
+Crunch máquina polea | Core
+Knee Raise banco | Core
+Oblique Cable Crunch | Core
+Dumbbell Side Bend | Core
+Toes to rings | Core
+Sit-up balón medicinal | Core
+Plancha con rueda | Core
 Sentadilla | Legs
 Squat | Legs
 Sentadilla frontal | Legs
@@ -302,3 +358,15 @@ Clean | Legs
 Jerk | Legs
 Overhead Squat | Legs
 Front Rack Lunge | Legs
+Zancada atrás | Legs
+Peso muerto sumo KB | Legs
+Step-up con manc. | Legs
+Zancada lateral | Legs
+Abducción cable | Legs
+Aductores polea | Legs
+Calf sentado máquina | Legs
+Calf parado máquina | Legs
+Flexión tibial polea | Legs
+Glute kickback | Legs
+Hip abduction band | Legs
+Curl femoral balón | Legs

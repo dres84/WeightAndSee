@@ -249,8 +249,8 @@ Page {
             buttonColor: Style.buttonNegative
             fontPixelSize: centerButtons.buttonPixelSize
             buttonText: settings.language === "es"
-                        ? (allOpened ? "Cancelar borrado" : "Borrar ejercicio")
-                        : (allOpened ? "Cancel deletion" : "Delete exercise")
+                        ? (allOpened ? "Cancelar borrado" : "Borrar ejercicios")
+                        : (allOpened ? "Cancel deletion" : "Delete exercises")
             onClicked: allOpened ? listView.closeAll() : listView.openAll()
         }
 

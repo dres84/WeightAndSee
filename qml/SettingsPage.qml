@@ -687,8 +687,8 @@ Page {
 
             Label {
                 text: settings.language === "es"
-                      ? "Carga datos de ejercicios de prueba."
-                      : "Load test exercise data."
+                      ? "Carga datos de ejercicios de ejemplo."
+                      : "Load sample exercises data."
                 font.family: Style.interFont.name
                 font.pixelSize: Style.semi
                 color: Style.textSecondary
