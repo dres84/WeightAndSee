@@ -1,23 +1,24 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
-#include <QQmlContext>
 #include "datacenter.h"
+#include "exercisemodel.h"
+#include "exerciseprovider.h"
 
 int main(int argc, char *argv[])
 {
     QGuiApplication app(argc, argv);
 
+    // Configura los nombres de organización necesarios para QSettings
+    app.setOrganizationName("dreSoft");
+    app.setOrganizationDomain("");
+    app.setApplicationName("Weight & See");
+
+    // Registra los tipos para poder crearlos desde QML
+    qmlRegisterType<ExerciseModel>("gymWeights", 1, 0, "ExerciseModel");
+    qmlRegisterType<DataCenter>("gymWeights", 1, 0, "DataCenter");
+    qmlRegisterType<ExerciseProvider>("gymWeights", 1, 0, "ExerciseProvider");
+
     QQmlApplicationEngine engine;
-
-    DataCenter dataCenterInstance;
-    engine.rootContext()->setContextProperty("dataCenter", &dataCenterInstance);
-
-    QObject::connect(
-        &engine,
-        &QQmlApplicationEngine::objectCreationFailed,
-        &app,
-        []() { QCoreApplication::exit(-1); },
-        Qt::QueuedConnection);
     engine.loadFromModule("gymWeights", "Main");
 
     return app.exec();

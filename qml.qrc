@@ -4,13 +4,19 @@
         <file>icons/tren_inferior.png</file>
         <file>icons/tren_superior.png</file>
         <file>icons/trash.png</file>
-	<file>icons/search.png</file>
+        <file>icons/search.png</file>
+        <file>icons/arms.svg</file>
+        <file>icons/back.svg</file>
+        <file>icons/chest.svg</file>
+        <file>icons/core.svg</file>
+        <file>icons/legs.svg</file>
+        <file>icons/shoulders.svg</file>
+        <file>icons/settings.png</file>
     </qresource>
-    <qresource prefix="/qml">
-        <file>qml/BasePage.qml</file>
-        <file>qml/MenuPage.qml</file>
-        <file>qml/NavigationHeader.qml</file>
-        <file>qml/ExerciseDelegate.qml</file>
-        <file>qml/SelectionPage.qml</file>
+    <qresource prefix="/fonts">
+        <file>fonts/Inter-Medium.ttf</file>
+    </qresource>
+    <qresource prefix="/data">
+        <file>data/exerciseList.txt</file>
     </qresource>
 </RCC>
