@@ -7,7 +7,7 @@ import QtQuick.Dialogs
 Popup {
     id: confirmActionDialog
     width: parent.width * 0.8
-    height: confirmContent.height * 1.1
+    height: confirmContent.height * 1.2
     anchors.centerIn: parent
     modal: true
     closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
@@ -42,6 +42,7 @@ Popup {
     Column {
         id: confirmContent
         width: parent.width
+        anchors.centerIn: parent
         spacing: Style.mediumSpace
 
 
