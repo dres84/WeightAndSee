@@ -6,6 +6,7 @@
 #include <QJsonArray>
 #include <QDateTime>
 #include <QDebug>
+#include <random> // Para std::mt19937 y std::random_device
 
 DataCenter::DataCenter(QObject *parent) : QObject(parent) {
     load();
@@ -152,6 +153,79 @@ void DataCenter::addExercise(const QString& name, const QString& muscleGroup,
     m_data["exercises"] = exercises;
     save();
     emit dataChanged();
+}
+
+void DataCenter::addRandomExercises(int number) {
+    try {
+        // 1. Cargar el archivo desde recursos
+        QFile file(":/data/exerciseList.txt");
+        if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+            throw std::runtime_error("No se pudo abrir el archivo de ejercicios");
+        }
+
+        // 2. Procesar el archivo
+        QTextStream in(&file);
+        QList<QPair<QString, QString>> availableExercises;
+
+        while (!in.atEnd()) {
+            QString line = in.readLine().trimmed();
+            if (line.isEmpty()) continue;
+
+            QStringList parts = line.split(" | ");
+            if (parts.size() != 2) continue;
+
+            QString name = parts[0].trimmed();
+            QString group = parts[1].trimmed();
+
+            if (!name.isEmpty() && !group.isEmpty()) {
+                availableExercises.append(qMakePair(name, group));
+            }
+        }
+        file.close();
+
+        // 3. Filtrar ejercicios que no existen ya
+        QJsonObject currentExercises = m_data["exercises"].toObject();
+        QList<QPair<QString, QString>> newExercises;
+
+        std::sample(
+            availableExercises.begin(),
+            availableExercises.end(),
+            std::back_inserter(newExercises),
+            number,
+            std::mt19937{std::random_device{}()}
+            );
+
+        // 4. Añadir los nuevos ejercicios
+        int addedCount = 0;
+        for (const auto& [name, group] : newExercises) {
+            if (!currentExercises.contains(name)) {
+                currentExercises[name] = QJsonObject{
+                    {"muscleGroup", group},
+                    {"currentValue", 0},
+                    {"unit", "-"},
+                    {"sets", 0},
+                    {"repetitions", 0},
+                    {"lastUpdated", ""},
+                    {"history", QJsonArray()}
+                };
+                addedCount++;
+            }
+        }
+
+        // 5. Actualizar datos
+        if (addedCount > 0) {
+            m_data["exercises"] = currentExercises;
+            save();
+            emit dataChanged();
+            emit showMessage("Éxito", "Success", QString("Añadidos %1 nuevos ejercicios").arg(addedCount), QString("%1 new exercises added").arg(addedCount));
+        } else {
+            emit showMessage("Info", "Info", "Todos los ejercicios aleatorios ya existían", "All the random exercises already existed");
+        }
+
+    } catch (const std::exception& e) {
+        qWarning() << "Error en addRandomExercises:" << e.what();
+        emit showMessage("Error", "Error", "Error añadiendo ejercicios", "Error adding exercises");
+    }
 }
 
 void DataCenter::updateExercise(const QString& name, double value, const QString& unit, int sets, int reps) {
@@ -307,6 +381,18 @@ void DataCenter::removeHistoryEntry(const QString &exerciseName, int index) {
     emit dataChanged();
 }
 
+bool DataCenter::hasHistory(const QString& exerciseName) const {
+    if (!m_data.contains("exercises")) return false;
+
+    const QJsonObject exercises = m_data["exercises"].toObject();
+    if (!exercises.contains(exerciseName)) return false;
+
+    const QJsonObject exercise = exercises[exerciseName].toObject();
+    const QJsonArray history = exercise["history"].toArray();
+
+    return !history.isEmpty();
+}
+
 void DataCenter::reloadSampleData() {
     qDebug() << "reloadSampleData()";
     QFile file(getFilePath());
@@ -325,8 +411,10 @@ void DataCenter::deleteAllExercises() {
     if (file.exists()) {
         if (file.remove()) {
             qDebug("Archivo eliminado correctamente, inicializando estructura vacía...");
+            emit showMessage("Datos borrados", "Data deleted", "Todos los datos se han borrado correctamente", "All data has been successfully deleted");
         } else {
-            qWarning("No se pudo eliminar el archivo");
+            qDebug("Error, no se ha podido borrar el archivo...");
+            emit showMessage("Error en el borrado", "Delete error", "Los datos no se han podido eliminar", "The data could not be deleted", "error");
             return;
         }
     }
@@ -564,10 +652,10 @@ void DataCenter::exportData(const QString& filePath) {
         file.write(QJsonDocument(m_data).toJson());
         file.close();
         qDebug() << "Datos exportados a:" << filePath;
-        emit showMessage(tr("Datos exportados"), tr("Los datos se han guardado en:") + "\n" + filePath);
+        emit showMessage("Datos exportados", "Data exported", "Los datos se han guardado en:\n" + filePath, "The data has been saved in:\n" + filePath);
     } else {
         qWarning() << "No se pudo exportar los datos";
-        emit showMessage(tr("Error"), tr("No se pudo guardar el archivo"));
+        emit showMessage("Error", "Error", "No se pudo guardar el archivo", "Could not save the file");
     }
 }
 
@@ -581,11 +669,11 @@ void DataCenter::importData(const QUrl &fileUrl) {
             m_data = doc.object();
             save();
             emit dataChanged();
-            emit showMessage(tr("Datos importados"), tr("Los datos se han importado correctamente"));
+            emit showMessage("Datos importados", "Data imported", "Los datos se han importado correctamente", "The data has been imported successfully");
         } else {
-            emit showMessage(tr("Error"), tr("El archivo no contiene datos válidos"));
+            emit showMessage("Error", "Error", "El archivo no contiene datos válidos", "The file does not contain valid data");
         }
     } else {
-        emit showMessage(tr("Error"), tr("No se pudo leer el archivo"));
+        emit showMessage("Error", "Error", "No se pudo leer el archivo", "Could not read the file");
     }
 }

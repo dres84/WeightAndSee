@@ -42,6 +42,7 @@ qt_add_qml_module(appgymWeights
         qml/MuscleGroupFilter.qml
         qml/NewExerciseDialog.qml
         qml/EditExerciseDialog.qml
+        qml/ConfirmActionDialog.qml
         qml/ConfirmDeleteDialog.qml
         qml/HistoryDialog.qml
         qml/GraphPage.qml

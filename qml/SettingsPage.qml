@@ -102,8 +102,8 @@ Page {
                 type: "import"
             }*/
             ListElement {
-                name: "Cargar ejercicios de ejemplo"
-                englishName: "Load sample exercises"
+                name: "Añadir 5 ejercicios aleatorios"
+                englishName: "Add 5 random exercises"
                 type: "test"
             }
             ListElement {
@@ -599,7 +599,7 @@ Page {
                 buttonColor: Style.buttonNegative
                 font.pixelSize: Style.body
                 buttonText: settings.language === "es" ? "🗑️ Borrar todo" : "🗑️ Delete all"
-                onClicked: confirmDeleteDialog.open()
+                onClicked: confirmDeleteAllDataDialog.open()
             }
         }
     }
@@ -687,8 +687,8 @@ Page {
 
             Label {
                 text: settings.language === "es"
-                      ? "Carga datos de ejercicios de ejemplo."
-                      : "Load sample exercises data."
+                      ? "Añadir 5 ejercicios de ejemplo."
+                      : "Add 5 sample exercises data."
                 font.family: Style.interFont.name
                 font.pixelSize: Style.semi
                 color: Style.textSecondary
@@ -704,108 +704,36 @@ Page {
                 Layout.preferredHeight: implicitHeight
                 buttonColor: Style.buttonNeutral
                 font.pixelSize: Style.body
-                buttonText: settings.language === "es" ? "🧪 Cargar ejercicios de ejemplo" : "🧪 Load sample exercises"
+                buttonText: settings.language === "es" ? "🧪 Añadir ejercicios de ejemplo" : "🧪 Add sample exercises"
                 onClicked: {
-                    dataCenter.reloadSampleData()
+                    confirmAddRandomExercisesDialog.open()
                 }
             }
         }
     }
 
     // Diálogo de confirmación para borrar datos
-    Popup {
-        id: confirmDeleteDialog
-        width: parent.width * 0.8
-        height: confirmContent.height * 1.1
-        anchors.centerIn: parent
-        modal: true
-        closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
-
-        // Animación de entrada con bounce
-        enter: Transition {
-            NumberAnimation { property: "opacity"; from: 0; to: 1; duration: 150 }
-            NumberAnimation {
-                property: "scale";
-                from: 0.8; to: 1.05;
-                duration: 200;
-                easing.type: Easing.OutQuad
-            }
-            NumberAnimation {
-                property: "scale";
-                from: 1.05; to: 1.0;
-                duration: 100;
-                easing.type: Easing.OutBounce
-            }
+    ConfirmActionDialog {
+        id: confirmDeleteAllDataDialog
+        textContent: settings.language === "es"
+                        ? "¿Estás seguro de que quieres borrar todos los datos? Esta acción no se puede deshacer."
+                        : "Are you sure you want to delete all data? This action cannot be undone."
+        actionButtonText: settings.language === "es" ? "Borrar" : "Delete"
+        onActionConfirmed: {
+            dataCenter.deleteAllExercises()
+            confirmDeleteAllDataDialog.close()
         }
+    }
 
-        background: Rectangle {
-            color: Style.surface
-            radius: Style.mediumRadius
-        }
-
-        Column {
-            id: confirmContent
-            width: parent.width
-            spacing: Style.mediumSpace
-
-
-            Label {
-                text: settings.language === "es"
-                      ? "¿Estás seguro de que quieres borrar todos los datos? Esta acción no se puede deshacer."
-                      : "Are you sure you want to delete all data? This action cannot be undone."
-                wrapMode: Text.WordWrap
-                width: parent.width
-                font.family: Style.interFont.name
-                font.pixelSize: Style.body
-                color: Style.text
-            }
-
-            Row {
-                spacing: Style.mediumSpace
-                anchors.right: parent.right
-                anchors.bottomMargin: Style.smallMargin
-
-                Button {
-                    flat: true
-                    onClicked: confirmDeleteDialog.close()
-
-                    background: Rectangle {
-                        color: Style.buttonNeutral
-                        radius: Style.smallRadius
-                    }
-
-                    contentItem: Text {
-                        text: settings.language === "es" ? "Cancelar" : "Cancel"
-                        color: Style.text
-                        font.pixelSize: Style.caption
-                        font.family: Style.interFont.name
-                        horizontalAlignment: Text.AlignHCenter
-                        verticalAlignment: Text.AlignVCenter
-                    }
-                }
-
-                Button {
-                    flat: true
-                    onClicked: {
-                        dataCenter.deleteAllExercises()
-                        confirmDeleteDialog.close()
-                    }
-
-                    background: Rectangle {
-                        color: Style.buttonNegative
-                        radius: Style.smallRadius
-                    }
-
-                    contentItem: Text {
-                        text: settings.language === "es" ? "Borrar" : "Delete"
-                        color: Style.text
-                        font.pixelSize: Style.caption
-                        font.family: Style.interFont.name
-                        horizontalAlignment: Text.AlignHCenter
-                        verticalAlignment: Text.AlignVCenter
-                    }
-                }
-            }
+    ConfirmActionDialog {
+        id: confirmAddRandomExercisesDialog
+        textContent: settings.language === "es"
+                        ? "¿Estás seguro de que quieres añadir estos ejercicios aleatorios? Si no quieres alguno, deberás borrarlo manualmente."
+                        : "Are you sure you want to add these random exercises? If you don't want any, you'll have to delete them manually."
+        actionButtonText: settings.language === "es" ? "Añadir" : "Add"
+        onActionConfirmed: {
+            dataCenter.addRandomExercises(5)
+            confirmAddRandomExercisesDialog.close()
         }
     }
 

@@ -19,6 +19,7 @@ public:
     Q_INVOKABLE void save();
     Q_INVOKABLE void addExercise(const QString& name, const QString& muscleGroup,
                                  double value, const QString& unit, int sets, int reps);
+    Q_INVOKABLE void addRandomExercises(int number);
     Q_INVOKABLE void updateExercise(const QString& name, double value, const QString& unit, int sets, int reps);
     Q_INVOKABLE void removeExercise(const QString& name);
     Q_INVOKABLE void removeHistoryEntry(const QString& exerciseName, int index);
@@ -30,6 +31,7 @@ public:
     Q_INVOKABLE QString getUnit(const QString& exerciseName) const;
     Q_INVOKABLE int getRepetitions(const QString& exerciseName) const;
     Q_INVOKABLE int getSets(const QString& exerciseName) const;
+    Q_INVOKABLE bool hasHistory(const QString &exerciseName) const;
 
     // Para las gráficas
     Q_INVOKABLE QVariantList getExerciseHistoryDetailed(const QString& exerciseName) const;
@@ -40,7 +42,7 @@ public:
 
 signals:
     void dataChanged();
-    void showMessage(QString title, QString message, QString messageType = "info");
+    void showMessage(QString title, QString englishTitle, QString message, QString englishMessage, QString messageType = "info");
 
 private:
     QString getFilePath() const;

@@ -15,9 +15,10 @@ Dialog {
     property string exerciseName: ""
     property string muscleGroup: dataCenter.getMuscleGroup(exerciseName)
     property double currentValue: dataCenter.getCurrentValue(exerciseName)
-    property string unit: dataCenter.getUnit(exerciseName)
-    property int sets: dataCenter.getSets(exerciseName)
-    property int repetitions: dataCenter.getRepetitions(exerciseName)
+    property bool hasHistory: dataCenter.hasHistory(exerciseName)
+    property string unit: hasHistory ? dataCenter.getUnit(exerciseName) : settings.defaultUnit
+    property int sets: hasHistory ? dataCenter.getSets(exerciseName) : settings.defaultSets
+    property int repetitions: hasHistory ? dataCenter.getRepetitions(exerciseName) : settings.defaultReps
 
     property bool saveButtonEnabled: (weightHasChanged || setsHasChanged || repetitionsHasChanged)
                                      && !weightEmptyError && !setsEmptyError && !repsEmptyError

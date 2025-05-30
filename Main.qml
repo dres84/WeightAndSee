@@ -38,8 +38,8 @@ ApplicationWindow {
 
     Connections {
         target: dataCenter
-        function onShowMessage(title, message, messageType) {
-            globalMessage.show(title, message, messageType)
+        function onShowMessage(title, englishTitle, message, englishMessage, messageType) {
+            globalMessage.show(settings.language === "es" ? title : englishTitle, settings.language === "es" ? message : englishMessage, messageType)
         }
     }
 

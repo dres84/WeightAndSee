@@ -4,20 +4,18 @@ import QtQuick.Layouts 1.15
 
 Popup {
     id: root
-    width: Math.min(parent.width * 0.9, 400)
-    implicitHeight: contentColumn.implicitHeight + Style.mediumMargin * 2
+    width: Math.min(parent.width * 0.8, 400)
     x: (parent.width - width) / 2
     y: (parent.height - height) / 2
     modal: true
     focus: true
     closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
-    padding: Style.mediumMargin
+    padding: Style.smallMargin // reducido
 
     property string title: ""
     property string message: ""
-    property string messageType: "info" // "info", "warning", "error", "success"
+    property string messageType: "info"
 
-    // Colores basados en Style.qml
     readonly property color typeColor: {
         switch(messageType) {
             case "warning": return "#FFC107";
@@ -43,33 +41,21 @@ Popup {
 
     contentItem: ColumnLayout {
         id: contentColumn
-        spacing: Style.mediumSpace
+        spacing: Style.smallSpace // mantenemos pequeño espaciado general
 
-        // Header con título e icono
         RowLayout {
-            spacing: Style.mediumSpace
+            spacing: Style.smallSpace
             Layout.fillWidth: true
 
-            Rectangle {
-                width: 24
-                height: 24
-                radius: width / 2
-                color: typeColor
-                opacity: 0.2
-
-                Text {
-                    anchors.centerIn: parent
-                    text: {
-                        switch(messageType) {
-                            case "warning": return "⚠";
-                            case "error": return "✕";
-                            case "success": return "✓";
-                            default: return "i";
-                        }
+            Text {
+                text: {
+                    switch(messageType) {
+                        case "warning": return "⚠️ ";
+                        case "error": return "❌ ";
+                        default: return "✅ ";
                     }
-                    font.pixelSize: 14
-                    color: typeColor
                 }
+                font.pixelSize: Style.heading2
             }
 
             Label {
@@ -82,7 +68,6 @@ Popup {
             }
         }
 
-        // Separador
         Rectangle {
             Layout.fillWidth: true
             Layout.preferredHeight: 1
@@ -90,25 +75,23 @@ Popup {
             opacity: 0.5
         }
 
-        // Mensaje
         Label {
             text: message
             font.pixelSize: Style.body
             color: Style.textSecondary
             wrapMode: Text.Wrap
             Layout.fillWidth: true
-            Layout.topMargin: Style.smallSpace
-            Layout.bottomMargin: Style.mediumSpace
+            Layout.topMargin: Style.smallSpace * 2 // más espacio arriba del mensaje
+            Layout.bottomMargin: Style.smallSpace * 2 // más espacio debajo del mensaje
         }
 
-        // Botón de acción
         Button {
             id: actionButton
             text: qsTr("Aceptar")
             font.pixelSize: Style.semi
             font.family: Style.interFont.name
-            Layout.alignment: Qt.AlignRight
-            Layout.preferredWidth: 120
+            Layout.alignment: Qt.AlignHCenter
+            Layout.preferredWidth: 100
 
             background: Rectangle {
                 color: typeColor
