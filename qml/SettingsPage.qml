@@ -757,7 +757,13 @@ Page {
                     buttonColor: Style.buttonNeutral
                     font.pixelSize: Style.body
                     buttonText: settings.language === "es" ? "✉️ Sugerencias" : "✉️ Suggestions"
-                    onClicked: Qt.openUrlExternally("mailto:appsbydresoft@gmail.com?subject=Sugerencia%20Weight%20%26%20See")
+                    onClicked: {
+                        var subject = settings.language === "es"
+                                      ? "Sugerencia Weight & See"
+                                      : "Suggestion Weight & See"
+                        var mailtoUrl = "mailto:appsbydresoft@gmail.com?subject=" + encodeURIComponent(subject)
+                        Qt.openUrlExternally(mailtoUrl)
+                    }
                 }
             }
         }
