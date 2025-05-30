@@ -111,6 +111,11 @@ Page {
                 englishName: "Delete all data"
                 type: "delete"
             }
+            ListElement {
+                name: "Acerca de"
+                englishName: "About"
+                type: "about"
+            }
         }
 
         delegate: Item {
@@ -295,6 +300,7 @@ Page {
                         case "export": return exportData;
                         case "import": return importData;
                         case "test": return testData;
+                        case "about": return aboutMe;
                         default: return null;
                         }
                     }
@@ -711,6 +717,52 @@ Page {
             }
         }
     }
+
+    // Sobre mí / About me
+    Component {
+        id: aboutMe
+
+        ColumnLayout {
+            width: parent.width
+            spacing: Style.smallSpace
+
+            Label {
+                text: settings.language === "es"
+                      ? "App desarrollada en C++ y Qt por Andrés San Martín. Conoce más sobre mí visitando mi perfil de LinkedIn o si lo deseas, también puedes enviarme sugerencias por e-mail.\n"
+                      : "App developed in C++ and Qt by Andrés San Martín. Learn more about me by visiting my LinkedIn profile or if you wish, you can also send me suggestions via email.\n"
+                font.family: Style.interFont.name
+                font.pixelSize: Style.semi
+                color: Style.textSecondary
+                wrapMode: Text.WordWrap
+                Layout.fillWidth: true
+                Layout.leftMargin: Style.smallMargin
+                Layout.topMargin: Style.smallMargin
+            }
+
+            RowLayout {
+                Layout.alignment: Qt.AlignHCenter
+                spacing: Style.mediumSpace
+
+                FloatButton {
+                    Layout.preferredHeight: implicitHeight
+                    buttonColor: Style.buttonNeutral
+                    font.pixelSize: Style.body
+                    leftIcon: "qrc:/icons/linkedin.png"
+                    buttonText: "LinkedIn"
+                    onClicked: Qt.openUrlExternally("https://www.linkedin.com/in/asmb84/")
+                }
+
+                FloatButton {
+                    Layout.preferredHeight: implicitHeight
+                    buttonColor: Style.buttonNeutral
+                    font.pixelSize: Style.body
+                    buttonText: settings.language === "es" ? "✉️ Sugerencias" : "✉️ Suggestions"
+                    onClicked: Qt.openUrlExternally("mailto:appsbydresoft@gmail.com?subject=Sugerencia%20Weight%20%26%20See")
+                }
+            }
+        }
+    }
+
 
     // Diálogo de confirmación para borrar datos
     ConfirmActionDialog {

@@ -79,6 +79,7 @@ qt_add_resources(appgymWeights "icons"
         icons/spain.png
         icons/appSplash.png
         icons/logoDresoft.png
+        icons/linkedin.png
 )
 
 qt_add_resources(appgymWeights "fonts"
