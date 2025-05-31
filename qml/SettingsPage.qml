@@ -59,6 +59,17 @@ Page {
         }
     }
 
+    Image {
+        id: logoDresoft
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 20
+        width: parent.width / 2
+        height: width / 2
+        source: "qrc:/icons/logoDresoft.png"
+        fillMode: Image.PreserveAspectFit
+    }
+
     ListView {
         id: settingsList
         anchors.top: header.bottom
@@ -327,6 +338,7 @@ Page {
                 Layout.fillWidth: true
                 Layout.topMargin: Style.bigSpace
                 Layout.leftMargin: Style.mediumMargin
+                Layout.alignment: Qt.AlignHCenter
 
                 RadioButton {
                     id: spanishOption
@@ -430,6 +442,7 @@ Page {
                 Layout.fillWidth: true
                 Layout.topMargin: Style.bigSpace
                 Layout.leftMargin: Style.mediumMargin
+                Layout.alignment: Qt.AlignHCenter
 
                 RadioButton {
                     id: kgOption
@@ -832,17 +845,6 @@ Page {
             fileDialog.engText = "Select a location to save the data on disk."
         }
 
-    }
-
-    Image {
-        id: logoDresoft
-        anchors.horizontalCenter: parent.horizontalCenter
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: 20
-        width: parent.width / 2
-        height: width / 2
-        source: "qrc:/icons/logoDresoft.png"
-        fillMode: Image.PreserveAspectFit
     }
 
     Component.onCompleted: {

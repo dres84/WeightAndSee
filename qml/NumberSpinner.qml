@@ -14,7 +14,7 @@ Item {
     Rectangle {
         anchors.fill: parent
         radius: Style.smallRadius
-        color: Style.surface
+        color: "transparent"
 
         RowLayout {
             anchors.fill: parent
