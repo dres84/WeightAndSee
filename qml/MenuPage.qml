@@ -84,8 +84,8 @@ Page {
             }
 
             Image {
-                Layout.preferredHeight: 40
-                Layout.preferredWidth: 40
+                Layout.preferredHeight: 45
+                Layout.preferredWidth: 45
                 source: "qrc:/icons/settings.png"
                 Layout.alignment: Qt.AlignRight
                 opacity: tapHandler.pressed ? 0.5 : 1.0
