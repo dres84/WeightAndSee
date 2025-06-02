@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Tema base compatible -->
+    <style name="AppTheme" parent="@android:style/Theme.Material.NoActionBar">
+        <!-- Color de las barras del sistema -->
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+
+        <!-- Forzar iconos claros -->
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowLightNavigationBar">false</item>
+
+        <!-- Configuración para Qt -->
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
+</resources>

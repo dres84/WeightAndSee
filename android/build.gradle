@@ -21,6 +21,11 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
     //noinspection GradleDependency
     implementation 'androidx.core:core:1.13.1'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'com.google.android.material:material:1.12.0'
+
+    // Para AndroidX Core (necesario para WindowInsetsController)
+    implementation 'androidx.core:core-ktx:1.13.1'
 }
 
 android {
@@ -53,6 +58,7 @@ android {
             manifest.srcFile 'src/main/AndroidManifest.xml'
             // Asegurar que los recursos se tomen de nuestra estructura
             res.srcDirs = ['src/main/res']
+            java.srcDirs = ['src/main/java']
         }
     }
 

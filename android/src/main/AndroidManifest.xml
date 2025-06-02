@@ -6,7 +6,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.SET_ORIENTATION"/>
 
-    <application android:name="org.qtproject.qt.android.bindings.QtApplication" android:label="Weight &amp; See" android:icon="@drawable/icon" android:hardwareAccelerated="true" android:requestLegacyExternalStorage="true">
+    <application android:name="org.qtproject.qt.android.bindings.QtApplication" android:label="Weight &amp; See" android:icon="@drawable/icon" android:hardwareAccelerated="true" android:requestLegacyExternalStorage="true" android:theme="@style/AppTheme">
 
         <activity android:name="org.qtproject.qt.android.bindings.QtActivity" android:exported="true" android:label="Weight &amp; See" android:screenOrientation="portrait" android:configChanges="orientation|uiMode|screenLayout|screenSize|smallestScreenSize|layoutDirection|locale|fontScale|keyboard|keyboardHidden|navigation" android:launchMode="singleTop">
             <intent-filter>
