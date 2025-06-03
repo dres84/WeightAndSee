@@ -735,47 +735,55 @@ Page {
     Component {
         id: aboutMe
 
-        ColumnLayout {
+        Rectangle {
+            color: Style.background // Usa el color de fondo que desees de tu Style
+            radius: Style.smallRadius // Opcional: para bordes redondeados
             width: parent.width
-            spacing: Style.smallSpace
+            implicitHeight: aboutMeLayout.implicitHeight + Style.mediumSpace // Ajusta la altura al contenido
 
-            Label {
-                text: settings.language === "es"
-                      ? "App desarrollada en C++ y Qt por Andrés San Martín. Conoce más sobre mí visitando mi perfil de LinkedIn o si lo deseas, también puedes enviarme sugerencias por e-mail.\n"
-                      : "App developed in C++ and Qt by Andrés San Martín. Learn more about me by visiting my LinkedIn profile or if you wish, you can also send me suggestions via email.\n"
-                font.family: Style.interFont.name
-                font.pixelSize: Style.semi
-                color: Style.textSecondary
-                wrapMode: Text.WordWrap
-                Layout.fillWidth: true
-                Layout.leftMargin: Style.smallMargin
-                Layout.topMargin: Style.smallMargin
-            }
+            ColumnLayout {
+                id: aboutMeLayout
+                width: parent.width
+                spacing: Style.smallSpace
 
-            RowLayout {
-                Layout.alignment: Qt.AlignHCenter
-                spacing: Style.mediumSpace
-
-                FloatButton {
-                    Layout.preferredHeight: implicitHeight
-                    buttonColor: Style.buttonNeutral
-                    font.pixelSize: Style.body
-                    leftIcon: "qrc:/icons/linkedin.png"
-                    buttonText: "LinkedIn"
-                    onClicked: Qt.openUrlExternally("https://www.linkedin.com/in/asmb84/")
+                Label {
+                    text: settings.language === "es"
+                          ? "App desarrollada en C++ y Qt por Andrés San Martín. Conoce más sobre mí visitando mi perfil de LinkedIn o si lo deseas, también puedes enviarme sugerencias por e-mail.\n"
+                          : "App developed in C++ and Qt by Andrés San Martín. Learn more about me by visiting my LinkedIn profile or if you wish, you can also send me suggestions via email.\n"
+                    font.family: Style.interFont.name
+                    font.pixelSize: Style.semi
+                    color: Style.textSecondary
+                    wrapMode: Text.WordWrap
+                    Layout.fillWidth: true
+                    Layout.leftMargin: Style.smallMargin
+                    Layout.topMargin: Style.smallMargin
                 }
 
-                FloatButton {
-                    Layout.preferredHeight: implicitHeight
-                    buttonColor: Style.buttonNeutral
-                    font.pixelSize: Style.body
-                    buttonText: settings.language === "es" ? "✉️ Sugerencias" : "✉️ Suggestions"
-                    onClicked: {
-                        var subject = settings.language === "es"
-                                      ? "Sugerencia Weight & See"
-                                      : "Suggestion Weight & See"
-                        var mailtoUrl = "mailto:appsbydresoft@gmail.com?subject=" + encodeURIComponent(subject)
-                        Qt.openUrlExternally(mailtoUrl)
+                RowLayout {
+                    Layout.alignment: Qt.AlignHCenter
+                    spacing: Style.mediumSpace
+
+                    FloatButton {
+                        Layout.preferredHeight: implicitHeight
+                        buttonColor: Style.buttonNeutral
+                        font.pixelSize: Style.body
+                        leftIcon: "qrc:/icons/linkedin.png"
+                        buttonText: "LinkedIn"
+                        onClicked: Qt.openUrlExternally("https://www.linkedin.com/in/asmb84/")
+                    }
+
+                    FloatButton {
+                        Layout.preferredHeight: implicitHeight
+                        buttonColor: Style.buttonNeutral
+                        font.pixelSize: Style.body
+                        buttonText: settings.language === "es" ? "✉️ Sugerencias" : "✉️ Suggestions"
+                        onClicked: {
+                            var subject = settings.language === "es"
+                                          ? "Sugerencia Weight & See"
+                                          : "Suggestion Weight & See"
+                            var mailtoUrl = "mailto:appsbydresoft@gmail.com?subject=" + encodeURIComponent(subject)
+                            Qt.openUrlExternally(mailtoUrl)
+                        }
                     }
                 }
             }
