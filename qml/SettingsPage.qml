@@ -338,6 +338,7 @@ Page {
                 Layout.fillWidth: true
                 Layout.topMargin: Style.bigSpace
                 Layout.leftMargin: Style.mediumMargin
+                Layout.rightMargin: Style.mediumMargin
                 Layout.alignment: Qt.AlignHCenter
 
                 RadioButton {
@@ -442,6 +443,7 @@ Page {
                 Layout.fillWidth: true
                 Layout.topMargin: Style.bigSpace
                 Layout.leftMargin: Style.mediumMargin
+                Layout.rightMargin: Style.mediumMargin
                 Layout.alignment: Qt.AlignHCenter
 
                 RadioButton {
@@ -531,6 +533,7 @@ Page {
                 wrapMode: Text.WordWrap
                 Layout.fillWidth: true
                 Layout.leftMargin: Style.smallMargin
+                Layout.rightMargin: Style.smallMargin
                 Layout.topMargin: Style.smallMargin
             }
 
@@ -569,6 +572,7 @@ Page {
                 wrapMode: Text.WordWrap
                 Layout.fillWidth: true
                 Layout.leftMargin: Style.smallMargin
+                Layout.rightMargin: Style.smallMargin
                 Layout.topMargin: Style.smallMargin
             }
 
@@ -607,6 +611,7 @@ Page {
                 wrapMode: Text.WordWrap
                 Layout.fillWidth: true
                 Layout.leftMargin: Style.smallMargin
+                Layout.rightMargin: Style.smallMargin
                 Layout.topMargin: Style.smallMargin
             }
 
@@ -641,6 +646,7 @@ Page {
                 wrapMode: Text.WordWrap
                 Layout.fillWidth: true
                 Layout.leftMargin: Style.smallMargin
+                Layout.rightMargin: Style.smallMargin
                 Layout.topMargin: Style.smallMargin
             }
 
@@ -678,6 +684,7 @@ Page {
                 wrapMode: Text.WordWrap
                 Layout.fillWidth: true
                 Layout.leftMargin: Style.smallMargin
+                Layout.rightMargin: Style.smallMargin
                 Layout.topMargin: Style.smallMargin
             }
 
@@ -714,6 +721,7 @@ Page {
                 wrapMode: Text.WordWrap
                 Layout.fillWidth: true
                 Layout.leftMargin: Style.smallMargin
+                Layout.rightMargin: Style.smallMargin
                 Layout.topMargin: Style.smallMargin
             }
 
@@ -748,14 +756,15 @@ Page {
 
                 Label {
                     text: settings.language === "es"
-                          ? "App desarrollada en C++ y Qt por Andrés San Martín. Conoce más sobre mí visitando mi perfil de LinkedIn o si lo deseas, también puedes enviarme sugerencias por e-mail.\n"
-                          : "App developed in C++ and Qt by Andrés San Martín. Learn more about me by visiting my LinkedIn profile or if you wish, you can also send me suggestions via email.\n"
+                          ? "App desarrollada en C++ y Qt por Andrés San Martín. Conoce más sobre mí visitando mi perfil de LinkedIn o si lo deseas, también puedes enviarme sugerencias por e-mail o ver la política de privacidad de la app.\n"
+                          : "App developed in C++ and Qt by Andrés San Martín. Learn more about me by visiting my LinkedIn profile or if you wish, you can also send me suggestions via email or view the app's privacy policy.\n"
                     font.family: Style.interFont.name
                     font.pixelSize: Style.semi
                     color: Style.textSecondary
                     wrapMode: Text.WordWrap
                     Layout.fillWidth: true
                     Layout.leftMargin: Style.smallMargin
+                    Layout.rightMargin: Style.smallMargin
                     Layout.topMargin: Style.smallMargin
                 }
 
@@ -764,18 +773,19 @@ Page {
                     spacing: Style.mediumSpace
 
                     FloatButton {
+                        id: firstButton
                         Layout.preferredHeight: implicitHeight
                         buttonColor: Style.buttonNeutral
-                        font.pixelSize: Style.body
+                        font.pixelSize: Style.semi
                         leftIcon: "qrc:/icons/linkedin.png"
                         buttonText: "LinkedIn"
                         onClicked: Qt.openUrlExternally("https://www.linkedin.com/in/asmb84/")
                     }
 
                     FloatButton {
-                        Layout.preferredHeight: implicitHeight
+                        Layout.preferredHeight: firstButton.height
                         buttonColor: Style.buttonNeutral
-                        font.pixelSize: Style.body
+                        font.pixelSize: Style.semi
                         buttonText: settings.language === "es" ? "✉️ Sugerencias" : "✉️ Suggestions"
                         onClicked: {
                             var subject = settings.language === "es"
@@ -783,6 +793,16 @@ Page {
                                           : "Suggestion Weight & See"
                             var mailtoUrl = "mailto:appsbydresoft@gmail.com?subject=" + encodeURIComponent(subject)
                             Qt.openUrlExternally(mailtoUrl)
+                        }
+                    }
+
+                    FloatButton {
+                        Layout.preferredHeight: firstButton.height
+                        buttonColor: Style.buttonNeutral
+                        font.pixelSize: Style.semi
+                        leftIcon: "qrc:/icons/privacyPolicy.png"
+                        onClicked: {
+                            Qt.openUrlExternally("https://dres84.github.io/weightAndSeePolicy.html")
                         }
                     }
                 }

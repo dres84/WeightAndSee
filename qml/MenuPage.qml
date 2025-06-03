@@ -34,6 +34,10 @@ Page {
         sequence: "Back"
         enabled: stackView.currentItem.objectName === "menuPage"
         onActivated: {
+            if (!started) {
+                console.log("Splash aún no finalizada")
+                return
+            }
             console.log("KeyLeft pulsada en MenuPage.qml")
             if (!backPressedOnce) {
                 backPressedOnce = true;

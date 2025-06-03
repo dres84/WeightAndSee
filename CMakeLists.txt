@@ -66,7 +66,6 @@ qt_add_qml_module(appgymWeights
 
 qt_add_resources(appgymWeights "icons"
     FILES
-        icons/core.png
         icons/trash.png
         icons/arms.svg
         icons/back.svg
@@ -80,6 +79,7 @@ qt_add_resources(appgymWeights "icons"
         icons/appSplash.png
         icons/logoDresoft.png
         icons/linkedin.png
+        icons/privacyPolicy.png
 )
 
 qt_add_resources(appgymWeights "fonts"

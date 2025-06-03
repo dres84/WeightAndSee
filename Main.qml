@@ -11,6 +11,8 @@ ApplicationWindow {
     visible: true
     title: "Gym Tracker"
 
+    property bool started: false // True cuando la splash desaparezca
+
     Settings {
         id: settings
         category: "AppSettings"
@@ -133,6 +135,10 @@ ApplicationWindow {
 
     Splash {
         id: splash
+        Component.onDestruction: {
+            console.log("Splash destruida")
+            started = true
+        }
     }
 }
 
