@@ -29,7 +29,18 @@ Dialog {
         handleExerciseSelected(name, group)
     }
 
+    Keys.onReleased: (event) => {
+        if (event.key === Qt.Key_Back) {
+            if (filteredExercisesPopup.visible) {
+                filteredExercisesPopup.close()
+                nameField.focus = false
+                event.accepted = true
+            }
+        }
+    }
+
     ColumnLayout {
+        id: column
         width: parent.width
         spacing: 15
 
@@ -41,59 +52,100 @@ Dialog {
             opacity: 0.7
         }
 
-        TextField {
-            id: nameField
+        Item {
             Layout.fillWidth: true
-            placeholderText: settings.language === "es" ? "Nombre del ejercicio*" : "Exercise name*"
-            font.pixelSize: Style.body
-            rightPadding: clearButton.width + 10
-            maximumLength: Style.maxCharacters
-            onFocusChanged: {
-                if (focus && text.length > 0 && filteredExercises.length > 0) {
-                    filteredExercisesPopup.open()
-                } else if (!focus) {
-                    filteredExercisesPopup.close()
+            height: nameField.implicitHeight
+
+            TapHandler {
+                onTapped: {
+                    nameField.forceActiveFocus()
+
+                    if (nameField.text === "" && exerciseList.length > 0) {
+                        refreshFilteredExercises()
+                    }
                 }
             }
 
-            MouseArea {
-                id: clearButton
-                width: 28
-                height: parent.height
-                anchors.right: parent.right
-                anchors.verticalCenter: parent.verticalCenter
-                anchors.rightMargin: 5
-                visible: nameField.text.length > 0
+            TextField {
+                id: nameField
+                anchors.fill: parent
+                placeholderText: settings.language === "es" ? "Nombre del ejercicio*" : "Exercise name*"
+                font.pixelSize: Style.body
+                rightPadding: clearButton.width + 10
+                maximumLength: Style.maxCharacters
 
-                onClicked: {
-                    nameField.text = ""
-                    nameField.forceActiveFocus()
-                    filteredExercisesPopup.close()
-                    newExerciseGroupFilter.deselectAll()
+                TapHandler {
+                    acceptedButtons: Qt.LeftButton
+                    onTapped: {
+                        nameField.forceActiveFocus()
+
+                        if (nameField.text === "") {
+                            refreshFilteredExercises()
+                        }
+                    }
                 }
 
-                Text {
-                    anchors.centerIn: parent
-                    text: "\u232B"
-                    font.pixelSize: Style.heading1
-                    color: Style.textSecondary
+                onFocusChanged: {
+                    if (focus && nameField.text !== "" && filteredExercises.length > 0) {
+                        popupOpenTimer.start()
+                    } else {
+                        filteredExercisesPopup.close()
+                    }
+                }
+
+                // Temporizador para evitar glitches de foco
+                Timer {
+                    id: popupOpenTimer
+                    interval: 100
+                    repeat: false
+                    onTriggered: {
+                        if (nameField.focus && filteredExercises.length > 0) {
+                            filteredExercisesPopup.open()
+                        }
+                    }
+                }
+
+                Item {
+                    id: clearButton
+                    width: 28
+                    height: parent.height
+                    anchors.right: parent.right
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.rightMargin: Style.smallMargin
+                    visible: nameField.text.length > 0
+
+                    Text {
+                        anchors.centerIn: parent
+                        text: "\u232B"
+                        font.pixelSize: Style.bigSize
+                        color: Style.textSecondary
+                    }
+
+                    TapHandler {
+                        onTapped: {
+                            nameField.text = ""
+                            nameField.forceActiveFocus()
+                            newExerciseGroupFilter.deselectAll()
+                            refreshFilteredExercises()
+                        }
+                    }
                 }
             }
         }
 
         Popup {
             id: filteredExercisesPopup
-            y: nameField.y + nameField.height + 2
+            y: nameField.y + nameField.height + Style.caption
             width: nameField.width
             height: Math.min(6 * 42, filteredExercisesList.contentHeight)
             padding: 0
             closePolicy: Popup.CloseOnPressOutside | Popup.CloseOnEscape
-            visible: filteredExercises.length > 0 && nameField.focus && nameField.text.length > 0
+            visible: filteredExercises.length > 0 && nameField.focus && nameField.text.length >= 0
 
             property bool hasMoreItems: filteredExercisesList.contentHeight > height
 
             background: Rectangle {
-                color: "#FFFFFF"  // Fondo blanco
+                color: "#FFFFFF"
                 border.color: "#E0E0E0"
                 border.width: 1
                 radius: 4
@@ -120,7 +172,7 @@ Dialog {
                 }
 
                 delegate: Rectangle {
-                    width: parent.width
+                    width: filteredExercisesPopup.width
                     height: 42
                     color: tapArea.pressed ? "#F5F5F5" : "#FFFFFF"
 
@@ -135,26 +187,51 @@ Dialog {
                         anchors.rightMargin: 12
                         spacing: 8
 
-                        // Nombre del ejercicio
                         Text {
+                            id: delegateExerciseName
                             Layout.fillWidth: true
-                            text: modelData.name
+                            textFormat: Text.RichText
+                            //Resaltamos la parte que coincide con el texto del TextField
+                            text: {
+                                function escapeHtml(str) {
+                                    return str
+                                        .replace(/&/g, "&amp;")
+                                        .replace(/</g, "&lt;")
+                                        .replace(/>/g, "&gt;")
+                                        .replace(/"/g, "&quot;")
+                                        .replace(/'/g, "&#39;");
+                                }
+
+                                let input = nameField.text
+                                let query = input.toLowerCase()
+                                let name = modelData.name
+                                let nameLower = name.toLowerCase()
+                                let start = nameLower.indexOf(query)
+
+                                if (query.length === 0 || start === -1) {
+                                    return escapeHtml(name)
+                                }
+
+                                let end = start + query.length
+                                let before = escapeHtml(name.slice(0, start))
+                                let match = "<b>" + escapeHtml(input) + "</b>"
+                                let after = escapeHtml(name.slice(end))
+                                return before + match + after
+                            }
                             font.pixelSize: 15
-                            color: "#212121"  // Texto oscuro
+                            color: "#212121"
                             elide: Text.ElideRight
                         }
 
-                        // Grupo muscular con color correspondiente
                         Text {
                             text: modelData.group
                             font.pixelSize: 12
                             font.weight: Font.Medium
-                            color: Style.muscleColor(modelData.group)  // Color del grupo
-                            Layout.rightMargin: filteredExercisesPopup.hasMoreItems && index === 5 ? 12 : 0
+                            color: Style.muscleColor(modelData.group)
+                            Layout.rightMargin: 0
                         }
                     }
 
-                    // Separador
                     Rectangle {
                         anchors.bottom: parent.bottom
                         width: parent.width
@@ -237,6 +314,7 @@ Dialog {
         RowLayout {
             Layout.fillWidth: true
             spacing: 10
+
             Button {
                 id: cancelButton
                 Layout.fillWidth: true
@@ -246,8 +324,7 @@ Dialog {
                 background: Rectangle {
                     implicitHeight: 40
                     radius: 5
-                    color: cancelButton.down ? Style.buttonNegativePressed :
-                           Style.buttonNegative
+                    color: cancelButton.down ? Style.buttonNegativePressed : Style.buttonNegative
                     border.color: Qt.darker(color, 1.1)
                 }
 
@@ -258,6 +335,7 @@ Dialog {
                     verticalAlignment: Text.AlignVCenter
                     color: Style.buttonTextNegative
                 }
+
                 onClicked: root.close()
             }
 
@@ -271,8 +349,8 @@ Dialog {
                     implicitHeight: 40
                     radius: 5
                     color: !saveButton.enabled ? Style.buttonPositiveDisabled :
-                                       saveButton.down ? Style.buttonPositivePressed :
-                                       Style.buttonPositive
+                           saveButton.down ? Style.buttonPositivePressed :
+                           Style.buttonPositive
                     border.color: Qt.darker(color, 1.1)
                 }
 
@@ -281,8 +359,7 @@ Dialog {
                     font.pixelSize: 14
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter
-                    color: !saveButton.enabled ? Style.buttonTextDisabled :
-                           Style.buttonText
+                    color: !saveButton.enabled ? Style.buttonTextDisabled : Style.buttonText
                 }
 
                 onClicked: {
@@ -292,7 +369,7 @@ Dialog {
                         newExerciseGroupFilter.selectedGroup,
                         weightField.text ? parseFloat(weightField.text) : 0,
                         unit,
-                        repsField.text ? parseInt(setsField.text) : 0, // si no hay repeticiones, no pasamos series
+                        repsField.text ? parseInt(setsField.text) : 0,
                         repsField.text ? parseInt(repsField.text) : 0
                     )
                     root.close()
@@ -312,20 +389,23 @@ Dialog {
         filteredExercisesPopup.close()
     }
 
-    Connections {
-        target: nameField
-        function onTextChanged() {
-            if (nameField.text === "") {
-                filteredExercises = []
-                filteredExercisesPopup.close()
-                return
-            }
+    function refreshFilteredExercises() {
+        let query = nameField.text.toLowerCase()
+        let seen = {}
+        let startsWith = []
+        let contains = []
 
-            let query = nameField.text.toLowerCase()
-            let seen = {}
-            let startsWith = []
-            let contains = []
-
+        if (query === "") {
+            // Si está vacío, mostrar todos ordenados
+            filteredExercises = [...exerciseList]
+                .filter(e => {
+                    let key = (e.name + "|" + e.group).toLowerCase()
+                    if (seen[key]) return false
+                    seen[key] = true
+                    return true
+                })
+                .sort((a, b) => a.name.localeCompare(b.name))
+        } else {
             for (let i = 0; i < exerciseList.length; i++) {
                 let e = exerciseList[i]
                 let nameLower = e.name.toLowerCase()
@@ -341,14 +421,20 @@ Dialog {
                     contains.push(e)
                 }
             }
-
             filteredExercises = startsWith.concat(contains)
+        }
 
-            if (filteredExercises.length > 0 && nameField.focus) {
-                filteredExercisesPopup.open()
-            } else {
-                filteredExercisesPopup.close()
-            }
+        if (filteredExercises.length > 0 && nameField.focus) {
+            filteredExercisesPopup.open()
+        } else {
+            filteredExercisesPopup.close()
+        }
+    }
+
+    Connections {
+        target: nameField
+        function onTextChanged() {
+            refreshFilteredExercises()
         }
     }
 

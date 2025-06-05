@@ -30,6 +30,7 @@ QtObject {
     readonly property color buttonTextNegative: "#FFFFFF"  // Texto blanco sobre rojo
 
     // Tamaños de texto
+    readonly property int bigSize: 30
     readonly property int heading1: 24
     readonly property int heading2: 20
     readonly property int body: 16
