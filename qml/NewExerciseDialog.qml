@@ -202,11 +202,16 @@ Dialog {
                                         .replace(/'/g, "&#39;");
                                 }
 
+                                function normalize(str) {
+                                    return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase()
+                                }
+
                                 let input = nameField.text
-                                let query = input.toLowerCase()
+                                let query = normalize(input)
                                 let name = modelData.name
-                                let nameLower = name.toLowerCase()
-                                let start = nameLower.indexOf(query)
+                                let nameNormalized = normalize(name)
+
+                                let start = nameNormalized.indexOf(query)
 
                                 if (query.length === 0 || start === -1) {
                                     return escapeHtml(name)
@@ -214,7 +219,7 @@ Dialog {
 
                                 let end = start + query.length
                                 let before = escapeHtml(name.slice(0, start))
-                                let match = "<b>" + escapeHtml(input) + "</b>"
+                                let match = "<b>" + escapeHtml(name.slice(start, end)) + "</b>"
                                 let after = escapeHtml(name.slice(end))
                                 return before + match + after
                             }
@@ -390,7 +395,11 @@ Dialog {
     }
 
     function refreshFilteredExercises() {
-        let query = nameField.text.toLowerCase()
+        function normalizeText(text) {
+            return text.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase()
+        }
+
+        let query = normalizeText(nameField.text)
         let seen = {}
         let startsWith = []
         let contains = []
@@ -408,16 +417,16 @@ Dialog {
         } else {
             for (let i = 0; i < exerciseList.length; i++) {
                 let e = exerciseList[i]
-                let nameLower = e.name.toLowerCase()
-                let groupLower = e.group.toLowerCase()
-                let key = nameLower + "|" + groupLower
+                let nameNormalized = normalizeText(e.name)
+                let groupNormalized = normalizeText(e.group)
+                let key = nameNormalized + "|" + groupNormalized
 
                 if (seen[key]) continue
                 seen[key] = true
 
-                if (nameLower.startsWith(query)) {
+                if (nameNormalized.startsWith(query)) {
                     startsWith.push(e)
-                } else if (nameLower.includes(query)) {
+                } else if (nameNormalized.includes(query)) {
                     contains.push(e)
                 }
             }

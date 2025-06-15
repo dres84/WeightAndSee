@@ -168,8 +168,8 @@ Page {
                 visible: listView.count === 0
                 width: parent.width * 0.6
                 text: settings.language === "es"
-                      ? "Agrega ejercicios pulsando el botón 'Nuevo Ejercicio'."
-                      : "Add exercises by clicking the 'New Exercise' button"
+                      ? "Agrega ejercicios a tu lista de ejercicios pulsando el botón 'Nuevo Ejercicio'."
+                      : "Add exercises in your exercise list by clicking the 'New Exercise' button"
                 color: "white"
                 font.family: Style.interFont.name
                 font.pixelSize: Style.body

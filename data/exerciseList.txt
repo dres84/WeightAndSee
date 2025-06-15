@@ -290,6 +290,98 @@ Dumbbell Side Bend | Core
 Toes to rings | Core
 Sit-up balón medicinal | Core
 Plancha con rueda | Core
+Abdominales clásicos | Core
+Traditional Crunch | Core
+Abdominales bicicleta | Core
+Bicycle Kicks | Core
+Abdominales en banco | Core
+Incline Bench Sit-up | Core
+Abdominales polea alta | Core
+Cable Crunch | Core
+Abdominales pierna alt | Core
+Leg-up Crunch | Core
+Abdominales rodillas | Core
+Kneeling Cable Crunch | Core
+Abdominales con cuerda | Core
+Rope Crunch | Core
+Abdominales talones | Core
+Heel Touches | Core
+Abdominales rueda | Core
+Ab Rollouts | Core
+Abdominales 90 grados | Core
+90-Degree Crunch | Core
+Abdominales fitball | Core
+Swiss Ball Crunch | Core
+Abdominales suizo | Core
+Stability Ball Crunch | Core
+Abdominales V invertid | Core
+Reverse V-ups | Core
+Abdominales con disco | Core
+Weighted Crunch | Core
+Abdominales pecho disc | Core
+Plate Crunch | Core
+Abdominales sit-up pes | Core
+Weighted Sit-up | Core
+Abdominales balón gir. | Core
+Medicine Ball Twist | Core
+Abdominales oblicuos | Core
+Oblique Twist Crunch | Core
+Abdominales cruzadas | Core
+Cross-legged Crunch | Core
+Abdominales declinados | Core
+Decline Sit-up | Core
+Abdominales sentados | Core
+Seated Cable Crunch | Core
+Abdominales en romano | Core
+Roman Chair Crunch | Core
+Abdominales cargados | Core
+Loaded Machine Crunch | Core
+Abdominales inclin obl | Core
+Incline Oblique Sit-up | Core
+Abdominales colgado | Core
+Hanging Leg Raise | Core
+Abdominales en silla | Core
+Roman Chair Leg Raise | Core
+Abdominales flutter | Core
+Flutter Kicks | Core
+Abdominales scissor | Core
+Scissor Kicks | Core
+Abdominales de pie | Core
+Standing Cable Crunch | Core
+Abdominales banda | Core
+Band-resisted Crunch | Core
+Abdominales hollow | Core
+Extended Hollow Hold | Core
+Abdominales rodillas | Core
+Kneeling Ab Rollout | Core
+Abdominales de pie rueda | Core
+Standing Ab Rollout | Core
+Abdominales V-sit | Core
+V-sit | Core
+Abdominales estrella | Core
+Star Plank | Core
+Abdominales V lateral | Core
+Side V-up | Core
+Abdominales jackknife | Core
+Jackknife Sit-up | Core
+Abdominales piernas | Core
+Seated Leg Tucks | Core
+Abdominales barco | Core
+Boat Pose | Core
+Abdominales cable lat | Core
+Cable Side Bend | Core
+Abdominales hombro | Core
+Shoulder Tap Plank | Core
+Abdominales reach | Core
+Reach Plank | Core
+Abdominales crunch lat | Core
+Side Plank Crunch | Core
+Abdominales jumping | Core
+Plank Jacks | Core
+Abdominales climbers | Core
+Mountain Climbers | Core
+Abdominales en banco V | Core
+Bench V-up | Core
 Sentadilla | Legs
 Squat | Legs
 Sentadilla frontal | Legs
